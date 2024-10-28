@@ -29,8 +29,24 @@ public class UsuarioController {
 
     @PostMapping("/registro")
     public String registerUser(@ModelAttribute("usuario") UsuarioDTO usuarioDTO) {
-        usuarioService.addUsuario(usuarioDTO);
-        return "redirect:/registro?success";
+        try {
+            usuarioService.addUsuario(usuarioDTO);
+        } catch (IllegalArgumentException e) {
+            return "redirect:/registro/error?error=" + e.getMessage();
+        }
+        return "redirect:/registro/success?nombreUsuario=" + usuarioDTO.getNombreUsuario();
+    }
+
+    @GetMapping("/registro/success")
+    public String showSuccessPage(@ModelAttribute("nombreUsuario") String nombreUsuario, Model model) {
+        model.addAttribute("nombreUsuario", nombreUsuario);
+        return "registro_success";
+    }
+
+    @GetMapping("/registro/error")
+    public String showErrorPage(@ModelAttribute("error") String error, Model model) {
+        model.addAttribute("error", error);
+        return "registro_error";
     }
 
 
