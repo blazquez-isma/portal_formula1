@@ -1,0 +1,120 @@
+Metodologías ágiles 1 para el desarrollo
+Unidad 2. Desarrollo Web.
+
+INSTRUCCIONES
+Se trata de crear una aplicación que permita gestionar el portal web de la Formula 1. Dicho portal dispondrá de tres (3) secciones claramente diferencias. Una de ellas, de acceso público en el que los visitantes podrán ver las últimas noticias publicadas sobre el campeonato y participar en diversas votaciones. En segundo lugar, se dispone de un portal privado para cada equipo de la competición, donde se podrán hacer cálculos de consumo de gasolina y ganancia de potencia con los datos oficiales de los circuitos. Y, por otro lado, una sección de acceso restringido a administradores en la que se gestionarán diversos aspectos (crear circuitos, preparar votaciones o publicar noticias).
+Nota: Es necesario que todos los elementos de los que se hagan uso en la aplicación (usuarios, circuitos, pilotos, etc.) se encuentren almacenados en una Base de Datos.
+Metodologías ágiles 2 para el desarrollo
+
+Tipos de usuarios:
+• Aficionado/s.
+	o No requiere registro.
+	o Acceso libre a las secciones que no requieren iniciar sesión.
+• Responsable/s de equipo.
+	o Requiere registro. Deberá ser validado manualmente por parte de un administrador.
+	o Podrá dar de alta un equipo y agregar usuarios como corresponsables del equipo.
+	o No puede ver los detalles de otro equipo.
+	o Podrá dar de alta pilotos.
+	o Podrá crear coches.
+	o Podrá hacer uso de la herramienta de calculadora con un determinado coche sobre un determinado circuito.
+• Administrador/es
+	o Requiere registro y validación manual por parte de un administrador.
+	o Podrá crear circuitos.
+	o Podrá crear noticias.
+	o Podrá crear votaciones.
+	o Puede ver los detalles de cada equipo, con el fin de obtener datos de grafismo para el equipo de producción que retransmite la carrera.
+
+
+Los aficionados, visitantes al portal, podrán acceder libremente a las noticias publicadas en el sistema. Podrán, así mismo, participar en las votaciones que se encuentren abiertas. No se requiere registro para votar, aunque si hay que proporcionar el nombre y el email, a efectos de garantizar que solo se realiza una votación por aficionado.
+
+Los administradores del sistema se encargan, principalmente de crear contenido para el portal y de validar los registros de usuarios nuevos. Tienen acceso total a la plataforma. Acciones:
+	• Gestión de noticias. Contenido a mostrar en el portal como forma de noticia. Las noticias se pueden borrar.
+	• Gestión de votaciones. Los administradores seleccionaran un número determinado de pilotos (entre 5 y 10) para participar en votaciones. Las votaciones tendrán un título y una pequeña descripción para explicar la intención de la votación. Los pilotos se mostrarán con su foto y la escudería de la que forman parte. La votación tiene una fecha máxima. De cada voto emitido por el aficionado, se guardará su nombre y su email, con el objeto de no dejar más de 1 votación por email. Después de dicha fecha, al acceder a la votación, se verán los resultados. Las votaciones se pueden borrar.
+	• Gestión de circuitos. Los circuitos se pueden borrar.
+		o La creación1 de circuitos tendrá una serie de atributos por cada circuito que se pueden encontrar en las tablas finales de este apartado.
+		o El portal contará con una sección “Calendario”. Los administradores seleccionarán los circuitos del calendario y la fecha. Acceso público.
+		o Los circuitos se pueden borrar, siempre y cuando no estén en el calendario.
+	• Gestión de usuarios.
+		o Validar solicitudes de registro. Los administradores tendrán una sección en la que se les mostrará las solicitudes de registro no validadas. Si un usuario no es apto para su validación, se borrará. Si el usuario no está validado todavía, no podrá acceder a la sección privada.
+		o Convertir en administrador. Al momento de validar usuarios nuevos, se solicitará el Rol sobre el que se creará el usuario (responsable de equipo o administrador).
+		o Se pueden borrar usuarios.
+	• Gestión de equipos. Los administradores pueden ver los detalles de cada equipo, con el fin de obtener datos de grafismo para el equipo de producción que retransmite la carrera por TV. Pueden acceder a las herramientas de simulación a disposición de los equipos, con el mismo objetivo de obtener material para TV.
+	• El portal, además, tendrá las secciones “Calendario” y “Equipos”. De acceso libre. Se incluirá el calendario de la temporada actual. En la lista de equipos se mostrarán, agrupados en escuderías, los diferentes pilotos que hay por cada equipo.
+
+Los responsables de equipo podrán dar de alta una escudería y agregar a otros responsables de equipo a la escudería. 1 usuario solo puede dar de alta 1 equipo. Igualmente, 1 responsable de equipo solo puede pertenecer a 1 equipo. El equipo puede tener un número indefinido de responsables. Acciones:
+	• Gestión de miembros. Puede añadir y quitar responsables de equipo.
+	• Gestión de pilotos. Puede añadir y quitar pilotos. Los detalles que se requieren del piloto se muestran en las tablas al final de este apartado.
+	• Gestión de coches. Dar de alta y borrar coches de la escudería. Los detalles que se requieren del coche se muestran en las tablas al final de este apartado.
+	• Herramientas de simulación.
+		o Gasto de combustible. Herramienta que permite saber cuánta gasolina consume un coche en cada vuelta al circuito. También se podrá saber la cantidad total de combustible que es necesario, lo que permite a los ingenieros saber la cantidad óptima de combustible con la que debe partir el coche al inicio de la carrera.
+		o Cálculo de ERS (Energy Recovery System). Sistema de recuperación de energía en frenadas que se almacena en una batería. La energía está a disposición del piloto en momento puntuales a su elección.
+			▪ El sistema MGU-K (Motor Generator Unit – Kinetic), es el encargado de capturar esta energía y guardarla en una batería.
+				• La capacidad máxima de la batería es de 4MJ (aproximadamente, 1,20 kW).
+				• Por reglamentación, el límite de energía que se puede recuperar por vuelta es de 2MJ (que, redondeando, serían 0.6 kWh).
+				• Según el tipo de curva (ver tablas al final del apartado), el coche puede recuperar x kWh.
+				• Según el tipo de conducción, habrá una modificación en esa ganancia por cada curva, ya que al ser un motor híbrido parte
+				de la energía recuperada se aplica para dar potencia a las ruedas a la salida de la curva:
+					o Ahorrador: +5%
+					o Normal: -25%
+					o Deportivo: -60%
+			▪ Se deben incluir las herramientas para saber la ganancia del sistema por vuelta según el tipo de conducción y saber cuántas vueltas son necesarias para cargar la batería en cada modo de conducción.
+
+
+
+¿Qué información se necesita de cada elemento?
+En las siguientes tablas se muestra el contenido, mínimo, que se debe guardar en la Base de Datos de los principales elementos que habrá en el Portal.
+
+																Usuario registrado
+Nombre: El nombre público de dicho usuario.
+Usuario: El nombre de usuario. Único
+Email: La dirección de correo electrónico del usuario. Única.
+Contraseña: Contraseña de Acceso. 5 caracteres mínimo. Sin restricciones.
+Rol: Responsable de equipo o administrador
+
+																Equipo
+Nombre: El nombre público de dicho equipo.
+Logo: Fotografía del logo del equipo.
+Twitter: Nombre de usuario en la red social Twitter
+
+																Piloto
+Nombre: El nombre de dicho piloto
+Apellidos: Apellidos del piloto
+Siglas: Nombre reducido del piloto. Se utiliza para los grafismos en TV. Máximo 3 letras. Único. Por ejemplo, “HAM” para “Lewis Hamilton” o “ALO” para “Fernando Alonso”.
+Dorsal: Número de dorsal. Único entre los pilotos activos.
+Foto: Fotografía del piloto
+País: País que identifica al piloto
+Twitter: Nombre de usuario en la red social Twitter
+
+																Circuito
+Nombre: Nombre público del circuito
+Ciudad: Ciudad en la que está ubicado el circuito
+País: País en el que está el circuito.
+Trazado: Imagen que represente el trazado del circuito.
+Número de vueltas: Número de vueltas que se darán al trazado durante la carrera.
+Longitud: Longitud (en metros) del trazado. Es decir, la distancia que recorre un coche en una vuelta.
+Curvas Lentas: Número de curvas lentas que tiene el circuito.
+Curvas Media: Número de curvas de velocidad media que tiene el circuito.
+Curvas Rápidas: Número de curvas rápidas que tiene el circuito.
+																
+																Coche
+Nombre: Nombre público del coche. Por ejemplo, “Ferrari SF21”.
+Código: Código interno que se le dé al vehículo. Que permita a los responsables identificar al vehículo por la nomenclatura. Código único.
+ERS-CurvaLenta | ERS-CurvaMedia | ERS-CurvaRápida: Ganancia de potencia (en Kilovatios hora, kW/h o kWh) que consigue recuperar el vehículo en frenada con el sistema MGU-K (Motor Generator Unit - Kinetic), para almacenar en baterías. La energía almacenada está disponible para el piloto.Se guarda un valor según el tipo de curva (lenta, media velocidad o rápida). Aquí consideraremos como genérico el valor de energía recuperada por cada tipo de curva. No se guarda el valor por cada curva.La energía recuperada suele oscilar entre 0.01 kWh y 0.06 kWh, según el tipo de curva, velocidad de entrada, presión de freno y demás variables. Por reglamentación, el límite de energía que se puede recuperar por vuelta es de 2MJ (que, redondeando, serían 0.6 kWh).
+Consumo: Consumo de combustible, expresado en litros cada 100 kilómetros (L/100km). El consumo medio de un Formula 1 actual ronda los 34 L/100km.
+
+																Noticia
+Permalink: URL que se utilizará para apuntar de forma permanente al contenido. Por ejemplo “http://www.xxxx.com/enlace-permanente”. Único y con un tamaño de 100 caracteres.
+Título: Título de la noticia. Máximo 100 caracteres.
+Imagen: Imagen que acompaña a la noticia.
+Texto: Texto de la noticia. Mínimo 500 caracteres. Máximo 2000 caracteres.
+
+																Votación
+Permalink: URL que se utilizará para apuntar de forma permanente al contenido. Por ejemplo “http://www.xxxx.com/enlace-permanente”. Único y con un tamaño de 100 caracteres.
+Título: Título de la votación. Máximo 100 caracteres
+Descripción: Breve descripción de la votación. Máximo 500 caracteres.
+Limite: Fecha y hora en la que se cierra la votación
+Lista<Pilotos>: Listado de los pilotos sobre los que realizar la votación
+Lista<Votaciones>: Listado de las votaciones emitidas por los visitantes a la página.Se guardará, de cada votación:
+	• Nombre público
+	• Email. Solo se permite 1 valoración por email.
+	• Piloto sobre el que realiza la votación.

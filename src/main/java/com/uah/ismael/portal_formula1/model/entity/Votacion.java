@@ -7,7 +7,7 @@ import java.util.Date;
 public class Votacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String permalink;
@@ -19,15 +19,14 @@ public class Votacion {
     private String descripcion;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
+    @Column(name = "fechaLimite", nullable = false)
     private Date fechaLimite;
 
-    // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

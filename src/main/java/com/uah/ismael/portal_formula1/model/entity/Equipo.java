@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Equipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String nombre;
@@ -15,12 +15,11 @@ public class Equipo {
 
     private String twitter;
 
-    // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

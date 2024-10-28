@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Coche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String nombre;
@@ -14,13 +14,13 @@ public class Coche {
     @Column(nullable = false, unique = true)
     private String codigo;
 
-    @Column(nullable = false)
+    @Column(name = "ERS_curvaLenta", nullable = false)
     private float ERS_curvaLenta;
 
-    @Column(nullable = false)
+    @Column(name = "ERS_curvaMedia", nullable = false)
     private float ERS_curvaMedia;
 
-    @Column(nullable = false)
+    @Column(name = "ERS_curvaRapida", nullable = false)
     private float ERS_curvaRapida;
 
     @Column(nullable = false)
@@ -30,12 +30,11 @@ public class Coche {
     @JoinColumn(name = "equipoID")
     private Equipo equipo;
 
-    // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

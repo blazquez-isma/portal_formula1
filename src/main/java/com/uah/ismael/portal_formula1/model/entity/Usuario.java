@@ -6,12 +6,12 @@ import jakarta.persistence.*;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "nombreUsuario", nullable = false, unique = true)
     private String nombreUsuario;
 
     @Column(nullable = false, unique = true)
@@ -24,12 +24,11 @@ public class Usuario {
     @JoinColumn(name = "rolID")
     private Rol rol;
 
-    // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

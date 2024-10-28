@@ -1,28 +1,31 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
+import com.uah.ismael.portal_formula1.model.entity.embeddedId.MiembroEquipoId;
 import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "miembro_equipo")
 public class MiembroEquipo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private MiembroEquipoId id;
 
     @ManyToOne
+    @MapsId("usuarioID")
     @JoinColumn(name = "usuarioID", referencedColumnName = "id")
     private Usuario usuario;
 
     @ManyToOne
+    @MapsId("equipoID")
     @JoinColumn(name = "equipoID", referencedColumnName = "id")
     private Equipo equipo;
 
-    // Getters y Setters
-    public Long getId() {
+    public MiembroEquipoId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(MiembroEquipoId id) {
         this.id = id;
     }
 

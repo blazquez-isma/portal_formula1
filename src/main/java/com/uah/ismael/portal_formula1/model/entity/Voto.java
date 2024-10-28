@@ -6,9 +6,9 @@ import jakarta.persistence.*;
 public class Voto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false)
+    @Column(name = "nombreVotante", nullable = false)
     private String nombreVotante;
 
     @Column(nullable = false, unique = true)
@@ -22,12 +22,11 @@ public class Voto {
     @JoinColumn(name = "votacionID", nullable = false)
     private Votacion votacion;
 
-    // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

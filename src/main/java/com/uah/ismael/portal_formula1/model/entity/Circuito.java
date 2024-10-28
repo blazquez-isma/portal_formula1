@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Circuito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String nombre;
@@ -19,27 +19,26 @@ public class Circuito {
 
     private String trazado;
 
-    @Column(nullable = false)
+    @Column(name = "numeroVueltas", nullable = false)
     private int numeroVueltas;
 
     @Column(nullable = false)
     private float longitud;
 
-    @Column(nullable = false)
+    @Column(name = "curvasLentas", nullable = false)
     private int curvasLentas;
 
-    @Column(nullable = false)
+    @Column(name = "curvasMedias", nullable = false)
     private int curvasMedias;
 
-    @Column(nullable = false)
+    @Column(name = "curvasRapidas", nullable = false)
     private int curvasRapidas;
 
-    // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
