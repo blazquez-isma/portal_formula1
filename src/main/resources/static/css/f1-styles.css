@@ -1,0 +1,213 @@
+/* src/main/resources/static/css/f1-styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #e2e2e2; /* Lighter background color */
+    color: #333; /* Darker text color */
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: none; /* Remove background image from body */
+    z-index: -1;
+}
+
+.header, .footer {
+    position: relative;
+    z-index: 2;
+    color: #333;
+    font-weight: bolder;
+}
+
+.header::before, .footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/images/checkered-pattern.png');
+    background-size: 60px 60px; /* Size of the squares */
+    background-repeat: repeat;
+    opacity: 0.15; /* Lower opacity */
+    z-index: -1;
+}
+
+.header {
+    border-bottom: 3px solid #e22107; /* Red line below header */
+}
+
+.footer {
+    border-top: 3px solid #e22107; /* Red line above footer */
+    text-align: center;
+    padding: 5px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    font-size: 0.8em;
+}
+
+h1, h2, h3 {
+    color: #333; /* Darker text color */
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+nav {
+    background-color: #e2e2e2; /* Lighter background for nav */
+    padding: 5px 0;
+    border-bottom: 3px solid #e22107; /* Red line below nav */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #666;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-container{
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: 1px solid #e22107;
+}
+
+.form-container div {
+    margin-bottom: 15px;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-container input, .form-container select, .form-container button {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #e22107 ;
+    border-radius: 4px;
+    background-color: #fff;
+    margin: 0 auto;
+    display: block;
+}
+
+.form-container input:focus, .form-container select:focus {
+    border-color: #e22107 ;
+    outline: none;
+}
+
+.form-container button {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #e22107 ;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: #666;
+}
+
+.button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #e22107 ;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #666;
+}
+
+.warning-box {
+    background-color: #f9f9f9; /* Warning background color */
+    color: #333;
+    padding: 20px;
+    border: 4px solid #e22107;/* #e8b92a;*/
+    border-radius: 8px;
+    text-align: center;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.success-box {
+    background-color: #f9f9f9; /* Success background color */
+    color: #fff;
+    padding: 20px;
+    border: 4px solid #e22107; /*#4caf50;*/
+    border-radius: 8px;
+    text-align: center;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.success-box span {
+    margin: 0 5px; /* Adjust the margin as needed */
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    max-width: 100px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

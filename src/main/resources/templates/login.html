@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/f1-styles.css}">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <a href="/" th:href="@{/}">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+            </a>
+            <h1>Iniciar Sesión</h1>
+        </div>
+    </div>
+    <div class="form-container">
+        <form th:action="@{/login}" method="post">
+            <div>
+                <label for="nombreUsuario">Nombre de Usuario:</label>
+                <input type="text" id="nombreUsuario" name="nombreUsuario" required />
+            </div>
+            <div>
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" required />
+            </div>
+            <div>
+                <button type="submit">Iniciar Sesión</button>
+            </div>
+            <div>
+                <button type="button" class="button" onclick="window.location.href='/'">Volver</button>
+            </div>
+        </form>
+    </div>
+    <div class="footer">
+        <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
+    </div>
+</body>
+</html>

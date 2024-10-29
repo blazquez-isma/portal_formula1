@@ -20,35 +20,48 @@ public class UsuarioController {
     @Autowired
     private RolService rolService;
 
-    @GetMapping("/registro")
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
+    @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("usuario", new UsuarioDTO());
         model.addAttribute("roles", rolService.getAllRoles());
-        return "registro";
+        return "register";
     }
 
-    @PostMapping("/registro")
+    @PostMapping("/register")
     public String registerUser(@ModelAttribute("usuario") UsuarioDTO usuarioDTO) {
         try {
             usuarioService.addUsuario(usuarioDTO);
         } catch (IllegalArgumentException e) {
-            return "redirect:/registro/error?error=" + e.getMessage();
+            return "redirect:/register_error?error=" + e.getMessage();
         }
-        return "redirect:/registro/success?nombreUsuario=" + usuarioDTO.getNombreUsuario();
+        return "redirect:/register_success?nombreUsuario=" + usuarioDTO.getNombreUsuario();
     }
 
-    @GetMapping("/registro/success")
+    @GetMapping("/register_success")
     public String showSuccessPage(@ModelAttribute("nombreUsuario") String nombreUsuario, Model model) {
         model.addAttribute("nombreUsuario", nombreUsuario);
-        return "registro_success";
+        return "register_success";
     }
 
-    @GetMapping("/registro/error")
+    @GetMapping("/register_error")
     public String showErrorPage(@ModelAttribute("error") String error, Model model) {
         model.addAttribute("error", error);
-        return "registro_error";
+        return "register_error";
     }
 
+    @GetMapping("/login")
+    public String shoLogin() {
+        return "login";
+    }
 
+    @PostMapping("/login")
+    public String loginUser(@ModelAttribute("nombreUsuario") String nombreUsuario, @ModelAttribute("contrasena") String contrasena) {
+        return "redirect:/login_success";
+    }
 
 }
