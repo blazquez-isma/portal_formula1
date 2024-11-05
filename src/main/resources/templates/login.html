@@ -30,6 +30,9 @@
             <div>
                 <button type="button" class="button" onclick="window.location.href='/'">Volver</button>
             </div>
+            <div th:if="${loginError}" class="error-message">
+                <p th:text="${loginError}"></p>
+            </div>
         </form>
     </div>
     <div class="footer">

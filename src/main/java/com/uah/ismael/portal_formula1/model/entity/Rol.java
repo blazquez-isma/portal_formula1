@@ -1,15 +1,21 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-public class Rol {
+public class Rol implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, unique = true)
     private String nombre;
+
+    @Override
+    public String getAuthority() {
+        return nombre;
+    }
 
     public Integer getId() {
         return id;

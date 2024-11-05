@@ -34,8 +34,8 @@
             </div>
             <div>
                 <label for="rol">Rol:</label>
-                <select id="rol" th:field="*{rol.id}" required>
-                    <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}"></option>
+                <select id="rol" th:field="*{rol}" required>
+                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.nombre}"></option>
                 </select>
             </div>
             <div>

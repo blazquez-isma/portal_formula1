@@ -19,7 +19,8 @@ public class UsuarioDTO {
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
-    private RolDTO rol;
+
+    private Integer rol;
 
     // Getters y Setters
 //    public Long getId() {
@@ -62,11 +63,11 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public RolDTO getRol() {
+    public Integer getRol() {
         return rol;
     }
 
-    public void setRol(RolDTO rol) {
+    public void setRol(Integer rol) {
         this.rol = rol;
     }
 
@@ -77,7 +78,8 @@ public class UsuarioDTO {
                 ", nombreUsuario=" + nombreUsuario +
                 ", email=" + email +
                 ", contrasena=" + contrasena +
-                ", rol=" + rol + '}';
+                ", rol=" + rol
+                + '}';
     }
 
 }

@@ -17,11 +17,14 @@ import java.util.stream.Collectors;
 public class RolServiceImpl implements RolService {
     Logger LOG = LoggerFactory.getLogger(RolServiceImpl.class);
 
-    @Autowired
-    private RolRepository rolRepository;
+    private final RolRepository rolRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public RolServiceImpl(RolRepository rolRepository, ModelMapper modelMapper) {
+        this.rolRepository = rolRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<RolDTO> getAllRoles() {

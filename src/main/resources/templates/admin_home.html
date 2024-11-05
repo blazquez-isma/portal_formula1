@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Home</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/f1-styles.css}">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <a href="/" th:href="@{/}">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+            </a>
+            <h1>Administrador <span th:text=" ' ' + ${nombreUsuario} + ' '"></span></h1>
+        </div>
+    </div>
+    <nav>
+        <ul>
+            <li><a th:href="@{/noticias}">Noticias</a></li>
+            <li><a th:href="@{/votaciones}">Votaciones</a></li>
+            <li><a th:href="@{/logout}">Iniciar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <div class="footer">
+        <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
+    </div>
+</body>
+</html>

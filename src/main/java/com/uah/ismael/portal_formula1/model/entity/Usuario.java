@@ -1,8 +1,12 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
+import com.uah.ismael.portal_formula1.model.entity.listener.UsuarioListener;
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
+//@EntityListeners(UsuarioListener.class)
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +24,26 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
-    @ManyToOne
-    @JoinColumn(name = "rolID")
-    private Rol rol;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "usuario_roles",
+            joinColumns = @JoinColumn(name = "usuarioID"),
+            inverseJoinColumns = @JoinColumn(name = "rolID")
+    )
+    private Set<Rol> roles;
+
+    // to string
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", nombreUsuario='" + nombreUsuario + '\'' +
+                ", email='" + email + '\'' +
+                ", contrasena='" + contrasena + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 
     public Integer getId() {
         return id;
@@ -64,11 +85,11 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public Rol getRol() {
-        return rol;
+    public Set<Rol> getRoles() {
+        return roles;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
     }
 }

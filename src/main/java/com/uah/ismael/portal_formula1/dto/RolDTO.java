@@ -1,15 +1,15 @@
 package com.uah.ismael.portal_formula1.dto;
 
 public class RolDTO {
-    private Long id;
+    private Integer id;
     private String nombre;
 
     // Getters y Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
