@@ -7,20 +7,20 @@ import java.util.Objects;
 
 @Embeddable
 public class MiembroEquipoId implements Serializable {
-    private Integer usuarioID;
-    private Integer equipoID;
+    private Long usuarioID;
+    private Long equipoID;
 
-    public Integer getUsuarioID() {
+    public Long getUsuarioID() {
         return usuarioID;
     }
-    public void setUsuarioID(Integer usuarioID) {
+    public void setUsuarioID(Long usuarioID) {
         this.usuarioID = usuarioID;
     }
 
-    public Integer getEquipoID() {
+    public Long getEquipoID() {
         return equipoID;
     }
-    public void setEquipoID(Integer equipoID) {
+    public void setEquipoID(Long equipoID) {
         this.equipoID = equipoID;
     }
 

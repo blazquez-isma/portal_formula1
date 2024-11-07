@@ -190,8 +190,9 @@ nav ul li a:hover {
     margin: 20px auto;
 }
 
-.success-box span {
-    margin: 0 5px; /* Adjust the margin as needed */
+span.margen {
+    margin: 0 5px;
+    font-weight: bold;
 }
 
 .logo-container {

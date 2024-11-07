@@ -7,22 +7,22 @@ import java.util.Objects;
 
 @Embeddable
 public class PilotoVotacionId  implements Serializable {
-    private Integer votacionID;
-    private Integer pilotoID;
+    private Long votacionID;
+    private Long pilotoID;
 
-    public Integer getVotacionID() {
+    public Long getVotacionID() {
         return votacionID;
     }
 
-    public void setVotacionID(Integer votacionID) {
+    public void setVotacionID(Long votacionID) {
         this.votacionID = votacionID;
     }
 
-    public Integer getPilotoID() {
+    public Long getPilotoID() {
         return pilotoID;
     }
 
-    public void setPilotoID(Integer pilotoID) {
+    public void setPilotoID(Long pilotoID) {
         this.pilotoID = pilotoID;
     }
 

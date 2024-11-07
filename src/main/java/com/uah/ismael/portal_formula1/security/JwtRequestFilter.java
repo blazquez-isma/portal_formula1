@@ -1,6 +1,7 @@
 package com.uah.ismael.portal_formula1.security;
 
 import com.uah.ismael.portal_formula1.service.CustomUserDetailsService;
+import com.uah.ismael.portal_formula1.utils.Constants;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +23,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     Logger LOG = org.slf4j.LoggerFactory.getLogger(JwtRequestFilter.class);
 
-
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
@@ -32,20 +32,26 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        final String requestTokenHeader = (String) request.getAttribute("Authorization");
 
+        // Rutas que no requieren autenticación JWT
+        if(isURLWithoutAuth(request.getRequestURI())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        final String requestTokenHeader = (String) request.getAttribute("Authorization");
         String username = null;
         String jwtToken = null;
-
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                LOG.debug("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session has expired");
+                LOG.debug("JWT Token has expired");
+                response.sendRedirect("/login?error=sessionExpired");
+                return;
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
@@ -67,5 +73,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+
+    private static boolean isURLWithoutAuth(String requestURI) {
+        return Constants.URLS_WITHOUT_AUTHENTICATION.stream().anyMatch(url -> {
+            String urlWithoutSlash = (!url.equals("/") && url.endsWith("/")) ? url.substring(0, url.length() - 1) : url;
+            return urlWithoutSlash.endsWith("**") ? requestURI.startsWith(urlWithoutSlash.replace("/**", "")) : requestURI.equals(urlWithoutSlash);
+        });
     }
 }

@@ -1,7 +1,15 @@
 package com.uah.ismael.portal_formula1.utils;
 
+import java.util.List;
+
 public class Constants {
 
-    public static final String ROL_ADMINISTRADOR = "ADMIN";
-    public static final String ROL_RESPONSABLE = "USER";
+    public static final List<String> URLS_WITHOUT_AUTHENTICATION = List.of(
+            "/",
+            "/css/**",
+            "/images/**",
+            "/login/**",
+            "/register/**"
+    );
+
 }

@@ -4,6 +4,7 @@ package com.uah.ismael.portal_formula1.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,11 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-    private String secret = "secret";
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpirationInMs;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -45,13 +50,20 @@ public class JwtTokenUtil {
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))//60 * 10))
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public long getJwtExpirationInMs() {
+        return jwtExpirationInMs;
     }
 }

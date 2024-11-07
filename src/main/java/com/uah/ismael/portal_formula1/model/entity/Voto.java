@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Voto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "nombreVotante", nullable = false)
     private String nombreVotante;
@@ -22,11 +22,11 @@ public class Voto {
     @JoinColumn(name = "votacionID", nullable = false)
     private Votacion votacion;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

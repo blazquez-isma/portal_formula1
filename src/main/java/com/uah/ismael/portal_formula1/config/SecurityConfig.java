@@ -4,6 +4,8 @@ import com.uah.ismael.portal_formula1.security.JwtAuthenticationEntryPoint;
 import com.uah.ismael.portal_formula1.security.JwtCookieFilter;
 import com.uah.ismael.portal_formula1.security.JwtRequestFilter;
 import com.uah.ismael.portal_formula1.service.CustomUserDetailsService;
+import com.uah.ismael.portal_formula1.utils.Constants;
+import com.uah.ismael.portal_formula1.utils.Urls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +52,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/css/**", "/images/**", "/login/**", "/register/**").permitAll()
+                        .requestMatchers(Constants.URLS_WITHOUT_AUTHENTICATION.toArray(new String[0])).permitAll()
                         .requestMatchers("/admin/**").hasRole("Administrador")
                         .requestMatchers("/responsable/**").hasRole("Responsable")
                         .anyRequest().authenticated()

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Circuito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String nombre;
@@ -34,11 +34,11 @@ public class Circuito {
     @Column(name = "curvasRapidas", nullable = false)
     private int curvasRapidas;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

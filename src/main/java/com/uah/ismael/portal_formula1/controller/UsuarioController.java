@@ -1,11 +1,9 @@
 package com.uah.ismael.portal_formula1.controller;
 
-import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
+import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
 import com.uah.ismael.portal_formula1.security.JwtTokenUtil;
-import com.uah.ismael.portal_formula1.service.CustomUserDetailsService;
 import com.uah.ismael.portal_formula1.service.RolService;
 import com.uah.ismael.portal_formula1.service.UsuarioService;
-import com.uah.ismael.portal_formula1.utils.Constants;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -37,10 +35,10 @@ public class UsuarioController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/")
     public String home() {
@@ -49,13 +47,13 @@ public class UsuarioController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("usuario", new UsuarioDTO());
+        model.addAttribute("usuario", new UsuarioNuevoDTO());
         model.addAttribute("roles", rolService.getAllRoles());
-        return "register";
+        return "register/register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("usuario") UsuarioDTO usuarioDTO,
+    public String registerUser(@ModelAttribute("usuario") UsuarioNuevoDTO usuarioDTO,
                                RedirectAttributes redirectAttributes) {
         try {
             usuarioService.addUsuario(usuarioDTO);
@@ -70,19 +68,19 @@ public class UsuarioController {
     @GetMapping("/register/register_success")
     public String showSuccessPage(@ModelAttribute("nombreUsuario") String nombreUsuario, Model model) {
         model.addAttribute("nombreUsuario", nombreUsuario);
-        return "register_success";
+        return "register/register_success";
     }
 
     @GetMapping("/register/register_error")
     public String showErrorPage(@ModelAttribute("error") String error, Model model) {
         model.addAttribute("error", error);
-        return "register_error";
+        return "register/register_error";
     }
 
     @GetMapping("/login")
     public String showLogin(Model model, @ModelAttribute("error") String error) {
         if ("true".equals(error)) {
-            model.addAttribute("loginError", "Usuario o contraseña no son válidos PRINGAO");
+            model.addAttribute("loginError", "Usuario o contraseña no son válidos");
         }
         return "login";
     }
@@ -94,34 +92,15 @@ public class UsuarioController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(nombreUsuario, contrasena));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            LOG.debug("PASSWORD: " + contrasena + " AUTH: " + authentication.getName());
             UserDetails userDetails = userDetailsService.loadUserByUsername(nombreUsuario);
-            //String token = jwtTokenUtil.generateToken(userDetails);
 
-            // Quiero coger todas las autoridades del usuario y mostrarlas separadas por ,
-            String authorities = userDetails.getAuthorities().stream()
-                    .map(a -> a.getAuthority())
-                    .reduce("", (a, b) -> a + ", " + b);
-
-            LOG.debug("USER DETAILS: " + userDetails.getUsername() + " " + userDetails.getPassword()
-                    + " Authorities: " + authorities + " IsEnabled " + userDetails.isEnabled()
-                    + " isAccountNonExpired" + userDetails.isAccountNonExpired()
-                    + " isAccountNonLocked" + userDetails.isAccountNonLocked()
-                    + " isCredentialsNonExpired" + userDetails.isCredentialsNonExpired());
-            //LOG.debug("TOKEN: " + token);
-
-
-//            Cookie cookie = new Cookie("token", token.replace("Bearer ", ""));
-//            cookie.setHttpOnly(true);
-//            cookie.setPath("/");
-//            response.addCookie(cookie);
-
-            //LOG.debug(" Cookie: " + cookie.getValue());
-
+            LOG.debug("User: " + userDetails.getUsername());
             String role = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .findFirst()
                     .orElse("");
+
+            generateToken(response, userDetails);
 
             if ("ROLE_Administrador".equals(role)) {
                 return "redirect:/admin/home";
@@ -138,34 +117,16 @@ public class UsuarioController {
         }
     }
 
-//    @PostMapping("/login")
-//    public String loginUser(@ModelAttribute("nombreUsuario") String nombreUsuario,
-//                            @ModelAttribute("contrasena") String contrasena, Model model) {
-//        try {
-//            if (usuarioService.verifyCredentials(nombreUsuario, contrasena)) {
-//                UserDetails userDetails = customUserDetailsService.loadUserByUsername(nombreUsuario);
-//                userDetails.getAuthorities().forEach(a -> System.out.println(a.getAuthority()));
-//                UsernamePasswordAuthenticationToken authToken =
-//                        new UsernamePasswordAuthenticationToken(userDetails, contrasena, userDetails.getAuthorities());
-//                SecurityContextHolder.getContext().setAuthentication(authToken);
-//                String role = userDetails.getAuthorities().stream()
-//                        .map(GrantedAuthority::getAuthority)
-//                        .findFirst()
-//                        .orElse("");
-//                System.out.println(role);
-//                if ("ROLE_Administrador".equals(role)) {
-//                    return "redirect:/admin/home";
-//                } else {
-//                    return "redirect:/resp_equipo/home";
-//                }
-//            } else {
-//                model.addAttribute("loginError", "Usuario o contraseña no son válidos");
-//                return "login";
-//            }
-//        } catch (Exception e) {
-//            model.addAttribute("loginError", "Ocurrió un error durante el inicio de sesión");
-//            return "login";
-//        }
-//    }
+    private void generateToken(HttpServletResponse response, UserDetails userDetails) {
+        String token = jwtTokenUtil.generateToken(userDetails);
+        response.setHeader("Authorization", "Bearer " + token);
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true); // Use true if using HTTPS
+        cookie.setPath("/");
+        cookie.setMaxAge((int) jwtTokenUtil.getJwtExpirationInMs() / 1000);
+        response.addCookie(cookie);
+        LOG.debug("Controller Token: " + token);
+    }
 
 }

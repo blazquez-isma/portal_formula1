@@ -1,6 +1,7 @@
 package com.uah.ismael.portal_formula1.service.impl;
 
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
+import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Rol;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.RolRepository;
@@ -13,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -38,7 +39,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void addUsuario(UsuarioDTO usuarioDTO) {
+    public void addUsuario(UsuarioNuevoDTO usuarioDTO) {
         LOG.debug("USER: " + usuarioDTO);
 
         if (usuarioRepository.existsByNombreUsuario(usuarioDTO.getNombreUsuario())) {
@@ -53,33 +54,36 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setNombreUsuario(usuarioDTO.getNombreUsuario());
         usuario.setEmail(usuarioDTO.getEmail());
-        String encode = passwordEncoder.encode(usuarioDTO.getContrasena());
-        LOG.debug("Contrasena " + usuarioDTO.getContrasena() + " encoded to " + encode);
-        usuario.setContrasena(encode);
-        Rol rol = rolRepository.findById(usuarioDTO.getRol())
+        usuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena()));
+        Rol rol = rolRepository.findById(usuarioDTO.getRolLeido())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid role ID"));
         usuario.setRoles(new HashSet<>());
         usuario.getRoles().add(rol);
+        usuario.setActivo(false);
 
-        LOG.debug("USUARIO Antes: " + usuario);
-        Usuario save = usuarioRepository.save(usuario);
-        LOG.debug("USUARIO Despues: " + save);
+        usuarioRepository.save(usuario);
     }
 
     @Override
-    public String encryptPassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
+    public List<UsuarioDTO> getAllUsuarios() {
+        return usuarioRepository.findAll().stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public UsuarioDTO findByNombreUsuario(String nombreUsuario) {
-        return modelMapper.map(usuarioRepository.findByNombreUsuario(nombreUsuario), UsuarioDTO.class);
+    public List<UsuarioDTO> getUsuariosNoActivos() {
+        return usuarioRepository.findByActivo().stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public boolean verifyCredentials(String nombreUsuario, String contrasena) {
-        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario);
-        return usuario != null && passwordEncoder.matches(contrasena, usuario.getContrasena());
+    public void activateUser(Long userId) {
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        usuario.setActivo(true);
+        usuarioRepository.save(usuario);
     }
 
 }

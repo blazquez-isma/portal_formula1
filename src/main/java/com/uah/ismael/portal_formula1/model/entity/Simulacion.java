@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Simulacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String tipo;
@@ -26,11 +26,11 @@ public class Simulacion {
     @JoinColumn(name = "responsableID")
     private Usuario responsable;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

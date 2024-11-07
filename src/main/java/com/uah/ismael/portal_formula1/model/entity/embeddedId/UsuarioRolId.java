@@ -7,22 +7,22 @@ import java.util.Objects;
 
 @Embeddable
 public class UsuarioRolId implements Serializable {
-    private Integer usuarioID;
-    private Integer rolID;
+    private Long usuarioID;
+    private Long rolID;
 
-    public Integer getUsuarioID() {
+    public Long getUsuarioID() {
         return usuarioID;
     }
 
-    public void setUsuarioID(Integer usuarioID) {
+    public void setUsuarioID(Long usuarioID) {
         this.usuarioID = usuarioID;
     }
 
-    public Integer getRolID() {
+    public Long getRolID() {
         return rolID;
     }
 
-    public void setRolID(Integer rolID) {
+    public void setRolID(Long rolID) {
         this.rolID = rolID;
     }
 

@@ -1,16 +1,10 @@
 package com.uah.ismael.portal_formula1.dto;
 
-import com.uah.ismael.portal_formula1.model.entity.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.Set;
-
-public class UsuarioDTO {
-
-    private Long id;
-
+public class UsuarioNuevoDTO {
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
@@ -25,17 +19,11 @@ public class UsuarioDTO {
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
 
-    private Set<Rol> roles;
+    private Long rolLeido;
 
     private boolean activo = false;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNombre() {
         return nombre;
@@ -69,12 +57,12 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public Set<Rol> getRoles() {
-        return roles;
+    public Long getRolLeido() {
+        return rolLeido;
     }
 
-    public void setRoles(Set<Rol> roles) {
-        this.roles = roles;
+    public void setRolLeido(Long rolLeido) {
+        this.rolLeido = rolLeido;
     }
 
     public boolean isActivo() {
@@ -88,12 +76,11 @@ public class UsuarioDTO {
     @Override
     public String toString() {
         return "UsuarioDTO{" +
-                "id=" + id +
                 "nombre=" + nombre +
                 ", nombreUsuario=" + nombreUsuario +
                 ", email=" + email +
                 ", contrasena=" + contrasena +
-                ", roles=" + roles +
+                ", rolLeido=" + rolLeido +
                 ", activo=" + activo
                 + '}';
     }

@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class Rol implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String nombre;
@@ -17,11 +17,11 @@ public class Rol implements GrantedAuthority {
         return nombre;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

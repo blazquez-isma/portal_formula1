@@ -13,6 +13,6 @@ public class ResponsableController {
     public String responsableHome(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("nombreUsuario", auth.getName());
-        return "responsable_home";
+        return "responsable/responsable_home";
     }
 }

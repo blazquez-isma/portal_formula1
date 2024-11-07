@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Noticia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String permalink;
@@ -23,11 +23,11 @@ public class Noticia {
     @JoinColumn(name = "administradorID")
     private Usuario administrador;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
