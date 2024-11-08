@@ -73,7 +73,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public List<UsuarioDTO> getUsuariosNoActivos() {
-        return usuarioRepository.findByActivo().stream()
+        return usuarioRepository.findByActivo(false).stream()
                 .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
                 .collect(Collectors.toList());
     }
@@ -84,6 +84,11 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         usuario.setActivo(true);
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        usuarioRepository.deleteById(userId);
     }
 
 }

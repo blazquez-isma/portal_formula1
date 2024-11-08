@@ -16,10 +16,21 @@
     </div>
     <nav>
         <ul>
-            <li><a th:href="@{/admin/activate_users}">Activar Usuarios</a></li>
-            <li><a th:href="@{/admin/delete_users}">Eliminar Usuarios</a></li>
-            <li><a th:href="@{/noticias}">Noticias</a></li>
-            <li><a th:href="@{/votaciones}">Votaciones</a></li>
+            <li><a th:href="@{/admin/show_users}">Usuarios</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Noticias</a>
+                <div class="dropdown-content">
+                    <a >Ver Noticias</a>
+                    <a >Crear Noticia</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Votaciones</a>
+                <div class="dropdown-content">
+                    <a th:href="@{/admin/activate_users}">Ver Votaciones</a>
+                    <a th:href="@{/admin/delete_users}">Crear Votación</a>
+                </div>
+            </li>
             <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
         </ul>
     </nav>

@@ -10,4 +10,5 @@ public interface UsuarioService {
     List<UsuarioDTO> getAllUsuarios();
     List<UsuarioDTO> getUsuariosNoActivos();
     void activateUser(Long userId);
+    void deleteUser(Long userId);
 }

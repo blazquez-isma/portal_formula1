@@ -117,6 +117,12 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/login?logout")
+    public String logout() {
+        return "login";
+    }
+
+
     private void generateToken(HttpServletResponse response, UserDetails userDetails) {
         String token = jwtTokenUtil.generateToken(userDetails);
         response.setHeader("Authorization", "Bearer " + token);

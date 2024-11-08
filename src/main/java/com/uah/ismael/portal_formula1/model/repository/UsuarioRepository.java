@@ -18,6 +18,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Usuario findByNombreUsuario(String nombreUsuario);
 
     // findByActivo
-    @Query("SELECT u FROM Usuario u WHERE u.activo = true")
-    List<Usuario> findByActivo();
+    @Query("SELECT u FROM Usuario u WHERE u.activo = :activo")
+    List<Usuario> findByActivo(boolean activo);
 }

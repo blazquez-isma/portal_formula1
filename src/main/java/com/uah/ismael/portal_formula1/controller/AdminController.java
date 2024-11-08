@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -28,16 +29,30 @@ public class AdminController {
         return "admin/admin_home";
     }
 
-    @GetMapping("/admin/activate_users")
-    public String showUsersToValidate(Model model) {
-        List<UsuarioDTO> usuariosNoActivos = usuarioService.getUsuariosNoActivos();
-        model.addAttribute("usuariosNoActivos", usuariosNoActivos);
-        return "admin/activate_users";
+    @GetMapping("/admin/show_users")
+    public String showAllUsers(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = auth.getName();
+
+        List<UsuarioDTO> allUsers = usuarioService.getAllUsuarios();
+        List<UsuarioDTO> filteredUsers = allUsers.stream()
+                .filter(user -> !user.getNombreUsuario().equals(currentUsername))
+                .collect(Collectors.toList());
+
+        model.addAttribute("allUsers", filteredUsers);
+        return "admin/show_users";
     }
 
     @PostMapping("/admin/activate_user")
     public String validateUser(@RequestParam("userId") Long userId) {
         usuarioService.activateUser(userId);
-        return "redirect:/admin/activate_users";
+        return "redirect:/admin/show_users";
     }
+
+    @PostMapping("/admin/delete_user")
+    public String deleteUser(@RequestParam("userId") Long userId) {
+        usuarioService.deleteUser(userId);
+        return "redirect:/admin/show_users";
+    }
+
 }
