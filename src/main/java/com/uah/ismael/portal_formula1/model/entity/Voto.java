@@ -1,26 +1,40 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(name = "voto")
 public class Voto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 255)
+    @NotNull
     @Column(name = "nombreVotante", nullable = false)
     private String nombreVotante;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pilotoID", nullable = false)
-    private Piloto piloto;
+    private Piloto pilotoID;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "votacionID", nullable = false)
-    private Votacion votacion;
+    private Votacion votacionID;
 
     public Long getId() {
         return id;
@@ -46,19 +60,20 @@ public class Voto {
         this.email = email;
     }
 
-    public Piloto getPiloto() {
-        return piloto;
+    public Piloto getPilotoID() {
+        return pilotoID;
     }
 
-    public void setPiloto(Piloto piloto) {
-        this.piloto = piloto;
+    public void setPilotoID(Piloto pilotoID) {
+        this.pilotoID = pilotoID;
     }
 
-    public Votacion getVotacion() {
-        return votacion;
+    public Votacion getVotacionID() {
+        return votacionID;
     }
 
-    public void setVotacion(Votacion votacion) {
-        this.votacion = votacion;
+    public void setVotacionID(Votacion votacionID) {
+        this.votacionID = votacionID;
     }
+
 }

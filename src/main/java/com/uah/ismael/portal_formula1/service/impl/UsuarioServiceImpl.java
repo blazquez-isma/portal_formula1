@@ -38,6 +38,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     @Override
     public void addUsuario(UsuarioNuevoDTO usuarioDTO) {
         LOG.debug("USER: " + usuarioDTO);
@@ -57,11 +58,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena()));
         Rol rol = rolRepository.findById(usuarioDTO.getRolLeido())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid role ID"));
-        usuario.setRoles(new HashSet<>());
-        usuario.getRoles().add(rol);
+        usuario.setRols(new HashSet<>());
+        usuario.getRols().add(rol);
         usuario.setActivo(false);
 
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void borrarUsuario(Long userId) {
+        usuarioRepository.deleteById(userId);
     }
 
     @Override
@@ -72,23 +78,58 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public List<UsuarioDTO> getUsuariosNoActivos() {
-        return usuarioRepository.findByActivo(false).stream()
+    public List<UsuarioDTO> getUsuariosByActivo(boolean activo) {
+        return usuarioRepository.findByActivo(activo).stream()
                 .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void activateUser(Long userId) {
+    public UsuarioDTO getUsuarioById(Long userId) {
+        return usuarioRepository.findById(userId)
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .orElse(null);
+    }
+
+    @Override
+    public UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario) {
+        Usuario user = usuarioRepository.findByNombreUsuario(nombreUsuario);
+        return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
+    }
+
+    @Override
+    public UsuarioDTO getUsuarioByEmail(String email) {
+        Usuario user = usuarioRepository.findByEmail(email);
+        return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
+    }
+
+    @Override
+    public List<UsuarioDTO> getUsuariosByRolName(String rol) {
+        Rol role = rolRepository.findByNombre(rol);
+        if (role != null) {
+            return usuarioRepository.findByRolsNombre(role.getNombre()).stream()
+                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                    .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<UsuarioDTO> getUsuariosByRolId(Long rolId) {
+        Rol role = rolRepository.findById(rolId).orElse(null);
+        if (role != null) {
+            return usuarioRepository.findByRolsNombre(role.getNombre()).stream()
+                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                    .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    @Override
+    public void activarUsuario(Long userId) {
         Usuario usuario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         usuario.setActivo(true);
         usuarioRepository.save(usuario);
     }
-
-    @Override
-    public void deleteUser(Long userId) {
-        usuarioRepository.deleteById(userId);
-    }
-
 }

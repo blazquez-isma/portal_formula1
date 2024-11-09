@@ -29,7 +29,6 @@ public class RolServiceImpl implements RolService {
     @Override
     public List<RolDTO> getAllRoles() {
         List<Rol> roles = rolRepository.findAll();
-        LOG.debug(roles.size() + " roles found");
         return roles.stream().map(rol -> modelMapper.map(rol, RolDTO.class)).collect(Collectors.toList());
     }
 }

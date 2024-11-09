@@ -1,6 +1,5 @@
 package com.uah.ismael.portal_formula1.dto;
 
-import com.uah.ismael.portal_formula1.model.entity.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,7 +24,7 @@ public class UsuarioDTO {
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
 
-    private Set<Rol> roles;
+    private Set<RolDTO> roles;
 
     private boolean activo = false;
 
@@ -69,11 +68,11 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public Set<Rol> getRoles() {
+    public Set<RolDTO> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Rol> roles) {
+    public void setRoles(Set<RolDTO> roles) {
         this.roles = roles;
     }
 

@@ -1,30 +1,42 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(name = "simulacion")
 public class Simulacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "tipo", nullable = false)
     private String tipo;
 
-    @Column(nullable = false)
-    private float resultado;
+    @NotNull
+    @Column(name = "resultado", nullable = false)
+    private Float resultado;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "cocheID")
-    private Coche coche;
+    private Coche cocheID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "circuitoID")
-    private Circuito circuito;
+    private Circuito circuitoID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "responsableID")
-    private Usuario responsable;
+    private Usuario responsableID;
 
     public Long getId() {
         return id;
@@ -42,35 +54,36 @@ public class Simulacion {
         this.tipo = tipo;
     }
 
-    public float getResultado() {
+    public Float getResultado() {
         return resultado;
     }
 
-    public void setResultado(float resultado) {
+    public void setResultado(Float resultado) {
         this.resultado = resultado;
     }
 
-    public Coche getCoche() {
-        return coche;
+    public Coche getCocheID() {
+        return cocheID;
     }
 
-    public void setCoche(Coche coche) {
-        this.coche = coche;
+    public void setCocheID(Coche cocheID) {
+        this.cocheID = cocheID;
     }
 
-    public Circuito getCircuito() {
-        return circuito;
+    public Circuito getCircuitoID() {
+        return circuitoID;
     }
 
-    public void setCircuito(Circuito circuito) {
-        this.circuito = circuito;
+    public void setCircuitoID(Circuito circuitoID) {
+        this.circuitoID = circuitoID;
     }
 
-    public Usuario getResponsable() {
-        return responsable;
+    public Usuario getResponsableID() {
+        return responsableID;
     }
 
-    public void setResponsable(Usuario responsable) {
-        this.responsable = responsable;
+    public void setResponsableID(Usuario responsableID) {
+        this.responsableID = responsableID;
     }
+
 }

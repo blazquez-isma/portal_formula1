@@ -1,27 +1,42 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(name = "noticia")
 public class Noticia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "permalink", nullable = false)
     private String permalink;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "titulo", nullable = false)
     private String titulo;
 
+    @Size(max = 255)
+    @Column(name = "imagen")
     private String imagen;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "texto", nullable = false)
     private String texto;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "administradorID")
-    private Usuario administrador;
+    private Usuario administradorID;
 
     public Long getId() {
         return id;
@@ -63,12 +78,12 @@ public class Noticia {
         this.texto = texto;
     }
 
-    public Usuario getAdministrador() {
-        return administrador;
+    public Usuario getAdministradorID() {
+        return administradorID;
     }
 
-    public void setAdministrador(Usuario administrador) {
-        this.administrador = administrador;
+    public void setAdministradorID(Usuario administradorID) {
+        this.administradorID = administradorID;
     }
+
 }
-

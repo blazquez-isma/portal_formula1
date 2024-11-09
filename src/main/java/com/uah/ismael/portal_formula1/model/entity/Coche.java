@@ -1,32 +1,47 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(name = "coche")
 public class Coche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "codigo", nullable = false)
     private String codigo;
 
+    @NotNull
     @Column(name = "ERS_curvaLenta", nullable = false)
-    private float ERS_curvaLenta;
+    private Float ersCurvalenta;
 
+    @NotNull
     @Column(name = "ERS_curvaMedia", nullable = false)
-    private float ERS_curvaMedia;
+    private Float ersCurvamedia;
 
+    @NotNull
     @Column(name = "ERS_curvaRapida", nullable = false)
-    private float ERS_curvaRapida;
+    private Float ersCurvarapida;
 
-    @Column(nullable = false)
-    private float consumo;
+    @NotNull
+    @Column(name = "consumo", nullable = false)
+    private Float consumo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "equipoID")
     private Equipo equipo;
 
@@ -54,35 +69,35 @@ public class Coche {
         this.codigo = codigo;
     }
 
-    public float getERS_curvaLenta() {
-        return ERS_curvaLenta;
+    public Float getErsCurvalenta() {
+        return ersCurvalenta;
     }
 
-    public void setERS_curvaLenta(float ERS_curvaLenta) {
-        this.ERS_curvaLenta = ERS_curvaLenta;
+    public void setErsCurvalenta(Float ersCurvalenta) {
+        this.ersCurvalenta = ersCurvalenta;
     }
 
-    public float getERS_curvaMedia() {
-        return ERS_curvaMedia;
+    public Float getErsCurvamedia() {
+        return ersCurvamedia;
     }
 
-    public void setERS_curvaMedia(float ERS_curvaMedia) {
-        this.ERS_curvaMedia = ERS_curvaMedia;
+    public void setErsCurvamedia(Float ersCurvamedia) {
+        this.ersCurvamedia = ersCurvamedia;
     }
 
-    public float getERS_curvaRapida() {
-        return ERS_curvaRapida;
+    public Float getErsCurvarapida() {
+        return ersCurvarapida;
     }
 
-    public void setERS_curvaRapida(float ERS_curvaRapida) {
-        this.ERS_curvaRapida = ERS_curvaRapida;
+    public void setErsCurvarapida(Float ersCurvarapida) {
+        this.ersCurvarapida = ersCurvarapida;
     }
 
-    public float getConsumo() {
+    public Float getConsumo() {
         return consumo;
     }
 
-    public void setConsumo(float consumo) {
+    public void setConsumo(Float consumo) {
         this.consumo = consumo;
     }
 
@@ -90,7 +105,8 @@ public class Coche {
         return equipo;
     }
 
-    public void setEquipo(Equipo equipo) {
-        this.equipo = equipo;
+    public void setEquipo(Equipo equipoID) {
+        this.equipo = equipoID;
     }
+
 }

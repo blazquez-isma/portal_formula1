@@ -1,26 +1,47 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "votacion")
 public class Votacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "permalink", nullable = false)
     private String permalink;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "titulo", nullable = false)
     private String titulo;
 
-    @Column(length = 500)
+    @Size(max = 500)
+    @Column(name = "descripcion", length = 500)
     private String descripcion;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
     @Column(name = "fechaLimite", nullable = false)
-    private Date fechaLimite;
+    private Instant fechaLimite;
+
+    @ManyToMany
+    @JoinTable(name = "piloto_votacion",
+            joinColumns = @JoinColumn(name = "votacionID"),
+            inverseJoinColumns = @JoinColumn(name = "pilotoID"))
+    private Set<Piloto> pilotos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "votacionID")
+    private Set<Voto> votos = new LinkedHashSet<>();
 
     public Long getId() {
         return id;
@@ -54,11 +75,28 @@ public class Votacion {
         this.descripcion = descripcion;
     }
 
-    public Date getFechaLimite() {
+    public Instant getFechaLimite() {
         return fechaLimite;
     }
 
-    public void setFechaLimite(Date fechaLimite) {
+    public void setFechaLimite(Instant fechaLimite) {
         this.fechaLimite = fechaLimite;
     }
+
+    public Set<Piloto> getPilotos() {
+        return pilotos;
+    }
+
+    public void setPilotos(Set<Piloto> pilotos) {
+        this.pilotos = pilotos;
+    }
+
+    public Set<Voto> getVotos() {
+        return votos;
+    }
+
+    public void setVotos(Set<Voto> votos) {
+        this.votos = votos;
+    }
+
 }

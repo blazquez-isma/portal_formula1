@@ -14,10 +14,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM Usuario u WHERE u.email = :email")
     boolean existsByEmail(@Param("email") String email);
 
-//    @Query("SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsuario")
     Usuario findByNombreUsuario(String nombreUsuario);
 
-    // findByActivo
-    @Query("SELECT u FROM Usuario u WHERE u.activo = :activo")
+    Usuario findByEmail(String email);
+
+    List<Usuario> findByRolsNombre(String nombre);
+
     List<Usuario> findByActivo(boolean activo);
+
+
 }
