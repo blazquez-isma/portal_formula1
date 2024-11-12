@@ -31,7 +31,7 @@ public class Equipo {
     @OneToMany(mappedBy = "equipo")
     private Set<Coche> coches = new LinkedHashSet<>();
 
-    @ManyToMany(mappedBy = "equipo")
+    @OneToMany(mappedBy = "equipo")
     private Set<Usuario> usuarios = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "equipo")

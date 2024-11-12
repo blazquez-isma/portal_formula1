@@ -1,37 +1,14 @@
-<!-- src/main/resources/templates/validate_users.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Mostrar Usuarios</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/f1-styles.css}">
-    <style>
-        .confirm-button {
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            display: none;
-        }
-        .cancel-button {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
     <script>
         function confirmDelete(userId) {
             var deleteButton = document.getElementById('deleteButton-' + userId);
             var confirmButton = document.getElementById('confirmButton-' + userId);
             var cancelButton = document.getElementById('cancelButton-' + userId);
-
-            console.log('deleteButton:', deleteButton);
-            console.log('confirmButton:', confirmButton);
-            console.log('cancelButton:', cancelButton);
 
             if (deleteButton && confirmButton && cancelButton) {
                 deleteButton.style.display = 'none';
@@ -47,10 +24,6 @@
             var confirmButton = document.getElementById('confirmButton-' + userId);
             var cancelButton = document.getElementById('cancelButton-' + userId);
 
-            console.log('deleteButton:', deleteButton);
-            console.log('confirmButton:', confirmButton);
-            console.log('cancelButton:', cancelButton);
-
             if (deleteButton && confirmButton && cancelButton) {
                 deleteButton.style.display = 'inline';
                 confirmButton.style.display = 'none';
@@ -59,83 +32,131 @@
                 console.error('Element not found for userId:', userId);
             }
         }
+
+        function sortTable(column) {
+            const table = document.querySelector('table tbody');
+            const rows = Array.from(table.rows);
+            const isDescending = table.getAttribute('data-sort-order') === 'desc';
+            const newOrder = isDescending ? 'asc' : 'desc';
+
+            rows.sort((a, b) => {
+                const aText = a.querySelector(`[data-column="${column}"]`).textContent.trim();
+                const bText = b.querySelector(`[data-column="${column}"]`).textContent.trim();
+
+                if (aText < bText) return isDescending ? 1 : -1;
+                if (aText > bText) return isDescending ? -1 : 1;
+                return 0;
+            });
+
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
+            table.setAttribute('data-sort-order', newOrder);
+        }
     </script>
 </head>
 <body>
-    <div class="header">
+<div class="container">
+    <div class="header text-center my-4">
         <div class="logo-container">
             <a href="/" th:href="@{/}">
-                <img src="/images/logo.png" alt="Logo" class="logo">
+                <img src="/images/logo.png" alt="Logo" class="logo img-fluid">
             </a>
-<!--            <h1>Administrador <span class="margen" th:text="${nombreUsuario}"></span></h1>-->
             <h1>Usuarios</h1>
         </div>
     </div>
-    <nav>
-        <ul>
-            <li><a th:href="@{/admin/show_users}">Usuarios</a></li>
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Noticias</a>
-                <div class="dropdown-content">
-                    <a>Ver Noticias</a>
-                    <a>Crear Noticia</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/show_users}">Usuarios</a></li>
+            <li class="nav-item dropdown">
+                <a href="javascript:void(0)" class="nav-link dropdown-toggle" data-toggle="dropdown">Noticias</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item">Ver Noticias</a>
+                    <a class="dropdown-item">Crear Noticia</a>
                 </div>
             </li>
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Votaciones</a>
-                <div class="dropdown-content">
-                    <a th:href="@{/admin/activate_users}">Ver Votaciones</a>
-                    <a th:href="@{/admin/delete_users}">Crear Votación</a>
+            <li class="nav-item dropdown">
+                <a href="javascript:void(0)" class="nav-link dropdown-toggle" data-toggle="dropdown">Votaciones</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" th:href="@{/admin/activate_users}">Ver Votaciones</a>
+                    <a class="dropdown-item" th:href="@{/admin/delete_users}">Crear Votación</a>
                 </div>
             </li>
-            <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Cerrar Sesión</a></li>
         </ul>
     </nav>
-    <div class="container">
-        <table>
+    <div class="container my-4">
+        <table class="table table-striped">
             <thead>
             <tr>
-                <th>Nombre de Usuario</th>
-                <th>Roles</th>
-                <th>Estado</th>
+                <th>
+                    <a th:href="@{/admin/show_users(page=${currentPage}, size=${userPage.size}, sortField='nombreUsuario', sortDir=${sortField == 'nombreUsuario' ? reverseSortDir : 'asc'})}">
+                        Nombre de Usuario
+                        <span th:if="${sortField == 'nombreUsuario'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/admin/show_users(page=${currentPage}, size=${userPage.size}, sortField='rols', sortDir=${sortField == 'rols' ? reverseSortDir : 'asc'})}">
+                        Roles
+                        <span th:if="${sortField == 'rols'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/admin/show_users(page=${currentPage}, size=${userPage.size}, sortField='activo', sortDir=${sortField == 'activo' ? reverseSortDir : 'asc'})}">
+                        Estado
+                        <span th:if="${sortField == 'activo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
                 <th>Acción</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="usuario : ${allUsers}">
-                <td th:text="${usuario.nombreUsuario}"></td>
-<!--                <td th:text="${usuario.roles.iterator().next().nombre}"></td>-->
-<!--                <td>-->
-<!--                    <ul>-->
-<!--                        <li th:each="role : ${usuario.roles}" th:text="${role.nombre}"></li>-->
-<!--                    </ul>-->
-<!--                </td>-->
-                <td>
-                    <span th:each="rol : ${usuario.roles}" th:text="${rol.nombre} + ' '"></span>
+            <tr th:each="usuario : ${userPage.content}">
+                <td data-column="nombreUsuario" th:text="${usuario.nombreUsuario}"></td>
+                <td data-column="roles">
+                    <span th:each="rol : ${usuario.rols}" th:text="${rol.nombre} + ' '"></span>
                 </td>
-                <td th:text="${usuario.activo ? 'Activo' : 'No Activo'}" th:style="${usuario.activo ? 'color: green;' : 'color: red;'}"></td>
+                <td data-column="estado" th:text="${usuario.activo ? 'Activo' : 'No Activo'}" th:style="${usuario.activo ? 'color: green;' : 'color: red;'}"></td>
                 <td>
                     <form th:action="@{/admin/activate_user}" method="post" style="display:inline;" th:if="${!usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
-                        <button type="submit">Activar</button>
+                        <button type="submit" class="btn btn-success">Activar</button>
                     </form>
                     <form th:action="@{/admin/delete_user}" method="post" style="display:inline;" th:if="${!usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
-                        <button type="submit">Rechazar</button>
+                        <button type="submit" class="btn btn-danger">Rechazar</button>
                     </form>
                     <form th:action="@{/admin/delete_user}" method="post" th:id="'deleteForm-' + ${usuario.id}" style="display:inline;" th:if="${usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
-                        <button type="button" th:id="'deleteButton-' + ${usuario.id}" th:onclick="'confirmDelete(' + ${usuario.id} + ')'">Eliminar</button>
-                        <button type="button" th:id="'confirmButton-' + ${usuario.id}" class="confirm-button" th:onclick="'document.getElementById(\'deleteForm-' + ${usuario.id} + '\').submit()'">Confirmar</button>
-                        <button type="button" th:id="'cancelButton-' + ${usuario.id}" class="cancel-button" th:onclick="'cancelDelete(' + ${usuario.id} + ')'">Cancelar</button>
+                        <button type="button" th:id="'deleteButton-' + ${usuario.id}" class="btn btn-warning" th:onclick="'confirmDelete(' + ${usuario.id} + ')'">Eliminar</button>
+                        <button type="button" th:id="'confirmButton-' + ${usuario.id}" class="confirm-button btn btn-danger" th:onclick="'document.getElementById(\'deleteForm-' + ${usuario.id} + '\').submit()'" style="display:none;">Confirmar</button>
+                        <button type="button" th:id="'cancelButton-' + ${usuario.id}" class="cancel-button btn btn-secondary" th:onclick="'cancelDelete(' + ${usuario.id} + ')'" style="display:none;">Cancelar</button>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/show_users(page=${currentPage - 1}, size=${userPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/show_users(page=${i}, size=${userPage.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/show_users(page=${currentPage + 1}, size=${userPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
-    <div class="footer">
+    <div class="footer text-center mt-4">
         <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
     </div>
+</div>
+<script th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

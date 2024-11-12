@@ -1,5 +1,6 @@
 package com.uah.ismael.portal_formula1.service.impl;
 
+import com.uah.ismael.portal_formula1.dto.RolDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Rol;
@@ -11,9 +12,16 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,58 +79,21 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public List<UsuarioDTO> getAllUsuarios() {
-        return usuarioRepository.findAll().stream()
+    public Page<UsuarioDTO> getAllUsuarios(Pageable pageable) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = auth.getName();
+
+        List<UsuarioDTO> usuarios = usuarioRepository.findAll().stream()
                 .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                .collect(Collectors.toList());
-    }
+                //.filter(user -> !user.getNombreUsuario().equals(currentUsername))
+                .peek(user -> user.getRols().forEach(rol -> rol.setNombre(rol.getNombre().replace("ROLE_", ""))))
+                .sorted(getUsuarioComparator(pageable)).collect(Collectors.toList())
+                ;
 
-    @Override
-    public List<UsuarioDTO> getUsuariosByActivo(boolean activo) {
-        return usuarioRepository.findByActivo(activo).stream()
-                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                .collect(Collectors.toList());
-    }
+        int start = Math.min((int) pageable.getOffset(), usuarios.size());
+        int end = Math.min((start + pageable.getPageSize()), usuarios.size());
 
-    @Override
-    public UsuarioDTO getUsuarioById(Long userId) {
-        return usuarioRepository.findById(userId)
-                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                .orElse(null);
-    }
-
-    @Override
-    public UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario) {
-        Usuario user = usuarioRepository.findByNombreUsuario(nombreUsuario);
-        return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
-    }
-
-    @Override
-    public UsuarioDTO getUsuarioByEmail(String email) {
-        Usuario user = usuarioRepository.findByEmail(email);
-        return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
-    }
-
-    @Override
-    public List<UsuarioDTO> getUsuariosByRolName(String rol) {
-        Rol role = rolRepository.findByNombre(rol);
-        if (role != null) {
-            return usuarioRepository.findByRolsNombre(role.getNombre()).stream()
-                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                    .collect(Collectors.toList());
-        }
-        return List.of();
-    }
-
-    @Override
-    public List<UsuarioDTO> getUsuariosByRolId(Long rolId) {
-        Rol role = rolRepository.findById(rolId).orElse(null);
-        if (role != null) {
-            return usuarioRepository.findByRolsNombre(role.getNombre()).stream()
-                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                    .collect(Collectors.toList());
-        }
-        return List.of();
+        return new PageImpl<>(usuarios.subList(start, end), pageable, usuarios.size());
     }
 
     @Override
@@ -131,5 +102,71 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         usuario.setActivo(true);
         usuarioRepository.save(usuario);
+    }
+
+    //
+//    @Override
+//    public List<UsuarioDTO> getUsuariosByActivo(boolean activo) {
+//        return usuarioRepository.findByActivo(activo).stream()
+//                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public UsuarioDTO getUsuarioById(Long userId) {
+//        return usuarioRepository.findById(userId)
+//                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+//                .orElse(null);
+//    }
+//
+//    @Override
+//    public UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario) {
+//        Usuario user = usuarioRepository.findByNombreUsuario(nombreUsuario);
+//        return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
+//    }
+//
+//    @Override
+//    public UsuarioDTO getUsuarioByEmail(String email) {
+//        Usuario user = usuarioRepository.findByEmail(email);
+//        return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
+//    }
+//
+//    @Override
+//    public List<UsuarioDTO> getUsuariosByRolName(String rolName) {
+//        if (rolName != null) {
+//            return usuarioRepository.findByRolsNombre(rolName).stream()
+//                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+//                    .collect(Collectors.toList());
+//        }
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<UsuarioDTO> getUsuariosByRolId(Long rolId) {
+//        if (rolId != null) {
+//            return usuarioRepository.findByRolsId(rolId).stream()
+//                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+//                    .collect(Collectors.toList())
+//                    ;
+//        }
+//        return List.of();
+//    }
+
+
+    private static Comparator<UsuarioDTO> getUsuarioComparator(Pageable pageable) {
+        // Ordenar la lista
+        Sort.Order order = pageable.getSort().iterator().next();
+        Comparator<UsuarioDTO> comparator = Comparator.comparing(usuarioDTO -> {
+            return switch (order.getProperty()) {
+                case "rols" -> usuarioDTO.getRols().stream().map(RolDTO::getNombre).collect(Collectors.joining(", "));
+                case "activo" -> usuarioDTO.isActivo() ? "Activo" : "No Activo";
+                default -> usuarioDTO.getNombreUsuario();
+            };
+        });
+
+        if (order.getDirection() == Sort.Direction.DESC) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 }

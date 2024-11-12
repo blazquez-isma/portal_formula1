@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Responsable de Equipo Home</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/f1-styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-<div class="header">
-    <div class="logo-container">
-        <a href="/" th:href="@{/}">
-            <img src="/images/logo.png" alt="Logo" class="logo">
-        </a>
-        <h1>Responsable de Equipo <span class="margen" th:text="${nombreUsuario}"></span></h1>
+<div class="container">
+    <div class="header text-center my-4">
+        <div class="logo-container">
+            <a href="/" th:href="@{/}">
+                <img src="/images/logo.png" alt="Logo" class="logo img-fluid">
+            </a>
+            <h1>Responsable de Equipo <span class="margen" th:text="${nombreUsuario}"></span></h1>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/noticias}">Noticias</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/votaciones}">Votaciones</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Iniciar Sesión</a></li>
+        </ul>
+    </nav>
+    <div class="container my-4">
+        <!-- Contenido adicional aquí -->
+    </div>
+    <div class="footer text-center mt-4">
+        <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
     </div>
 </div>
-<nav>
-    <ul>
-        <li><a th:href="@{/noticias}">Noticias</a></li>
-        <li><a th:href="@{/votaciones}">Votaciones</a></li>
-        <li><a th:href="@{/logout}">Iniciar Sesión</a></li>
-    </ul>
-</nav>
-
-<div class="footer">
-    <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
-</div>
+<script th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

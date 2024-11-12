@@ -49,7 +49,7 @@ public class UsuarioController {
     public String showRegistrationForm(Model model) {
         model.addAttribute("usuario", new UsuarioNuevoDTO());
         model.addAttribute("roles", rolService.getAllRoles());
-        return "register/register";
+        return "/register";
     }
 
     @PostMapping("/register")
@@ -59,23 +59,23 @@ public class UsuarioController {
             usuarioService.addUsuario(usuarioDTO);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/register/register_error";
+            return "redirect:/register";
         }
-        redirectAttributes.addFlashAttribute("nombreUsuario", usuarioDTO.getNombreUsuario());
-        return "redirect:/register/register_success";
+        redirectAttributes.addFlashAttribute("success", usuarioDTO.getNombreUsuario() + " añadido con éxito");
+        return "redirect:/register";
     }
 
-    @GetMapping("/register/register_success")
-    public String showSuccessPage(@ModelAttribute("nombreUsuario") String nombreUsuario, Model model) {
-        model.addAttribute("nombreUsuario", nombreUsuario);
-        return "register/register_success";
-    }
-
-    @GetMapping("/register/register_error")
-    public String showErrorPage(@ModelAttribute("error") String error, Model model) {
-        model.addAttribute("error", error);
-        return "register/register_error";
-    }
+//    @GetMapping("/register/register_success")
+//    public String showSuccessPage(@ModelAttribute("nombreUsuario") String nombreUsuario, Model model) {
+//        model.addAttribute("nombreUsuario", nombreUsuario);
+//        return "register/register_success";
+//    }
+//
+//    @GetMapping("/register/register_error")
+//    public String showErrorPage(@ModelAttribute("error") String error, Model model) {
+//        model.addAttribute("error", error);
+//        return "register/register_error";
+//    }
 
     @GetMapping("/login")
     public String showLogin(Model model, @ModelAttribute("error") String error) {

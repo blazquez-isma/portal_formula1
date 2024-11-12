@@ -43,8 +43,8 @@ public class Usuario {
 
     @ManyToMany
     @JoinTable(name = "usuario_roles",
-            joinColumns = @JoinColumn(name = "usuarioID"),
-            inverseJoinColumns = @JoinColumn(name = "rolID"))
+            joinColumns = @JoinColumn(name = "usuarioID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)),
+            inverseJoinColumns = @JoinColumn(name = "rolID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)))
     private Set<Rol> rols = new LinkedHashSet<>();
 
     @ManyToOne

@@ -24,7 +24,7 @@ public class UsuarioDTO {
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
 
-    private Set<RolDTO> roles;
+    private Set<RolDTO> rols;
 
     private boolean activo = false;
 
@@ -68,12 +68,12 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public Set<RolDTO> getRoles() {
-        return roles;
+    public Set<RolDTO> getRols() {
+        return rols;
     }
 
-    public void setRoles(Set<RolDTO> roles) {
-        this.roles = roles;
+    public void setRols(Set<RolDTO> roles) {
+        this.rols = roles;
     }
 
     public boolean isActivo() {
@@ -92,7 +92,7 @@ public class UsuarioDTO {
                 ", nombreUsuario=" + nombreUsuario +
                 ", email=" + email +
                 ", contrasena=" + contrasena +
-                ", roles=" + roles +
+                ", roles=" + rols +
                 ", activo=" + activo
                 + '}';
     }
