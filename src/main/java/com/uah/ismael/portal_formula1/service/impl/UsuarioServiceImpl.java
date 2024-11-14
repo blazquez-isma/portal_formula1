@@ -1,6 +1,5 @@
 package com.uah.ismael.portal_formula1.service.impl;
 
-import com.uah.ismael.portal_formula1.dto.RolDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Rol;
@@ -15,13 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,7 +84,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
                 //.filter(user -> !user.getNombreUsuario().equals(currentUsername))
                 .peek(user -> user.getRols().forEach(rol -> rol.setNombre(rol.getNombre().replace("ROLE_", ""))))
-                .sorted(getUsuarioComparator(pageable)).collect(Collectors.toList())
+                .sorted(UsuarioDTO.getUsuarioPageableComparator(pageable)).collect(Collectors.toList())
                 ;
 
         int start = Math.min((int) pageable.getOffset(), usuarios.size());
@@ -152,21 +149,4 @@ public class UsuarioServiceImpl implements UsuarioService {
 //        return List.of();
 //    }
 
-
-    private static Comparator<UsuarioDTO> getUsuarioComparator(Pageable pageable) {
-        // Ordenar la lista
-        Sort.Order order = pageable.getSort().iterator().next();
-        Comparator<UsuarioDTO> comparator = Comparator.comparing(usuarioDTO -> {
-            return switch (order.getProperty()) {
-                case "rols" -> usuarioDTO.getRols().stream().map(RolDTO::getNombre).collect(Collectors.joining(", "));
-                case "activo" -> usuarioDTO.isActivo() ? "Activo" : "No Activo";
-                default -> usuarioDTO.getNombreUsuario();
-            };
-        });
-
-        if (order.getDirection() == Sort.Direction.DESC) {
-            comparator = comparator.reversed();
-        }
-        return comparator;
-    }
 }

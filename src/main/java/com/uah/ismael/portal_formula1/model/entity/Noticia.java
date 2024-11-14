@@ -16,12 +16,12 @@ public class Noticia {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "permalink", nullable = false)
+    @Column(name = "permalink", nullable = false, unique = true)
     private String permalink;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = false, unique = true)
     private String titulo;
 
     @Size(max = 255)
@@ -36,7 +36,7 @@ public class Noticia {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "administradorID")
-    private Usuario administradorID;
+    private Usuario administrador;
 
     public Long getId() {
         return id;
@@ -78,12 +78,12 @@ public class Noticia {
         this.texto = texto;
     }
 
-    public Usuario getAdministradorID() {
-        return administradorID;
+    public Usuario getAdministrador() {
+        return administrador;
     }
 
-    public void setAdministradorID(Usuario administradorID) {
-        this.administradorID = administradorID;
+    public void setAdministrador(Usuario administradorID) {
+        this.administrador = administradorID;
     }
 
 }

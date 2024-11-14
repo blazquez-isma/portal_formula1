@@ -3,8 +3,12 @@ package com.uah.ismael.portal_formula1.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UsuarioDTO {
 
@@ -95,6 +99,23 @@ public class UsuarioDTO {
                 ", roles=" + rols +
                 ", activo=" + activo
                 + '}';
+    }
+
+    public static Comparator<UsuarioDTO> getUsuarioPageableComparator(Pageable pageable) {
+        // Ordenar la lista
+        Sort.Order order = pageable.getSort().iterator().next();
+        Comparator<UsuarioDTO> comparator = Comparator.comparing(usuarioDTO -> {
+            return switch (order.getProperty()) {
+                case "rols" -> usuarioDTO.getRols().stream().map(RolDTO::getNombre).sorted().collect(Collectors.joining(", "));
+                case "activo" -> usuarioDTO.isActivo() ? "Activo" : "No Activo";
+                default -> usuarioDTO.getNombreUsuario();
+            };
+        });
+
+        if (order.getDirection() == Sort.Direction.DESC) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 
 }
