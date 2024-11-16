@@ -1,5 +1,6 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,12 +30,15 @@ public class Equipo {
     private String twitter;
 
     @OneToMany(mappedBy = "equipo")
+    @JsonIgnoreProperties("equipo")
     private Set<Coche> coches = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "equipo")
+    @JsonIgnoreProperties("equipo")
     private Set<Usuario> usuarios = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "equipo")
+    @JsonIgnoreProperties("equipo")
     private Set<Piloto> pilotos = new LinkedHashSet<>();
 
     public Long getId() {

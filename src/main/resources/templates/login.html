@@ -7,14 +7,8 @@
 </head>
 <body>
 <div class="container">
-    <div class="header text-center my-4">
-        <div class="logo-container">
-            <a href="/" th:href="@{/}">
-                <img src="/images/logo.png" alt="Logo" class="logo img-fluid">
-            </a>
-            <h1>Iniciar Sesión</h1>
-        </div>
-    </div>
+    <div th:replace="~{fragmentos/unloguedMenu :: menu('Iniciar Sesión ', '')}"></div>
+
     <div class="form-container">
         <form th:action="@{/login}" method="post" class="needs-validation" novalidate>
             <div class="form-group">
@@ -34,10 +28,11 @@
             </div>
         </form>
     </div>
-    <div class="footer text-center mt-4">
-        <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
-    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>
+<script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

@@ -7,32 +7,19 @@
 </head>
 <body>
 <div class="container">
-    <div class="header text-center my-4">
-        <div class="logo-container">
-            <a href="/" th:href="@{/}">
-                <img src="/images/logo.png" alt="Logo" class="logo img-fluid">
-            </a>
-            <h1>Bienvenido a la Página de Inicio</h1>
-        </div>
-    </div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item"><a class="nav-link" th:href="@{/register}">Registrarse</a></li>
-            <li class="nav-item"><a class="nav-link" th:href="@{/login}">Iniciar Sesión</a></li>
-            <li class="nav-item"><a class="nav-link" th:href="@{/noticias}">Noticias</a></li>
-            <li class="nav-item"><a class="nav-link" th:href="@{/votaciones}">Votaciones</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{fragmentos/unloguedMenu :: menu('Bienvenido a la Página de Inicio ', '')}"></div>
+
     <div class="container my-4">
         <div class="sketchfab-embed-wrapper">
             <iframe title="Ferrari 248 (2006)" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share width="640" height="480" src="https://sketchfab.com/models/d3162726a0c94d78b5f8ad99dc79a12d/embed?autostart=1&camera=0&preload=1">
             </iframe>
         </div>
     </div>
-    <div class="footer text-center mt-4">
-        <p>&copy; Curso 24/25 Portal Fórmula 1 - Ismael Blázquez</p>
-    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>
+<script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

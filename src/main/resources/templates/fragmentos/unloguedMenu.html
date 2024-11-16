@@ -1,0 +1,47 @@
+<!-- src/main/resources/templates/fragmentos/loguedMenu.html -->
+<div th:fragment="menu(titulo, nombreUsuario)" lang="es"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="header text-center my-4">
+        <h1>
+            <span th:text="${titulo}"></span>
+            <span th:if="${nombreUsuario != ''}" th:text="' ' + ${nombreUsuario}"></span>
+        </h1>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="img-fluid">
+                <a th:href="@{/}">
+                    <img src="/images/logo.png" alt="Logo" class="img-fluid">
+                </a>
+            </div>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/register}">Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/login}">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="noticiasDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Noticias
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="noticiasDropdown">
+                            <a class="dropdown-item" th:href="@{/noticias}">Ver Noticias</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/noticias/crear}">Crear Noticia</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="votacionesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Votaciones
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="votacionesDropdown">
+                            <a class="dropdown-item" th:href="@{/votaciones}">Ver Votaciones</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/votaciones/crear}">Crear Votación</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

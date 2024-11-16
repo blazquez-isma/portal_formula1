@@ -8,8 +8,11 @@ public class Constants {
             "/",
             "/css/**",
             "/images/**",
-            "/login/**",
-            "/register/**"
+            "/js/**",
+            "/index",
+            "/login",
+            "/register",
+            "/fragmentos/**"
     );
 
 }

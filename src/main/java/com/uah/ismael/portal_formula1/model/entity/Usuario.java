@@ -1,5 +1,6 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -49,6 +50,7 @@ public class Usuario {
 
     @ManyToOne
     @JoinColumn(name = "equipoID")
+    @JsonIgnoreProperties("usuarios")
     private Equipo equipo;
 
     public Long getId() {
