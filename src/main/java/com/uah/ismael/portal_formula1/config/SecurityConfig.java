@@ -73,4 +73,5 @@ public class SecurityConfig {
         http.addFilterBefore(jwtCookieFilter, JwtRequestFilter.class);
         return http.build();
     }
+
 }

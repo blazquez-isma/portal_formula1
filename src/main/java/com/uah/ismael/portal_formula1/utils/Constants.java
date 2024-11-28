@@ -9,10 +9,13 @@ public class Constants {
             "/css/**",
             "/images/**",
             "/js/**",
+            "/uploads/**",
             "/index",
             "/login",
             "/register",
-            "/fragmentos/**"
+            "/fragmentos/**",
+            "/noticias/verNoticias",
+            "/noticias/verNoticia/**"
     );
 
 }

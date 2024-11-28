@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class NoticiaServiceImpl implements NoticiaService {
@@ -30,18 +29,20 @@ public class NoticiaServiceImpl implements NoticiaService {
     }
 
     @Override
-    public boolean addNoticia(String titulo, String descripcion, String imagen, String administradorNombreUsuario) {
+    public boolean addNoticia(String titulo, String texto, String imagen, String administradorNombreUsuario) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(administradorNombreUsuario);
         if (usuario != null) {
             Noticia noticia = new Noticia();
             noticia.setTitulo(titulo);
-            noticia.setTexto(descripcion);
+            noticia.setTexto(texto);
             if (imagen != null) {
                 noticia.setImagen(imagen);
             }
-            noticia.setPermalink(generatePermalink(titulo));
             noticia.setAdministrador(usuario);
-            noticiaRepository.save(noticia);
+            Noticia noticiaSave = noticiaRepository.save(noticia);
+
+            noticiaSave.setPermalink(generatePermalinkById(noticiaSave.getId()));
+            noticiaRepository.save(noticiaSave);
             return true;
         }
         return false;
@@ -58,7 +59,7 @@ public class NoticiaServiceImpl implements NoticiaService {
                     return false;
                 }
                 noticiaToUpdate.setTitulo(noticia.getTitulo());
-                noticiaToUpdate.setPermalink(generatePermalink(noticia.getTitulo()));
+                //noticiaToUpdate.setPermalink(generatePermalinkById(noticia.getId()));
             }
             if (noticia.getTexto() != null && !noticiaToUpdate.getTexto().equals(noticia.getTexto())) {
                 noticiaToUpdate.setTexto(noticia.getTexto());
@@ -122,9 +123,22 @@ public class NoticiaServiceImpl implements NoticiaService {
         return new PageImpl<>(noticias.subList(start, end), pageable, noticias.size());
     }
 
-    private String generatePermalink(String titulo) {
-        return titulo.toLowerCase().replaceAll("[^a-z0-9]+", "-");
+    private String generatePermalinkById(Long noticiaId) {
+        String dominio = "http://localhost:8080";
+        return dominio + "/noticias/verNoticia/" + noticiaId;
     }
 
+    @Override
+    public String getNoticiaAnteriorId(Long noticiaId) {
+        return noticiaRepository.findFirstByIdLessThanOrderByIdDesc(noticiaId)
+                .map(Noticia::getPermalink)
+                .orElse(null);
+    }
 
+    @Override
+    public String getNoticiaSiguienteId(Long noticiaId) {
+        return noticiaRepository.findFirstByIdGreaterThanOrderByIdAsc(noticiaId)
+                .map(Noticia::getPermalink)
+                .orElse(null);
+    }
 }

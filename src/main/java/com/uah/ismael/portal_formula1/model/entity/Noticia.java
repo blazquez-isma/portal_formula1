@@ -14,12 +14,12 @@ public class Noticia {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "permalink", nullable = false, unique = true)
+    @Size(max = 100)
+//    @NotNull
+    @Column(name = "permalink", unique = true)
     private String permalink;
 
-    @Size(max = 255)
+    @Size(max = 100)
     @NotNull
     @Column(name = "titulo", nullable = false, unique = true)
     private String titulo;
@@ -28,9 +28,9 @@ public class Noticia {
     @Column(name = "imagen")
     private String imagen;
 
-    @Size(max = 255)
+    @Size(min = 500, max = 2000)
     @NotNull
-    @Column(name = "texto", nullable = false)
+    @Column(name = "texto", nullable = false, length = 2000)
     private String texto;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ver Noticias</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/loguedMenu :: menu('Ver Noticias', '')}"></div>
+    <div class="container">
+        <h1>Información del Usuario</h1>
+        <p>Nombre de usuario: <span sec:authentication="name"></span></p>
+        <p>Roles: <span sec:authentication="principal.authorities"></span></p>
+    </div>
+    <div class="container my-4">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Título</th>
+                <th sec:authorize="hasRole('ROLE_Administrador')">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="noticia : ${noticiasPage.content}">
+                <td><a th:href="${noticia.permalink}" th:text="${noticia.titulo}"></a></td>
+                <td>
+                    <div sec:authorize="hasAuthority('ROLE_Administrador')">
+                        <a th:href="@{/noticias/editarNoticia/{id}(id=${noticia.id})}" class="btn btn-warning">Editar</a>
+                        <form th:action="@{/noticias/borrarNoticia}" method="post" style="display:inline;">
+                            <input type="hidden" th:value="${noticia.id}" name="noticiaId"/>
+                            <button type="submit" class="btn btn-danger">Borrar</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:if="${noticiasPage.totalElements > 0}">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${noticiasPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${noticiasPage.number - 1}, size=${noticiasPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, noticiasPage.totalPages)}" th:classappend="${i == noticiasPage.number + 1} ? 'active'">
+                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${i - 1}, size=${noticiasPage.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${noticiasPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${noticiasPage.number + 1}, size=${noticiasPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

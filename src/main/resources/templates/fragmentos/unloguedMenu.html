@@ -27,8 +27,8 @@
                             Noticias
                         </a>
                         <div class="dropdown-menu" aria-labelledby="noticiasDropdown">
-                            <a class="dropdown-item" th:href="@{/noticias}">Ver Noticias</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/noticias/crear}">Crear Noticia</a>
+                            <a class="dropdown-item" th:href="@{/noticias/verNoticias}">Ver Noticias</a>
+<!--                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/noticias/crear}">Crear Noticia</a>-->
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -37,7 +37,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="votacionesDropdown">
                             <a class="dropdown-item" th:href="@{/votaciones}">Ver Votaciones</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/votaciones/crear}">Crear Votación</a>
+<!--                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/votaciones/crear}">Crear Votación</a>-->
                         </div>
                     </li>
                 </ul>

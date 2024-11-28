@@ -5,6 +5,7 @@ import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
 
@@ -21,4 +22,7 @@ public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
     boolean existsByPermalink(String permalink);
 
     boolean existsByTitulo(String titulo);
+
+    Optional<Noticia> findFirstByIdLessThanOrderByIdDesc(Long id);
+    Optional<Noticia> findFirstByIdGreaterThanOrderByIdAsc(Long id);
 }

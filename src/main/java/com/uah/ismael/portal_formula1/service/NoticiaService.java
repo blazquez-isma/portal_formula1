@@ -18,5 +18,7 @@ public interface NoticiaService {
 
     Page<NoticiaDTO> getNoticiasByAdministradorNombreUsuario(String administradorNombreUsuario, Pageable pageable);
 
+    public String getNoticiaAnteriorId(Long noticiaId);
 
+    public String getNoticiaSiguienteId(Long noticiaId);
 }
