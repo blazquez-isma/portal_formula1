@@ -1,10 +1,11 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -42,16 +43,22 @@ public class Usuario {
     @Column(name = "activo", nullable = false)
     private Boolean activo = false;
 
-    @ManyToMany
-    @JoinTable(name = "usuario_roles",
-            joinColumns = @JoinColumn(name = "usuarioID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)),
-            inverseJoinColumns = @JoinColumn(name = "rolID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)))
-    private Set<Rol> rols = new LinkedHashSet<>();
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "equipoID")
-    @JsonIgnoreProperties("usuarios")
     private Equipo equipo;
+
+    @OneToMany(mappedBy = "administrador")
+    private Set<Noticia> noticias = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "responsable")
+    private Set<Simulacion> simulacions = new LinkedHashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "usuario_roles",
+            joinColumns = @JoinColumn(name = "usuarioID"),
+            inverseJoinColumns = @JoinColumn(name = "rolID"))
+    private Set<Rol> roles = new LinkedHashSet<>();
 
     public Long getId() {
         return id;
@@ -93,7 +100,7 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public Boolean isActivo() {
+    public Boolean getActivo() {
         return activo;
     }
 
@@ -101,20 +108,36 @@ public class Usuario {
         this.activo = activo;
     }
 
-    public Set<Rol> getRols() {
-        return rols;
-    }
-
-    public void setRols(Set<Rol> rols) {
-        this.rols = rols;
-    }
-
     public Equipo getEquipo() {
         return equipo;
     }
 
-    public void setEquipo(Equipo equipo) {
-        this.equipo = equipo;
+    public void setEquipo(Equipo equipoID) {
+        this.equipo = equipoID;
+    }
+
+    public Set<Noticia> getNoticias() {
+        return noticias;
+    }
+
+    public void setNoticias(Set<Noticia> noticias) {
+        this.noticias = noticias;
+    }
+
+    public Set<Simulacion> getSimulacions() {
+        return simulacions;
+    }
+
+    public void setSimulacions(Set<Simulacion> simulacions) {
+        this.simulacions = simulacions;
+    }
+
+    public Set<Rol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
     }
 
 }

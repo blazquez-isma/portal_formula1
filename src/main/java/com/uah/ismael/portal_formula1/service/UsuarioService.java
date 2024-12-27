@@ -11,21 +11,19 @@ public interface UsuarioService {
 
     void addUsuario(UsuarioNuevoDTO usuario);
 
-    void borrarUsuario(Long userId);
+    void deleteUsuario(Long userId);
 
     Page<UsuarioDTO> getAllUsuarios(Pageable pageable);
 
-//    List<UsuarioDTO> getUsuariosByActivo(boolean activo);
-//
-//    UsuarioDTO getUsuarioById(Long userId);
-//
-//    UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario);
-//
-//    UsuarioDTO getUsuarioByEmail(String email);
-//
-//    List<UsuarioDTO> getUsuariosByRolName(String rolName);
-//
-//    List<UsuarioDTO> getUsuariosByRolId(Long rolId);
+    List<UsuarioDTO> getUsuariosByActivo(boolean activo);
 
-    void activarUsuario(Long userId);
+    UsuarioDTO getUsuarioById(Long userId);
+
+    UsuarioDTO getUsuarioByNombre(String nombre);
+
+    UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario);
+
+    UsuarioDTO getUsuarioByEmail(String email);
+
+    void activateUsuario(Long userId);
 }

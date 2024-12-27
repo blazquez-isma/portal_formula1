@@ -22,7 +22,7 @@ CREATE TABLE `rol` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Insertar Roles
-INSERT INTO rol (nombre) VALUES ('ROLE_Administrador');
+INSERT INTO rol (nombre) VALUES ('ROLE_ADMINISTRADOR');
 INSERT INTO rol (nombre) VALUES ('ROLE_Responsable');
 
 -- Tabla Usuario_Roles

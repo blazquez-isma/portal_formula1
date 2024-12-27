@@ -28,7 +28,7 @@ public class UsuarioDTO {
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
 
-    private Set<RolDTO> rols;
+    private Set<RolDTO> roles;
 
     private boolean activo = false;
 
@@ -72,12 +72,12 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public Set<RolDTO> getRols() {
-        return rols;
+    public Set<RolDTO> getRoles() {
+        return roles;
     }
 
-    public void setRols(Set<RolDTO> roles) {
-        this.rols = roles;
+    public void setRoles(Set<RolDTO> roles) {
+        this.roles = roles;
     }
 
     public boolean isActivo() {
@@ -96,7 +96,7 @@ public class UsuarioDTO {
                 ", nombreUsuario=" + nombreUsuario +
                 ", email=" + email +
                 ", contrasena=" + contrasena +
-                ", roles=" + rols +
+                ", roles=" + roles +
                 ", activo=" + activo
                 + '}';
     }
@@ -106,7 +106,7 @@ public class UsuarioDTO {
         Sort.Order order = pageable.getSort().iterator().next();
         Comparator<UsuarioDTO> comparator = Comparator.comparing(usuarioDTO -> {
             return switch (order.getProperty()) {
-                case "rols" -> usuarioDTO.getRols().stream().map(RolDTO::getNombre).sorted().collect(Collectors.joining(", "));
+                case "roles" -> usuarioDTO.getRoles().stream().map(RolDTO::getNombre).sorted().collect(Collectors.joining(", "));
                 case "activo" -> usuarioDTO.isActivo() ? "Activo" : "No Activo";
                 default -> usuarioDTO.getNombreUsuario();
             };

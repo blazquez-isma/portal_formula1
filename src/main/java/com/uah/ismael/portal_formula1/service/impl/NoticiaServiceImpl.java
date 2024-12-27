@@ -111,7 +111,7 @@ public class NoticiaServiceImpl implements NoticiaService {
 
         List<NoticiaDTO> noticias = new ArrayList<>();
         if (usuario != null) {
-            noticias = noticiaRepository.findByAdministrador(usuario).stream()
+            noticias = noticiaRepository.findByAdministrador_Id(usuario.getId()).stream()
                     .map(noticia -> modelMapper.map(noticia, NoticiaDTO.class))
                     .sorted(NoticiaDTO.getNoticiaPageableComparator(pageable))
                     .toList();

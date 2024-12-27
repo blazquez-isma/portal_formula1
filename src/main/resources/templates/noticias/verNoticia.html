@@ -7,12 +7,7 @@
 </head>
 <body>
 <div class="container">
-    <div th:if="${nombreUsuario != null}">
-        <div th:replace="~{fragmentos/loguedMenu :: menu('Ver Noticia', '')}"></div>
-    </div>
-    <div th:if="${nombreUsuario == null}">
-        <div th:replace="~{fragmentos/unloguedMenu :: menu('Ver Noticia', '')}"></div>
-    </div>
+    <div th:replace="~{fragmentos/menu :: menu('Ver Noticia', '')}"></div>
 
     <div class="container my-4">
         <div class="card">

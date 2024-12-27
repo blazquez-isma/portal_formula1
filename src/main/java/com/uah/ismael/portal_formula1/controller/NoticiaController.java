@@ -1,7 +1,6 @@
 package com.uah.ismael.portal_formula1.controller;
 
 import com.uah.ismael.portal_formula1.dto.NoticiaDTO;
-import com.uah.ismael.portal_formula1.security.JwtTokenUtil;
 import com.uah.ismael.portal_formula1.service.NoticiaService;
 import com.uah.ismael.portal_formula1.service.UploadFileService;
 import org.slf4j.Logger;
@@ -35,9 +34,6 @@ public class NoticiaController {
     @Autowired
     private UploadFileService uploadFileService;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
 
     @GetMapping("/noticias/verNoticias")
     public String verNoticias(@RequestParam(defaultValue = "0") int page,
@@ -69,7 +65,7 @@ public class NoticiaController {
 
         model.addAttribute("noticiaAnterior", noticiaAnteriorId);
         model.addAttribute("noticiaSiguiente", noticiaSiguienteId);
-        model.addAttribute("nombreUsuario", jwtTokenUtil.getUsernameFromToken(token));
+//        model.addAttribute("nombreUsuario", jwtTokenUtil.getUsernameFromToken(token));
 
         return "noticias/verNoticia";
     }

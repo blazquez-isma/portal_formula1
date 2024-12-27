@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container">
-    <div th:replace="~{fragmentos/loguedMenu :: menu('Ver Noticias', '')}"></div>
+    <div th:replace="~{fragmentos/menu :: menu('Ver Noticias', '')}"></div>
     <div class="container">
         <h1>Información del Usuario</h1>
         <p>Nombre de usuario: <span sec:authentication="name"></span></p>
@@ -20,14 +20,14 @@
             <thead>
             <tr>
                 <th>Título</th>
-                <th sec:authorize="hasRole('ROLE_Administrador')">Acciones</th>
+                <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="noticia : ${noticiasPage.content}">
                 <td><a th:href="${noticia.permalink}" th:text="${noticia.titulo}"></a></td>
                 <td>
-                    <div sec:authorize="hasAuthority('ROLE_Administrador')">
+                    <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
                         <a th:href="@{/noticias/editarNoticia/{id}(id=${noticia.id})}" class="btn btn-warning">Editar</a>
                         <form th:action="@{/noticias/borrarNoticia}" method="post" style="display:inline;">
                             <input type="hidden" th:value="${noticia.id}" name="noticiaId"/>

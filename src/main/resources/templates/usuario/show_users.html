@@ -5,59 +5,11 @@
     <meta charset="UTF-8">
     <title>Mostrar Usuarios</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-    <script>
-        function confirmDelete(userId) {
-            var deleteButton = document.getElementById('deleteButton-' + userId);
-            var confirmButton = document.getElementById('confirmButton-' + userId);
-            var cancelButton = document.getElementById('cancelButton-' + userId);
 
-            if (deleteButton && confirmButton && cancelButton) {
-                deleteButton.style.display = 'none';
-                confirmButton.style.display = 'inline';
-                cancelButton.style.display = 'inline';
-            } else {
-                console.error('Element not found for userId:', userId);
-            }
-        }
-
-        function cancelDelete(userId) {
-            var deleteButton = document.getElementById('deleteButton-' + userId);
-            var confirmButton = document.getElementById('confirmButton-' + userId);
-            var cancelButton = document.getElementById('cancelButton-' + userId);
-
-            if (deleteButton && confirmButton && cancelButton) {
-                deleteButton.style.display = 'inline';
-                confirmButton.style.display = 'none';
-                cancelButton.style.display = 'none';
-            } else {
-                console.error('Element not found for userId:', userId);
-            }
-        }
-
-        function sortTable(column) {
-            const table = document.querySelector('table tbody');
-            const rows = Array.from(table.rows);
-            const isDescending = table.getAttribute('data-sort-order') === 'desc';
-            const newOrder = isDescending ? 'asc' : 'desc';
-
-            rows.sort((a, b) => {
-                const aText = a.querySelector(`[data-column="${column}"]`).textContent.trim();
-                const bText = b.querySelector(`[data-column="${column}"]`).textContent.trim();
-
-                if (aText < bText) return isDescending ? 1 : -1;
-                if (aText > bText) return isDescending ? -1 : 1;
-                return 0;
-            });
-
-            table.innerHTML = '';
-            rows.forEach(row => table.appendChild(row));
-            table.setAttribute('data-sort-order', newOrder);
-        }
-    </script>
 </head>
 <body>
 <div class="container">
-    <div th:replace="~{fragmentos/loguedMenu :: menu('Usuarios', '')}"></div>
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
 
     <div class="container my-4">
         <table class="table table-striped">
@@ -70,9 +22,9 @@
                     </a>
                 </th>
                 <th>
-                    <a th:href="@{/show_users(page=${currentPage}, size=${userPage.size}, sortField='rols', sortDir=${sortField == 'rols' ? reverseSortDir : 'asc'})}">
+                    <a th:href="@{/show_users(page=${currentPage}, size=${userPage.size}, sortField='roles', sortDir=${sortField == 'roles' ? reverseSortDir : 'asc'})}">
                         Roles
-                        <span th:if="${sortField == 'rols'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                        <span th:if="${sortField == 'roles'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th>
@@ -88,7 +40,7 @@
             <tr th:each="usuario : ${userPage.content}">
                 <td data-column="nombreUsuario" th:text="${usuario.nombreUsuario}"></td>
                 <td data-column="roles">
-                    <span th:each="rol : ${usuario.rols}" th:text="${rol.nombre} + ' '"></span>
+                    <span th:each="rol : ${usuario.roles}" th:text="${rol.nombre} + ' '"></span>
                 </td>
                 <td data-column="estado" th:text="${usuario.activo ? 'Activo' : 'No Activo'}" th:style="${usuario.activo ? 'color: green;' : 'color: red;'}"></td>
                 <td>
@@ -134,5 +86,54 @@
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function confirmDelete(userId) {
+        var deleteButton = document.getElementById('deleteButton-' + userId);
+        var confirmButton = document.getElementById('confirmButton-' + userId);
+        var cancelButton = document.getElementById('cancelButton-' + userId);
+
+        if (deleteButton && confirmButton && cancelButton) {
+            deleteButton.style.display = 'none';
+            confirmButton.style.display = 'inline';
+            cancelButton.style.display = 'inline';
+        } else {
+            console.error('Element not found for userId:', userId);
+        }
+    }
+
+    function cancelDelete(userId) {
+        var deleteButton = document.getElementById('deleteButton-' + userId);
+        var confirmButton = document.getElementById('confirmButton-' + userId);
+        var cancelButton = document.getElementById('cancelButton-' + userId);
+
+        if (deleteButton && confirmButton && cancelButton) {
+            deleteButton.style.display = 'inline';
+            confirmButton.style.display = 'none';
+            cancelButton.style.display = 'none';
+        } else {
+            console.error('Element not found for userId:', userId);
+        }
+    }
+
+    function sortTable(column) {
+        const table = document.querySelector('table tbody');
+        const rows = Array.from(table.rows);
+        const isDescending = table.getAttribute('data-sort-order') === 'desc';
+        const newOrder = isDescending ? 'asc' : 'desc';
+
+        rows.sort((a, b) => {
+            const aText = a.querySelector(`[data-column="${column}"]`).textContent.trim();
+            const bText = b.querySelector(`[data-column="${column}"]`).textContent.trim();
+
+            if (aText < bText) return isDescending ? 1 : -1;
+            if (aText > bText) return isDescending ? -1 : 1;
+            return 0;
+        });
+
+        table.innerHTML = '';
+        rows.forEach(row => table.appendChild(row));
+        table.setAttribute('data-sort-order', newOrder);
+    }
+</script>
 </body>
 </html>

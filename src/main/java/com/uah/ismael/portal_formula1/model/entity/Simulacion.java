@@ -26,17 +26,17 @@ public class Simulacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "cocheID")
-    private Coche cocheID;
+    private Coche coche;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "circuitoID")
-    private Circuito circuitoID;
+    private Circuito circuito;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "responsableID")
-    private Usuario responsableID;
+    private Usuario responsable;
 
     public Long getId() {
         return id;
@@ -62,28 +62,28 @@ public class Simulacion {
         this.resultado = resultado;
     }
 
-    public Coche getCocheID() {
-        return cocheID;
+    public Coche getCoche() {
+        return coche;
     }
 
-    public void setCocheID(Coche cocheID) {
-        this.cocheID = cocheID;
+    public void setCoche(Coche cocheID) {
+        this.coche = cocheID;
     }
 
-    public Circuito getCircuitoID() {
-        return circuitoID;
+    public Circuito getCircuito() {
+        return circuito;
     }
 
-    public void setCircuitoID(Circuito circuitoID) {
-        this.circuitoID = circuitoID;
+    public void setCircuito(Circuito circuitoID) {
+        this.circuito = circuitoID;
     }
 
-    public Usuario getResponsableID() {
-        return responsableID;
+    public Usuario getResponsable() {
+        return responsable;
     }
 
-    public void setResponsableID(Usuario responsableID) {
-        this.responsableID = responsableID;
+    public void setResponsable(Usuario responsableID) {
+        this.responsable = responsableID;
     }
 
 }

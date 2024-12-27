@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container">
-    <div th:replace="~{fragmentos/loguedMenu :: menu('Crear Noticia', '')}"></div>
+    <div th:replace="~{fragmentos/menu :: menu('Crear Noticia')}"></div>
 
     <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
     <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>

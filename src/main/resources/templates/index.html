@@ -7,9 +7,9 @@
 </head>
 <body>
 <div class="container">
-    <div th:replace="~{fragmentos/unloguedMenu :: menu('Bienvenido a la Página de Inicio ', '')}"></div>
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
 
-    <div class="container my-4">
+    <div class="container my-4 align-content-center">
         <div class="sketchfab-embed-wrapper">
             <iframe title="Ferrari 248 (2006)" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share width="640" height="480" src="https://sketchfab.com/models/d3162726a0c94d78b5f8ad99dc79a12d/embed?autostart=1&camera=0&preload=1">
             </iframe>

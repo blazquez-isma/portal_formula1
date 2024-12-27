@@ -14,7 +14,7 @@ public class Rol {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "authority", nullable = false)
     private String nombre;
 
     public Long getId() {
@@ -29,8 +29,8 @@ public class Rol {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombre(String authority) {
+        this.nombre = authority;
     }
 
 }

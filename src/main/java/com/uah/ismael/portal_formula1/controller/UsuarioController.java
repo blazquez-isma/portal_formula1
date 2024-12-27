@@ -22,27 +22,19 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/usuario/home")
-    public String home(@RequestParam String nombreUsuario ,Model model) {
-        model.addAttribute("nombreUsuario", nombreUsuario);
-        return "usuario/usuario_home";
-    }
 
     @GetMapping("/show_users")
-    @PreAuthorize("hasRole('Administrador')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String showAllUsers(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size,
                                @RequestParam(defaultValue = "nombreUsuario") String sortField,
                                @RequestParam(defaultValue = "asc") String sortDir,
                                Model model) {
-        LOG.debug("Page: " + page);
-        LOG.debug("Size: " + size);
-        LOG.debug("Sort Field: " + sortField);
-        LOG.debug("Sort Direction: " + sortDir);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<UsuarioDTO> usuarioPage = usuarioService.getAllUsuarios(pageable);
 
+        model.addAttribute("titulo", "Listado de Usuarios");
         model.addAttribute("userPage", usuarioPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", usuarioPage.getTotalPages());
@@ -54,16 +46,16 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuario/activate_user")
-    @PreAuthorize("hasRole('Administrador')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String validateUser(@RequestParam("userId") Long userId) {
-        usuarioService.activarUsuario(userId);
+        usuarioService.activateUsuario(userId);
         return "redirect:/show_users";
     }
 
     @PostMapping("/usuario/delete_user")
-    @PreAuthorize("hasRole('Administrador')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String deleteUser(@RequestParam("userId") Long userId) {
-        usuarioService.borrarUsuario(userId);
+        usuarioService.deleteUsuario(userId);
         return "redirect:/show_users";
     }
 }
