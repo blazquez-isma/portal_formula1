@@ -1,38 +1,55 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "circuito")
 public class Circuito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "ciudad", nullable = false)
     private String ciudad;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "pais", nullable = false)
     private String pais;
 
+    @Size(max = 255)
+    @Column(name = "trazado")
     private String trazado;
 
+    @NotNull
     @Column(name = "numeroVueltas", nullable = false)
-    private int numeroVueltas;
+    private Integer numeroVueltas;
 
-    @Column(nullable = false)
-    private float longitud;
+    @NotNull
+    @Column(name = "longitud", nullable = false)
+    private Float longitud;
 
+    @NotNull
     @Column(name = "curvasLentas", nullable = false)
-    private int curvasLentas;
+    private Integer curvasLentas;
 
+    @NotNull
     @Column(name = "curvasMedias", nullable = false)
-    private int curvasMedias;
+    private Integer curvasMedias;
 
+    @NotNull
     @Column(name = "curvasRapidas", nullable = false)
-    private int curvasRapidas;
+    private Integer curvasRapidas;
 
     public Long getId() {
         return id;
@@ -74,43 +91,44 @@ public class Circuito {
         this.trazado = trazado;
     }
 
-    public int getNumeroVueltas() {
+    public Integer getNumeroVueltas() {
         return numeroVueltas;
     }
 
-    public void setNumeroVueltas(int numeroVueltas) {
+    public void setNumeroVueltas(Integer numeroVueltas) {
         this.numeroVueltas = numeroVueltas;
     }
 
-    public float getLongitud() {
+    public Float getLongitud() {
         return longitud;
     }
 
-    public void setLongitud(float longitud) {
+    public void setLongitud(Float longitud) {
         this.longitud = longitud;
     }
 
-    public int getCurvasLentas() {
+    public Integer getCurvasLentas() {
         return curvasLentas;
     }
 
-    public void setCurvasLentas(int curvasLentas) {
+    public void setCurvasLentas(Integer curvasLentas) {
         this.curvasLentas = curvasLentas;
     }
 
-    public int getCurvasMedias() {
+    public Integer getCurvasMedias() {
         return curvasMedias;
     }
 
-    public void setCurvasMedias(int curvasMedias) {
+    public void setCurvasMedias(Integer curvasMedias) {
         this.curvasMedias = curvasMedias;
     }
 
-    public int getCurvasRapidas() {
+    public Integer getCurvasRapidas() {
         return curvasRapidas;
     }
 
-    public void setCurvasRapidas(int curvasRapidas) {
+    public void setCurvasRapidas(Integer curvasRapidas) {
         this.curvasRapidas = curvasRapidas;
     }
+
 }

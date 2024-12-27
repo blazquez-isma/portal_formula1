@@ -1,21 +1,21 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
-public class Rol implements GrantedAuthority {
+@Table(name = "rol")
+public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "nombre", nullable = false)
     private String nombre;
-
-    @Override
-    public String getAuthority() {
-        return nombre;
-    }
 
     public Long getId() {
         return id;
@@ -32,4 +32,5 @@ public class Rol implements GrantedAuthority {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
 }

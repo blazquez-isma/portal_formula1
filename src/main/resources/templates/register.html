@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/unloguedMenu :: menu('Registro de usuario ', '')}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+    <div class="form-container">
+        <form th:action="@{/register}" th:object="${usuario}" method="post" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="nombreUsuario">Nombre de Usuario:</label>
+                <input type="text" id="nombreUsuario" th:field="*{nombreUsuario}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" th:field="*{contrasena}" class="form-control" minlength="5" required />
+            </div>
+            <div class="form-group">
+                <label for="rolLeido">Rol:</label>
+                <select id="rolLeido" th:field="*{rolLeido}" class="form-control" required>
+                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.nombre}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/'">Volver</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

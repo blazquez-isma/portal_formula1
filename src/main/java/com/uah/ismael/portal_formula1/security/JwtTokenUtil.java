@@ -4,6 +4,8 @@ package com.uah.ismael.portal_formula1.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,18 @@ public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private long jwtExpirationInMs;
 
+    Logger LOG = org.slf4j.LoggerFactory.getLogger(JwtTokenUtil.class);
+
     public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+        LOG.debug("Token: " + token);
+        if(token != null){
+            if(token.startsWith("Bearer ")){
+                token = token.substring(7);
+            }
+            return getClaimFromToken(token, Claims::getSubject);
+        } else {
+            return null;
+        }
     }
 
     public Date getExpirationDateFromToken(String token) {

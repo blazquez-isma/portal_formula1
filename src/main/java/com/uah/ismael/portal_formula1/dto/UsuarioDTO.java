@@ -1,11 +1,14 @@
 package com.uah.ismael.portal_formula1.dto;
 
-import com.uah.ismael.portal_formula1.model.entity.Rol;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UsuarioDTO {
 
@@ -25,7 +28,7 @@ public class UsuarioDTO {
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
 
-    private Set<Rol> roles;
+    private Set<RolDTO> rols;
 
     private boolean activo = false;
 
@@ -69,12 +72,12 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public Set<Rol> getRoles() {
-        return roles;
+    public Set<RolDTO> getRols() {
+        return rols;
     }
 
-    public void setRoles(Set<Rol> roles) {
-        this.roles = roles;
+    public void setRols(Set<RolDTO> roles) {
+        this.rols = roles;
     }
 
     public boolean isActivo() {
@@ -93,9 +96,26 @@ public class UsuarioDTO {
                 ", nombreUsuario=" + nombreUsuario +
                 ", email=" + email +
                 ", contrasena=" + contrasena +
-                ", roles=" + roles +
+                ", roles=" + rols +
                 ", activo=" + activo
                 + '}';
+    }
+
+    public static Comparator<UsuarioDTO> getUsuarioPageableComparator(Pageable pageable) {
+        // Ordenar la lista
+        Sort.Order order = pageable.getSort().iterator().next();
+        Comparator<UsuarioDTO> comparator = Comparator.comparing(usuarioDTO -> {
+            return switch (order.getProperty()) {
+                case "rols" -> usuarioDTO.getRols().stream().map(RolDTO::getNombre).sorted().collect(Collectors.joining(", "));
+                case "activo" -> usuarioDTO.isActivo() ? "Activo" : "No Activo";
+                default -> usuarioDTO.getNombreUsuario();
+            };
+        });
+
+        if (order.getDirection() == Sort.Direction.DESC) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 
 }

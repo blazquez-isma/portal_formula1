@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${noticia.titulo}">Noticia</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:if="${nombreUsuario != null}">
+        <div th:replace="~{fragmentos/loguedMenu :: menu('Ver Noticia', '')}"></div>
+    </div>
+    <div th:if="${nombreUsuario == null}">
+        <div th:replace="~{fragmentos/unloguedMenu :: menu('Ver Noticia', '')}"></div>
+    </div>
+
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 th:text="${noticia.titulo}">Título de la Noticia</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4" th:if="${noticia.imagen != null}">
+                        <img th:src="@{/uploads/{filename}(filename=${noticia.imagen})}" class="img-fluid" alt="Imagen de la Noticia">
+                    </div>
+                    <div class="col-md-8">
+                        <p th:text="${noticia.texto}">Texto de la Noticia</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a th:href="${noticiaAnterior}" class="btn btn-primary" th:if="${noticiaAnterior != null}">&laquo; Anterior</a>
+                <a th:href="${noticiaSiguiente}" class="btn btn-primary" th:if="${noticiaSiguiente != null}">Siguiente &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

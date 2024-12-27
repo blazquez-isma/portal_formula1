@@ -8,8 +8,14 @@ public class Constants {
             "/",
             "/css/**",
             "/images/**",
-            "/login/**",
-            "/register/**"
+            "/js/**",
+            "/uploads/**",
+            "/index",
+            "/login",
+            "/register",
+            "/fragmentos/**",
+            "/noticias/verNoticias",
+            "/noticias/verNoticia/**"
     );
 
 }

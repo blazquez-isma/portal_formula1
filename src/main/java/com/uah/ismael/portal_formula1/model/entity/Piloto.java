@@ -1,34 +1,53 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(name = "piloto")
 public class Piloto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "apellidos", nullable = false)
     private String apellidos;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "siglas", nullable = false)
     private String siglas;
 
-    @Column(nullable = false, unique = true)
-    private int dorsal;
+    @NotNull
+    @Column(name = "dorsal", nullable = false)
+    private Integer dorsal;
 
+    @Size(max = 255)
+    @Column(name = "foto")
     private String foto;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "pais", nullable = false)
     private String pais;
 
+    @Size(max = 255)
+    @Column(name = "twitter")
     private String twitter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "equipoID")
     private Equipo equipo;
 
@@ -64,11 +83,11 @@ public class Piloto {
         this.siglas = siglas;
     }
 
-    public int getDorsal() {
+    public Integer getDorsal() {
         return dorsal;
     }
 
-    public void setDorsal(int dorsal) {
+    public void setDorsal(Integer dorsal) {
         this.dorsal = dorsal;
     }
 
@@ -100,7 +119,8 @@ public class Piloto {
         return equipo;
     }
 
-    public void setEquipo(Equipo equipo) {
-        this.equipo = equipo;
+    public void setEquipo(Equipo equipoID) {
+        this.equipo = equipoID;
     }
+
 }

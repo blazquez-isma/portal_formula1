@@ -47,19 +47,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-             CustomUserDetailsService customUserDetailsService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(Constants.URLS_WITHOUT_AUTHENTICATION.toArray(new String[0])).permitAll()
-                        .requestMatchers("/admin/**").hasRole("Administrador")
-                        .requestMatchers("/responsable/**").hasRole("Responsable")
+                        //.requestMatchers("/admin/**").hasRole("Administrador")
+                        //.requestMatchers("/responsable/**").hasRole("Responsable")
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("token")
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
@@ -72,4 +73,5 @@ public class SecurityConfig {
         http.addFilterBefore(jwtCookieFilter, JwtRequestFilter.class);
         return http.build();
     }
+
 }

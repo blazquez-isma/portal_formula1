@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mostrar Usuarios</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <script>
+        function confirmDelete(userId) {
+            var deleteButton = document.getElementById('deleteButton-' + userId);
+            var confirmButton = document.getElementById('confirmButton-' + userId);
+            var cancelButton = document.getElementById('cancelButton-' + userId);
+
+            if (deleteButton && confirmButton && cancelButton) {
+                deleteButton.style.display = 'none';
+                confirmButton.style.display = 'inline';
+                cancelButton.style.display = 'inline';
+            } else {
+                console.error('Element not found for userId:', userId);
+            }
+        }
+
+        function cancelDelete(userId) {
+            var deleteButton = document.getElementById('deleteButton-' + userId);
+            var confirmButton = document.getElementById('confirmButton-' + userId);
+            var cancelButton = document.getElementById('cancelButton-' + userId);
+
+            if (deleteButton && confirmButton && cancelButton) {
+                deleteButton.style.display = 'inline';
+                confirmButton.style.display = 'none';
+                cancelButton.style.display = 'none';
+            } else {
+                console.error('Element not found for userId:', userId);
+            }
+        }
+
+        function sortTable(column) {
+            const table = document.querySelector('table tbody');
+            const rows = Array.from(table.rows);
+            const isDescending = table.getAttribute('data-sort-order') === 'desc';
+            const newOrder = isDescending ? 'asc' : 'desc';
+
+            rows.sort((a, b) => {
+                const aText = a.querySelector(`[data-column="${column}"]`).textContent.trim();
+                const bText = b.querySelector(`[data-column="${column}"]`).textContent.trim();
+
+                if (aText < bText) return isDescending ? 1 : -1;
+                if (aText > bText) return isDescending ? -1 : 1;
+                return 0;
+            });
+
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
+            table.setAttribute('data-sort-order', newOrder);
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/loguedMenu :: menu('Usuarios', '')}"></div>
+
+    <div class="container my-4">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/show_users(page=${currentPage}, size=${userPage.size}, sortField='nombreUsuario', sortDir=${sortField == 'nombreUsuario' ? reverseSortDir : 'asc'})}">
+                        Nombre de Usuario
+                        <span th:if="${sortField == 'nombreUsuario'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/show_users(page=${currentPage}, size=${userPage.size}, sortField='rols', sortDir=${sortField == 'rols' ? reverseSortDir : 'asc'})}">
+                        Roles
+                        <span th:if="${sortField == 'rols'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/show_users(page=${currentPage}, size=${userPage.size}, sortField='activo', sortDir=${sortField == 'activo' ? reverseSortDir : 'asc'})}">
+                        Estado
+                        <span th:if="${sortField == 'activo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usuario : ${userPage.content}">
+                <td data-column="nombreUsuario" th:text="${usuario.nombreUsuario}"></td>
+                <td data-column="roles">
+                    <span th:each="rol : ${usuario.rols}" th:text="${rol.nombre} + ' '"></span>
+                </td>
+                <td data-column="estado" th:text="${usuario.activo ? 'Activo' : 'No Activo'}" th:style="${usuario.activo ? 'color: green;' : 'color: red;'}"></td>
+                <td>
+                    <form th:action="@{/usuario/activate_user}" method="post" style="display:inline;" th:if="${!usuario.activo}">
+                        <input type="hidden" th:value="${usuario.id}" name="userId"/>
+                        <button type="submit" class="btn btn-success">Activar</button>
+                    </form>
+                    <form th:action="@{/usuario/delete_user}" method="post" style="display:inline;" th:if="${!usuario.activo}">
+                        <input type="hidden" th:value="${usuario.id}" name="userId"/>
+                        <button type="submit" class="btn btn-danger">Rechazar</button>
+                    </form>
+                    <form th:action="@{/usuario/delete_user}" method="post" th:id="'deleteForm-' + ${usuario.id}" style="display:inline;" th:if="${usuario.activo}">
+                        <input type="hidden" th:value="${usuario.id}" name="userId"/>
+                        <button type="button" th:id="'deleteButton-' + ${usuario.id}" class="btn btn-warning" th:onclick="'confirmDelete(' + ${usuario.id} + ')'">Eliminar</button>
+                        <button type="button" th:id="'confirmButton-' + ${usuario.id}" class="confirm-button btn btn-danger" th:onclick="'document.getElementById(\'deleteForm-' + ${usuario.id} + '\').submit()'" style="display:none;">Confirmar</button>
+                        <button type="button" th:id="'cancelButton-' + ${usuario.id}" class="cancel-button btn btn-secondary" th:onclick="'cancelDelete(' + ${usuario.id} + ')'" style="display:none;">Cancelar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/show_users(page=${currentPage - 1}, size=${userPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/show_users(page=${i}, size=${userPage.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/show_users(page=${currentPage + 1}, size=${userPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,51 +1,57 @@
 package com.uah.ismael.portal_formula1.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "usuario")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "nombreUsuario", nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "nombreUsuario", nullable = false)
     private String nombreUsuario;
 
-    @Column(nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "contrasena", nullable = false)
     private String contrasena;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "usuario_roles",
-            joinColumns = @JoinColumn(name = "usuarioID"),
-            inverseJoinColumns = @JoinColumn(name = "rolID")
-    )
-    private Set<Rol> roles;
-
+    @NotNull
+    @ColumnDefault("0")
     @Column(name = "activo", nullable = false)
-    private boolean activo;
+    private Boolean activo = false;
 
-    // to string
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", nombreUsuario='" + nombreUsuario + '\'' +
-                ", email='" + email + '\'' +
-                ", contrasena='" + contrasena + '\'' +
-                ", roles=" + roles +
-                ", activo=" + activo +
-                '}';
-    }
+    @ManyToMany
+    @JoinTable(name = "usuario_roles",
+            joinColumns = @JoinColumn(name = "usuarioID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)),
+            inverseJoinColumns = @JoinColumn(name = "rolID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)))
+    private Set<Rol> rols = new LinkedHashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "equipoID")
+    @JsonIgnoreProperties("usuarios")
+    private Equipo equipo;
 
     public Long getId() {
         return id;
@@ -87,19 +93,28 @@ public class Usuario {
         this.contrasena = contrasena;
     }
 
-    public Set<Rol> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Rol> roles) {
-        this.roles = roles;
-    }
-
-    public boolean isActivo() {
+    public Boolean isActivo() {
         return activo;
     }
 
-    public void setActivo(boolean activo) {
+    public void setActivo(Boolean activo) {
         this.activo = activo;
     }
+
+    public Set<Rol> getRols() {
+        return rols;
+    }
+
+    public void setRols(Set<Rol> rols) {
+        this.rols = rols;
+    }
+
+    public Equipo getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(Equipo equipo) {
+        this.equipo = equipo;
+    }
+
 }

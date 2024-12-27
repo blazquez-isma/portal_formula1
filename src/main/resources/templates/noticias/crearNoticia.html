@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Noticia</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/loguedMenu :: menu('Crear Noticia', '')}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+    <div class="form-container">
+        <form th:action="@{/noticias/guardarNoticia}" th:object="${noticia}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="titulo">Titulo:</label>
+                <input type="text" id="titulo" th:field="*{titulo}" class="form-control" maxlength="100" required />
+            </div>
+            <div class="form-group">
+                <label for="texto">Texto:</label>
+                <textarea id="texto" th:field="*{texto}" class="form-control" minlength="500" maxlength="2000" required></textarea>
+            </div>
+<!--            <div class="form-group">-->
+<!--                <label for="imagen">Imagen:</label>-->
+<!--                <input type="file" id="imagen" th:field="*{imagen}" class="form-control-file" />-->
+<!--            </div>-->
+
+            <img th:if="${noticia.imagen != null && #strings.length(noticia.imagen) > 0}" class="img-thumbnail rounded float-left"
+                 style="max-width: 25%;" th:src="@{'/ccursos/uploads/' + ${noticia.imagen}}"
+                 th:alt="${noticia.imagen}" />
+
+            <div class="mb-3">
+                <label for="file" class="col-sm-2 col-form-label">Imagen</label>
+                <div class="col-sm-6">
+                    <input type="file" id="file" name="file" class="form-control"/>
+                </div>
+            </div>
+
+            <input type="hidden" th:field="*{imagen}"/>
+            <input type="hidden" th:field="*{id}"/>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/noticias/verNoticias'">Volver</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
