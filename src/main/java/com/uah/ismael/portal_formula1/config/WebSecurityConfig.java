@@ -37,7 +37,10 @@ public class WebSecurityConfig {
                         .usernameParameter("nombreUsuario")
                         .passwordParameter("contrasena"))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/js/**", "/css/**", "/images/**", "/", "/login", "/register").permitAll()
+                        .requestMatchers("/js/**", "/css/**", "/images/**",
+                                "/", "/login", "/registro",
+                                "noticias/verNoticias", "/noticias/verNoticia/**" , "/uploads/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

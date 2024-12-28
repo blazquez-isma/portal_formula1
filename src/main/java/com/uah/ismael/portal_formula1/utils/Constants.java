@@ -12,7 +12,7 @@ public class Constants {
             "/uploads/**",
             "/index",
             "/login",
-            "/register",
+            "/registro",
             "/fragmentos/**",
             "/noticias/verNoticias",
             "/noticias/verNoticia/**"

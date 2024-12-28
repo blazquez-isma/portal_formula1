@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Comparator;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UsuarioDTO {
@@ -28,9 +28,11 @@ public class UsuarioDTO {
     @Size(min = 5, message = "La contraseña debe tener al menos 5 caracteres")
     private String contrasena;
 
-    private Set<RolDTO> roles;
+    private List<RolDTO> roles;
 
     private boolean activo = false;
+
+    private Long equipoID;
 
     public Long getId() {
         return id;
@@ -72,11 +74,11 @@ public class UsuarioDTO {
         this.contrasena = contrasena;
     }
 
-    public Set<RolDTO> getRoles() {
+    public List<RolDTO> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<RolDTO> roles) {
+    public void setRoles(List<RolDTO> roles) {
         this.roles = roles;
     }
 
@@ -88,6 +90,14 @@ public class UsuarioDTO {
         this.activo = activo;
     }
 
+    public Long getEquipoID() {
+        return equipoID;
+    }
+
+    public void setEquipoID(Long equipoID) {
+        this.equipoID = equipoID;
+    }
+
     @Override
     public String toString() {
         return "UsuarioDTO{" +
@@ -97,7 +107,8 @@ public class UsuarioDTO {
                 ", email=" + email +
                 ", contrasena=" + contrasena +
                 ", roles=" + roles +
-                ", activo=" + activo
+                ", activo=" + activo +
+                ", equipoID=" + equipoID
                 + '}';
     }
 

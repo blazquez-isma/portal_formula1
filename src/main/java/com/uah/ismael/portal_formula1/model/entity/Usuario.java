@@ -7,8 +7,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -49,16 +49,16 @@ public class Usuario {
     private Equipo equipo;
 
     @OneToMany(mappedBy = "administrador")
-    private Set<Noticia> noticias = new LinkedHashSet<>();
+    private List<Noticia> noticias = new ArrayList<>();
 
     @OneToMany(mappedBy = "responsable")
-    private Set<Simulacion> simulacions = new LinkedHashSet<>();
+    private List<Simulacion> simulacions = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_roles",
             joinColumns = @JoinColumn(name = "usuarioID"),
             inverseJoinColumns = @JoinColumn(name = "rolID"))
-    private Set<Rol> roles = new LinkedHashSet<>();
+    private List<Rol> roles = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -116,27 +116,27 @@ public class Usuario {
         this.equipo = equipoID;
     }
 
-    public Set<Noticia> getNoticias() {
+    public List<Noticia> getNoticias() {
         return noticias;
     }
 
-    public void setNoticias(Set<Noticia> noticias) {
+    public void setNoticias(List<Noticia> noticias) {
         this.noticias = noticias;
     }
 
-    public Set<Simulacion> getSimulacions() {
+    public List<Simulacion> getSimulacions() {
         return simulacions;
     }
 
-    public void setSimulacions(Set<Simulacion> simulacions) {
+    public void setSimulacions(List<Simulacion> simulacions) {
         this.simulacions = simulacions;
     }
 
-    public Set<Rol> getRoles() {
+    public List<Rol> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Rol> roles) {
+    public void setRoles(List<Rol> roles) {
         this.roles = roles;
     }
 

@@ -16,7 +16,7 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" th:href="@{/register}">Registrarse</a>
+                        <a class="nav-link" th:href="@{/registro}">Registrarse</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link" th:href="@{/login}">Iniciar Sesión</a>
@@ -26,7 +26,8 @@
                             Usuarios
                         </a>
                         <div class="dropdown-menu" aria-labelledby="usuariosDropdown">
-                            <a class="dropdown-item" th:href="@{/show_users}">Ver Usuarios</a>
+                            <a class="dropdown-item" th:href="@{/usuarios}">Ver Usuarios</a>
+                            <a class="dropdown-item" th:href="@{/registro}">Registrar Usuario</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -45,6 +46,18 @@
                         <div class="dropdown-menu" aria-labelledby="votacionesDropdown">
                             <a class="dropdown-item" th:href="@{/votaciones}">Ver Votaciones</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_Administrador')" th:href="@{/votaciones/crear}">Crear Votación</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="equiposDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Equipos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="usuariosDropdown">
+                            <a class="dropdown-item" th:href="@{/equipos}">Ver Equipos</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/crear}">Crear Equipo</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/verPropio/{id}(id=${#authentication.getName()})}">Ver Mi Equipo</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/pilotos/nuevo}">Añadir Piloto</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/coches/nuevo}">Añadir Coche</a>
                         </div>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">

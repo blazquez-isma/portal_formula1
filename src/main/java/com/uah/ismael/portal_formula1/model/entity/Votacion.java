@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "votacion")
@@ -38,10 +38,10 @@ public class Votacion {
     @JoinTable(name = "piloto_votacion",
             joinColumns = @JoinColumn(name = "votacionID"),
             inverseJoinColumns = @JoinColumn(name = "pilotoID"))
-    private Set<Piloto> pilotos = new LinkedHashSet<>();
+    private List<Piloto> pilotos = new ArrayList<>();
 
     @OneToMany(mappedBy = "votacionID")
-    private Set<Voto> votos = new LinkedHashSet<>();
+    private List<Voto> votos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -83,19 +83,19 @@ public class Votacion {
         this.fechaLimite = fechaLimite;
     }
 
-    public Set<Piloto> getPilotos() {
+    public List<Piloto> getPilotos() {
         return pilotos;
     }
 
-    public void setPilotos(Set<Piloto> pilotos) {
+    public void setPilotos(List<Piloto> pilotos) {
         this.pilotos = pilotos;
     }
 
-    public Set<Voto> getVotos() {
+    public List<Voto> getVotos() {
         return votos;
     }
 
-    public void setVotos(Set<Voto> votos) {
+    public void setVotos(List<Voto> votos) {
         this.votos = votos;
     }
 

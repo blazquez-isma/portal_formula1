@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "equipo")
@@ -31,15 +31,15 @@ public class Equipo {
 
     @OneToMany(mappedBy = "equipo")
     @JsonIgnoreProperties("equipo")
-    private Set<Coche> coches = new LinkedHashSet<>();
+    private List<Coche> coches = new ArrayList<>();
 
     @OneToMany(mappedBy = "equipo")
     @JsonIgnoreProperties("equipo")
-    private Set<Usuario> usuarios = new LinkedHashSet<>();
+    private List<Usuario> usuarios = new ArrayList<>();
 
     @OneToMany(mappedBy = "equipo")
     @JsonIgnoreProperties("equipo")
-    private Set<Piloto> pilotos = new LinkedHashSet<>();
+    private List<Piloto> pilotos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -73,27 +73,27 @@ public class Equipo {
         this.twitter = twitter;
     }
 
-    public Set<Coche> getCoches() {
+    public List<Coche> getCoches() {
         return coches;
     }
 
-    public void setCoches(Set<Coche> coches) {
+    public void setCoches(List<Coche> coches) {
         this.coches = coches;
     }
 
-    public Set<Usuario> getUsuarios() {
+    public List<Usuario> getUsuarios() {
         return usuarios;
     }
 
-    public void setUsuarios(Set<Usuario> usuarios) {
+    public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
     }
 
-    public Set<Piloto> getPilotos() {
+    public List<Piloto> getPilotos() {
         return pilotos;
     }
 
-    public void setPilotos(Set<Piloto> pilotos) {
+    public void setPilotos(List<Piloto> pilotos) {
         this.pilotos = pilotos;
     }
 

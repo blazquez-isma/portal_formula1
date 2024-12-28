@@ -9,12 +9,7 @@
 </head>
 <body>
 <div class="container">
-    <div th:replace="~{fragmentos/menu :: menu('Ver Noticias', '')}"></div>
-    <div class="container">
-        <h1>Información del Usuario</h1>
-        <p>Nombre de usuario: <span sec:authentication="name"></span></p>
-        <p>Roles: <span sec:authentication="principal.authorities"></span></p>
-    </div>
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
     <div class="container my-4">
         <table class="table table-striped">
             <thead>
@@ -29,10 +24,13 @@
                 <td>
                     <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
                         <a th:href="@{/noticias/editarNoticia/{id}(id=${noticia.id})}" class="btn btn-warning">Editar</a>
-                        <form th:action="@{/noticias/borrarNoticia}" method="post" style="display:inline;">
-                            <input type="hidden" th:value="${noticia.id}" name="noticiaId"/>
-                            <button type="submit" class="btn btn-danger">Borrar</button>
-                        </form>
+                        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/noticias/borrarNoticia/{id}(id=${noticia.id})}"
+                           th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar la pelicula.">
+                            <i class="fas fa-trash" aria-hidden="true"></i></a>
+<!--                        <form th:action="@{/noticias/borrarNoticia}" method="post" style="display:inline;">-->
+<!--                            <input type="hidden" th:value="${noticia.id}" name="noticiaId"/>-->
+<!--                            <button type="submit" class="btn btn-danger">Borrar</button>-->
+<!--                        </form>-->
                     </div>
                 </td>
             </tr>
@@ -58,11 +56,14 @@
             </nav>
         </div>
     </div>
-
+    <div class="d-flex justify-content-between">
+        <nav  th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
     <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
 </body>
 </html>

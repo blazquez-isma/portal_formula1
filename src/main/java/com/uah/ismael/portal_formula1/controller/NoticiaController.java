@@ -12,10 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -44,14 +45,14 @@ public class NoticiaController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<NoticiaDTO> noticiasPage = noticiaService.getAllNoticias(pageable);
 
+        model.addAttribute("titulo", "Listado de Noticias");
         model.addAttribute("noticiasPage", noticiasPage);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", noticiasPage.getTotalPages());
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
-        return "noticias/verNoticias";
+        return "noticias/listNoticias";
     }
 
     @GetMapping("/noticias/verNoticia/{noticiaId}")
@@ -63,15 +64,15 @@ public class NoticiaController {
         String noticiaAnteriorId = noticiaService.getNoticiaAnteriorId(noticiaId);
         String noticiaSiguienteId = noticiaService.getNoticiaSiguienteId(noticiaId);
 
+        model.addAttribute("titulo", "Noticia");
         model.addAttribute("noticiaAnterior", noticiaAnteriorId);
         model.addAttribute("noticiaSiguiente", noticiaSiguienteId);
-//        model.addAttribute("nombreUsuario", jwtTokenUtil.getUsernameFromToken(token));
 
-        return "noticias/verNoticia";
+        return "noticias/seeNoticia";
     }
 
-    @PostMapping("/noticias/borrarNoticia")
-    public String borrarNoticia(@RequestParam("noticiaId") Long noticiaId, RedirectAttributes attributes) {
+    @GetMapping("/noticias/borrarNoticia/{id}")
+    public String borrarNoticia(@PathVariable("id") Long noticiaId, RedirectAttributes attributes) {
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaId);
 
         if (noticia != null && noticia.getImagen() != null && !noticia.getImagen().isEmpty()) {
@@ -87,13 +88,15 @@ public class NoticiaController {
 
     @GetMapping("/noticias/crearNoticia")
     public String showCrearNoticiaForm(Model model) {
+        model.addAttribute("titulo", "Crear Noticia");
         model.addAttribute("noticia", new NoticiaDTO());
-        return "noticias/crearNoticia";
+        return "noticias/createNoticia";
     }
 
     @PostMapping("/noticias/guardarNoticia")
     public String guardarNoticia(@ModelAttribute("noticia") NoticiaDTO noticia, Model model,
                                  @RequestParam("file") MultipartFile foto, RedirectAttributes attributes) {
+
         if(foto != null && !foto.isEmpty()) {
             if (noticia.getId() != null && noticia.getId() > 0 && noticia.getImagen() != null
                     && !noticia.getImagen().isEmpty()) {
@@ -128,8 +131,9 @@ public class NoticiaController {
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaID);
         LOG.debug("Noticia: " + noticia);
 
+        model.addAttribute("titulo", "Editar Noticia");
         model.addAttribute("noticia", noticia);
-        return "noticias/crearNoticia";
+        return "noticias/createNoticia";
     }
 
     @GetMapping("/noticias/verNoticiasByAdmin")
@@ -142,6 +146,7 @@ public class NoticiaController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<NoticiaDTO> noticiasPage = noticiaService.getNoticiasByAdministradorNombreUsuario(administradorNombreUsuario, pageable);
 
+        model.addAttribute("titulo", "Listado de Noticias");
         model.addAttribute("noticiasPage", noticiasPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", noticiasPage.getTotalPages());
@@ -149,7 +154,7 @@ public class NoticiaController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
-        return "noticias/verNoticias";
+        return "noticias/listNoticias";
     }
 
     @GetMapping("/uploads/{filename}")

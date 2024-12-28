@@ -38,7 +38,7 @@ public class AuthenticationController {
         return "index";
     }
 
-    @GetMapping("/register")
+    @GetMapping("/registro")
     public String nuevoRegistro(Model model) {
         model.addAttribute("titulo", "Registro de Usuario");
         model.addAttribute("usuario", new UsuarioNuevoDTO());
@@ -46,18 +46,18 @@ public class AuthenticationController {
         return "register";
     }
 
-    @PostMapping("/register")
-    public String registro(Model model, UsuarioNuevoDTO usuarioLeido, RedirectAttributes attributes) {
+    @PostMapping("/registro")
+    public String registro(Model model, UsuarioNuevoDTO usuarioLeido, RedirectAttributes attributes, Principal principal) {
         try {
-            System.out.println("Usuario leido: " + usuarioLeido);
             usuarioService.addUsuario(usuarioLeido);
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
             attributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/register";
+            return "redirect:/registro";
         }
         attributes.addFlashAttribute("success", "Los datos del registro fueron guardados!");
-        System.out.println("Usuario registrado: " + usuarioLeido);
+        if(principal != null) {
+            return "redirect:/registro";
+        }
         return "redirect:/login";
     }
 
@@ -68,7 +68,6 @@ public class AuthenticationController {
         }
 
         if (error != null) {
-            System.out.println("ERROR: " + error);
             model.addAttribute("loginError",
                     "Error al iniciar sesión: Nombre de usuario o contraseña incorrecta, por favor vuelva a intentarlo!");
         }

@@ -23,7 +23,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
 
-    @GetMapping("/show_users")
+    @GetMapping("/usuarios")
     @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String showAllUsers(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size,
@@ -42,20 +42,20 @@ public class UsuarioController {
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
 
-        return "usuario/show_users";
+        return "usuarios/showUsuarios";
     }
 
     @PostMapping("/usuario/activate_user")
     @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String validateUser(@RequestParam("userId") Long userId) {
         usuarioService.activateUsuario(userId);
-        return "redirect:/show_users";
+        return "redirect:/usuarios";
     }
 
     @PostMapping("/usuario/delete_user")
     @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String deleteUser(@RequestParam("userId") Long userId) {
         usuarioService.deleteUsuario(userId);
-        return "redirect:/show_users";
+        return "redirect:/usuarios";
     }
 }

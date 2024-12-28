@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,11 +60,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena()));
         Rol rol = rolRepository.findById(usuarioDTO.getRolLeido())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid role ID"));
-        usuario.setRoles(new HashSet<>());
+        usuario.setRoles(new ArrayList<>());
         usuario.getRoles().add(rol);
         usuario.setActivo(false);
 
-        System.out.println("Usuario a guardar: " + usuario);
         usuarioRepository.save(usuario);
     }
 

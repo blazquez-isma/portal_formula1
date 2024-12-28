@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container">
-    <div th:replace="~{fragmentos/menu :: menu('Crear Noticia')}"></div>
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
 
     <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
     <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
@@ -19,12 +19,9 @@
             </div>
             <div class="form-group">
                 <label for="texto">Texto:</label>
-                <textarea id="texto" th:field="*{texto}" class="form-control" minlength="500" maxlength="2000" required></textarea>
+                <textarea id="texto" th:field="*{texto}" class="form-control" required></textarea>
+                <div id="texto-error" class="invalid-feedback" style="display: none;">El texto debe tener entre 500 y 2000 caracteres.</div>
             </div>
-<!--            <div class="form-group">-->
-<!--                <label for="imagen">Imagen:</label>-->
-<!--                <input type="file" id="imagen" th:field="*{imagen}" class="form-control-file" />-->
-<!--            </div>-->
 
             <img th:if="${noticia.imagen != null && #strings.length(noticia.imagen) > 0}" class="img-thumbnail rounded float-left"
                  style="max-width: 25%;" th:src="@{'/ccursos/uploads/' + ${noticia.imagen}}"
@@ -39,9 +36,10 @@
 
             <input type="hidden" th:field="*{imagen}"/>
             <input type="hidden" th:field="*{id}"/>
-            <div class="form-group">
+
+            <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='/noticias/verNoticias'">Volver</button>
+                <nav  th:replace="~{fragmentos/backButtons :: buttons}"></nav>
             </div>
         </form>
     </div>
@@ -51,5 +49,32 @@
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const texto = document.getElementById('texto');
+        const textoError = document.getElementById('texto-error');
+
+        texto.addEventListener('input', function () {
+            const textoLength = texto.value.length;
+            if (textoLength < 500 || textoLength > 2000) {
+                texto.classList.add('is-invalid');
+                textoError.style.display = 'block';
+            } else {
+                texto.classList.remove('is-invalid');
+                textoError.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', function (event) {
+            const textoLength = texto.value.length;
+            if (textoLength < 500 || textoLength > 2000) {
+                event.preventDefault();
+                alert('El texto debe tener entre 500 y 2000 caracteres.');
+            }
+        });
+    });
+</script>
 </body>
 </html>
