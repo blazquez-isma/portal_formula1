@@ -32,7 +32,8 @@ public class UsuarioDTO {
 
     private boolean activo = false;
 
-    private Long equipoID;
+    public UsuarioDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -90,14 +91,6 @@ public class UsuarioDTO {
         this.activo = activo;
     }
 
-    public Long getEquipoID() {
-        return equipoID;
-    }
-
-    public void setEquipoID(Long equipoID) {
-        this.equipoID = equipoID;
-    }
-
     @Override
     public String toString() {
         return "UsuarioDTO{" +
@@ -108,8 +101,7 @@ public class UsuarioDTO {
                 ", contrasena=" + contrasena +
                 ", roles=" + roles +
                 ", activo=" + activo +
-                ", equipoID=" + equipoID
-                + '}';
+                '}';
     }
 
     public static Comparator<UsuarioDTO> getUsuarioPageableComparator(Pageable pageable) {

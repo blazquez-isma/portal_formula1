@@ -18,7 +18,7 @@ public class Equipo {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = false, unique = true)
     private String nombre;
 
     @Size(max = 255)
@@ -26,7 +26,7 @@ public class Equipo {
     private String logo;
 
     @Size(max = 255)
-    @Column(name = "twitter")
+    @Column(name = "twitter", unique = true)
     private String twitter;
 
     @OneToMany(mappedBy = "equipo")
@@ -35,7 +35,7 @@ public class Equipo {
 
     @OneToMany(mappedBy = "equipo")
     @JsonIgnoreProperties("equipo")
-    private List<Usuario> usuarios = new ArrayList<>();
+    private List<Usuario> responsables = new ArrayList<>();
 
     @OneToMany(mappedBy = "equipo")
     @JsonIgnoreProperties("equipo")
@@ -81,12 +81,12 @@ public class Equipo {
         this.coches = coches;
     }
 
-    public List<Usuario> getUsuarios() {
-        return usuarios;
+    public List<Usuario> getResponsables() {
+        return responsables;
     }
 
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
+    public void setResponsables(List<Usuario> responsables) {
+        this.responsables = responsables;
     }
 
     public List<Piloto> getPilotos() {

@@ -23,7 +23,8 @@ public class UsuarioNuevoDTO {
 
     private boolean activo = false;
 
-
+    public UsuarioNuevoDTO() {
+    }
 
     public String getNombre() {
         return nombre;

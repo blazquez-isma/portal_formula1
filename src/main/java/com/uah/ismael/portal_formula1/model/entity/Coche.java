@@ -16,12 +16,12 @@ public class Coche {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = false, unique = true)
     private String nombre;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "codigo", nullable = false)
+    @Column(name = "codigo", nullable = false, unique = true)
     private String codigo;
 
     @NotNull

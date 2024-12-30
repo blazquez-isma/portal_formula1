@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface NoticiaService {
 
-    boolean addNoticia(String titulo, String texto, String imagen, String administradorNombreUsuario);
+    boolean addNoticia(NoticiaDTO noticia, String administradorNombreUsuario);
 
     boolean updateNoticia(NoticiaDTO noticia);
 

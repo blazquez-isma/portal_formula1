@@ -5,10 +5,10 @@ import com.uah.ismael.portal_formula1.model.entity.Noticia;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.NoticiaRepository;
 import com.uah.ismael.portal_formula1.model.repository.UsuarioRepository;
+import com.uah.ismael.portal_formula1.paginator.PageUtil;
 import com.uah.ismael.portal_formula1.service.NoticiaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +29,14 @@ public class NoticiaServiceImpl implements NoticiaService {
     }
 
     @Override
-    public boolean addNoticia(String titulo, String texto, String imagen, String administradorNombreUsuario) {
+    public boolean addNoticia(NoticiaDTO noticiaDto, String administradorNombreUsuario) {
         Usuario usuario = usuarioRepository.findByNombreUsuario(administradorNombreUsuario);
         if (usuario != null) {
             Noticia noticia = new Noticia();
-            noticia.setTitulo(titulo);
-            noticia.setTexto(texto);
-            if (imagen != null) {
-                noticia.setImagen(imagen);
+            noticia.setTitulo(noticiaDto.getTitulo());
+            noticia.setTexto(noticiaDto.getTexto());
+            if (noticiaDto.getImagen() != null) {
+                noticia.setImagen(noticiaDto.getImagen());
             }
             noticia.setAdministrador(usuario);
             Noticia noticiaSave = noticiaRepository.save(noticia);
@@ -99,10 +99,7 @@ public class NoticiaServiceImpl implements NoticiaService {
                 .sorted(NoticiaDTO.getNoticiaPageableComparator(pageable))
                 .toList();
 
-        int start = Math.min((int) pageable.getOffset(), noticias.size());
-        int end = Math.min((start + pageable.getPageSize()), noticias.size());
-
-        return new PageImpl<>(noticias.subList(start, end), pageable, noticias.size());
+        return PageUtil.sortedPageImpl(pageable, noticias);
     }
 
     @Override
@@ -117,10 +114,7 @@ public class NoticiaServiceImpl implements NoticiaService {
                     .toList();
         }
 
-        int start = Math.min((int) pageable.getOffset(), noticias.size());
-        int end = Math.min((start + pageable.getPageSize()), noticias.size());
-
-        return new PageImpl<>(noticias.subList(start, end), pageable, noticias.size());
+        return PageUtil.sortedPageImpl(pageable, noticias);
     }
 
     private String generatePermalinkById(Long noticiaId) {

@@ -6,19 +6,18 @@ import com.uah.ismael.portal_formula1.model.entity.Rol;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.RolRepository;
 import com.uah.ismael.portal_formula1.model.repository.UsuarioRepository;
+import com.uah.ismael.portal_formula1.paginator.PageUtil;
 import com.uah.ismael.portal_formula1.service.UsuarioService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,10 +81,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .sorted(UsuarioDTO.getUsuarioPageableComparator(pageable)).collect(Collectors.toList())
                 ;
 
-        int start = Math.min((int) pageable.getOffset(), usuarios.size());
-        int end = Math.min((start + pageable.getPageSize()), usuarios.size());
-
-        return new PageImpl<>(usuarios.subList(start, end), pageable, usuarios.size());
+        return PageUtil.sortedPageImpl(pageable, usuarios);
     }
 
     @Override

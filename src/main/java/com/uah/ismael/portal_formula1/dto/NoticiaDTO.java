@@ -1,6 +1,7 @@
 package com.uah.ismael.portal_formula1.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -19,9 +20,11 @@ public class NoticiaDTO {
     private String imagen;
 
     @NotBlank(message = "El texto es obligatorio")
+    @Size(min = 500, max = 2000, message = "El texto debe tener entre 500 y 2000 caracteres")
     private String texto;
 
-    private UsuarioDTO administrador;
+    public NoticiaDTO() {
+    }
 
     // Getters y Setters
     public Long getId() {
@@ -64,14 +67,6 @@ public class NoticiaDTO {
         this.texto = texto;
     }
 
-    public UsuarioDTO getAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(UsuarioDTO administrador) {
-        this.administrador = administrador;
-    }
-
     @Override
     public String toString() {
         return "NoticiaDTO{" +
@@ -80,7 +75,6 @@ public class NoticiaDTO {
                 ", titulo='" + titulo + '\'' +
                 ", imagen='" + imagen + '\'' +
                 ", texto='" + texto + '\'' +
-                ", administrador=" + administrador +
                 '}';
     }
 

@@ -113,12 +113,9 @@ public class NoticiaController {
         }
 
         if (noticia.getId() != null) {
-            LOG.debug("Actualizar noticia con id: " + noticia.getId());
             noticiaService.updateNoticia(noticia);
         } else {
-            LOG.debug("Crear noticia");
-            noticiaService.addNoticia(noticia.getTitulo(), noticia.getTexto(), noticia.getImagen(),
-                    SecurityContextHolder.getContext().getAuthentication().getName());
+            noticiaService.addNoticia(noticia, SecurityContextHolder.getContext().getAuthentication().getName());
         }
 
         return "redirect:/noticias/verNoticias";

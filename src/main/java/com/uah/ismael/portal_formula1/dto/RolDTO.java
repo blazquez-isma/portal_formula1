@@ -4,6 +4,9 @@ public class RolDTO {
     private Long id;
     private String nombre;
 
+    public RolDTO() {
+    }
+
     // Getters y Setters
     public Long getId() {
         return id;

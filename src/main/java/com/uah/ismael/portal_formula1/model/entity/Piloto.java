@@ -26,11 +26,11 @@ public class Piloto {
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "siglas", nullable = false)
+    @Column(name = "siglas", nullable = false, unique = true)
     private String siglas;
 
     @NotNull
-    @Column(name = "dorsal", nullable = false)
+    @Column(name = "dorsal", nullable = false, unique = true)
     private Integer dorsal;
 
     @Size(max = 255)
@@ -43,7 +43,7 @@ public class Piloto {
     private String pais;
 
     @Size(max = 255)
-    @Column(name = "twitter")
+    @Column(name = "twitter", unique = true)
     private String twitter;
 
     @ManyToOne(fetch = FetchType.LAZY)
