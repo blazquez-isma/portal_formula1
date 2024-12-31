@@ -8,11 +8,14 @@ import com.uah.ismael.portal_formula1.service.CocheService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CocheServiceImpl implements CocheService {
 
     Logger LOG = LoggerFactory.getLogger(CocheServiceImpl.class);
@@ -20,6 +23,7 @@ public class CocheServiceImpl implements CocheService {
     private final ModelMapper modelMapper;
     private final CocheRepository cocheRepository;
 
+    @Autowired
     public CocheServiceImpl(ModelMapper modelMapper, CocheRepository cocheRepository) {
         this.modelMapper = modelMapper;
         this.cocheRepository = cocheRepository;

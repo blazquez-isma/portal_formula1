@@ -35,9 +35,8 @@ public class UsuarioController {
         Page<UsuarioDTO> usuarioPage = usuarioService.getAllUsuarios(pageable);
 
         model.addAttribute("titulo", "Listado de Usuarios");
-        model.addAttribute("userPage", usuarioPage);
+        model.addAttribute("elements", usuarioPage);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", usuarioPage.getTotalPages());
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");

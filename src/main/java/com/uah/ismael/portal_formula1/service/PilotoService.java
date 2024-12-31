@@ -16,19 +16,19 @@ public interface PilotoService {
 
     PilotoDTO getPilotoById(Long id);
 
-    Page<PilotoDTO> getPilotoByNombre(Pageable pageable, String nombre);
+    Page<PilotoDTO> getPilotosByNombre(Pageable pageable, String nombre);
 
-    Page<PilotoDTO> getPilotoByApellido(Pageable pageable, String apellidos);
+    Page<PilotoDTO> getPilotosByApellido(Pageable pageable, String apellidos);
 
-    Page<PilotoDTO> getPilotoByNombreAndApellidos(Pageable pageable, String nombre, String apellidos);
+    Page<PilotoDTO> getPilotosByNombreAndApellidos(Pageable pageable, String nombre, String apellidos);
 
     PilotoDTO getPilotoBySiglas(String siglas);
 
     PilotoDTO getPilotoByDorsal(Integer dorsal);
 
-    Page<PilotoDTO> getPilotoByPais(Pageable pageable, String pais);
+    Page<PilotoDTO> getPilotosByPais(Pageable pageable, String pais);
 
     PilotoDTO getPilotoByTwitter(String twitter);
 
-    Page<PilotoDTO> getPilotoByEquipoId(Pageable pageable, Long equipoId);
+    Page<PilotoDTO> getPilotosByEquipoId(Pageable pageable, Long equipoId);
 }

@@ -8,11 +8,14 @@ import com.uah.ismael.portal_formula1.service.EquipoService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class EquipoServiceImpl implements EquipoService {
 
     Logger LOG = LoggerFactory.getLogger(EquipoServiceImpl.class);
@@ -20,6 +23,7 @@ public class EquipoServiceImpl implements EquipoService {
     private final ModelMapper modelMapper;
     private final EquipoRepository equipoRepository;
 
+    @Autowired
     public EquipoServiceImpl(ModelMapper modelMapper, EquipoRepository equipoRepository) {
         this.modelMapper = modelMapper;
         this.equipoRepository = equipoRepository;

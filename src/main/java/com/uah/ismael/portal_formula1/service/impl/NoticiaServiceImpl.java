@@ -8,6 +8,7 @@ import com.uah.ismael.portal_formula1.model.repository.UsuarioRepository;
 import com.uah.ismael.portal_formula1.paginator.PageUtil;
 import com.uah.ismael.portal_formula1.service.NoticiaService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class NoticiaServiceImpl implements NoticiaService {
     private final NoticiaRepository noticiaRepository;
     private final UsuarioRepository usuarioRepository;
 
+    @Autowired
     public NoticiaServiceImpl(ModelMapper modelMapper, NoticiaRepository noticiaRepository, UsuarioRepository usuarioRepository) {
         this.modelMapper = modelMapper;
         this.noticiaRepository = noticiaRepository;

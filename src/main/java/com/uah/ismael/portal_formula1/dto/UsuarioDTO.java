@@ -32,6 +32,8 @@ public class UsuarioDTO {
 
     private boolean activo = false;
 
+    private EquipoDTO equipo;
+
     public UsuarioDTO() {
     }
 
@@ -91,6 +93,14 @@ public class UsuarioDTO {
         this.activo = activo;
     }
 
+    public EquipoDTO getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(EquipoDTO equipo) {
+        this.equipo = equipo;
+    }
+
     @Override
     public String toString() {
         return "UsuarioDTO{" +
@@ -101,6 +111,7 @@ public class UsuarioDTO {
                 ", contrasena=" + contrasena +
                 ", roles=" + roles +
                 ", activo=" + activo +
+                ", equipo=" + equipo +
                 '}';
     }
 

@@ -12,11 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,7 +34,7 @@ public class NoticiaController {
     private UploadFileService uploadFileService;
 
 
-    @GetMapping("/noticias/verNoticias")
+    @GetMapping("/noticias")
     public String verNoticias(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size,
                                @RequestParam(defaultValue = "titulo") String sortField,
@@ -46,7 +44,7 @@ public class NoticiaController {
         Page<NoticiaDTO> noticiasPage = noticiaService.getAllNoticias(pageable);
 
         model.addAttribute("titulo", "Listado de Noticias");
-        model.addAttribute("noticiasPage", noticiasPage);
+        model.addAttribute("elements", noticiasPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
@@ -56,9 +54,8 @@ public class NoticiaController {
     }
 
     @GetMapping("/noticias/verNoticia/{noticiaId}")
-    public String viewNoticia(@PathVariable("noticiaId") Long noticiaId,
-                              @RequestAttribute(value = "Authorization", required = false) String token,
-                              Model model) {
+    public String verNoticia(@PathVariable("noticiaId") Long noticiaId,
+                             Model model) {
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaId);
         model.addAttribute("noticia", noticia);
         String noticiaAnteriorId = noticiaService.getNoticiaAnteriorId(noticiaId);
@@ -83,11 +80,11 @@ public class NoticiaController {
 
         noticiaService.deleteNoticia(noticiaId);
         attributes.addFlashAttribute("msg", "Noticia eliminada con exito!");
-        return "redirect:/noticias/verNoticias";
+        return "redirect:/noticias";
     }
 
     @GetMapping("/noticias/crearNoticia")
-    public String showCrearNoticiaForm(Model model) {
+    public String formularioCrearNoticia(Model model) {
         model.addAttribute("titulo", "Crear Noticia");
         model.addAttribute("noticia", new NoticiaDTO());
         return "noticias/createNoticia";
@@ -118,7 +115,7 @@ public class NoticiaController {
             noticiaService.addNoticia(noticia, SecurityContextHolder.getContext().getAuthentication().getName());
         }
 
-        return "redirect:/noticias/verNoticias";
+        return "redirect:/noticias";
     }
 
     @GetMapping("/noticias/editarNoticia/{id}")
@@ -134,12 +131,12 @@ public class NoticiaController {
     }
 
     @GetMapping("/noticias/verNoticiasByAdmin")
-    public String viewNoticiasByAdmin(@RequestParam("administradorNombreUsuario") String administradorNombreUsuario,
-                                      @RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "5") int size,
-                                      @RequestParam(defaultValue = "nombreUsuario") String sortField,
-                                      @RequestParam(defaultValue = "asc") String sortDir,
-                                      Model model) {
+    public String verNoticiasByAdmin(@RequestParam("administradorNombreUsuario") String administradorNombreUsuario,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "5") int size,
+                                     @RequestParam(defaultValue = "nombreUsuario") String sortField,
+                                     @RequestParam(defaultValue = "asc") String sortDir,
+                                     Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<NoticiaDTO> noticiasPage = noticiaService.getNoticiasByAdministradorNombreUsuario(administradorNombreUsuario, pageable);
 

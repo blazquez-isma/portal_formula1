@@ -19,7 +19,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="noticia : ${noticiasPage.content}">
+            <tr th:each="noticia : ${elements.content}">
                 <td><a th:href="${noticia.permalink}" th:text="${noticia.titulo}"></a></td>
                 <td>
                     <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
@@ -36,19 +36,19 @@
             </tr>
             </tbody>
         </table>
-        <div th:if="${noticiasPage.totalElements > 0}">
+        <div th:if="${elements.totalElements > 0}">
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${noticiasPage.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${noticiasPage.number - 1}, size=${noticiasPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                    <li class="page-item" th:classappend="${elements.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(1, noticiasPage.totalPages)}" th:classappend="${i == noticiasPage.number + 1} ? 'active'">
-                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${i - 1}, size=${noticiasPage.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, elements.totalPages)}" th:classappend="${i == elements.number + 1} ? 'active'">
+                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
                     </li>
-                    <li class="page-item" th:classappend="${noticiasPage.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${noticiasPage.number + 1}, size=${noticiasPage.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                    <li class="page-item" th:classappend="${elements.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
