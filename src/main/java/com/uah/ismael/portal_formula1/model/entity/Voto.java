@@ -28,13 +28,13 @@ public class Voto {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pilotoID", nullable = false)
-    private Piloto pilotoID;
+    private Piloto piloto;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "votacionID", nullable = false)
-    private Votacion votacionID;
+    private Votacion votacion;
 
     public Long getId() {
         return id;
@@ -60,20 +60,20 @@ public class Voto {
         this.email = email;
     }
 
-    public Piloto getPilotoID() {
-        return pilotoID;
+    public Piloto getPiloto() {
+        return piloto;
     }
 
-    public void setPilotoID(Piloto pilotoID) {
-        this.pilotoID = pilotoID;
+    public void setPiloto(Piloto pilotoID) {
+        this.piloto = pilotoID;
     }
 
-    public Votacion getVotacionID() {
-        return votacionID;
+    public Votacion getVotacion() {
+        return votacion;
     }
 
-    public void setVotacionID(Votacion votacionID) {
-        this.votacionID = votacionID;
+    public void setVotacion(Votacion votacionID) {
+        this.votacion = votacionID;
     }
 
 }

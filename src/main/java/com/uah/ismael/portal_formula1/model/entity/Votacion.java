@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class Votacion {
 
     @NotNull
     @Column(name = "fechaLimite", nullable = false)
-    private Instant fechaLimite;
+    private Timestamp fechaLimite;
 
     @ManyToMany
     @JoinTable(name = "piloto_votacion",
@@ -40,7 +40,7 @@ public class Votacion {
             inverseJoinColumns = @JoinColumn(name = "pilotoID"))
     private List<Piloto> pilotos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "votacionID")
+    @OneToMany(mappedBy = "votacion")
     private List<Voto> votos = new ArrayList<>();
 
     public Long getId() {
@@ -75,11 +75,11 @@ public class Votacion {
         this.descripcion = descripcion;
     }
 
-    public Instant getFechaLimite() {
+    public Timestamp getFechaLimite() {
         return fechaLimite;
     }
 
-    public void setFechaLimite(Instant fechaLimite) {
+    public void setFechaLimite(Timestamp fechaLimite) {
         this.fechaLimite = fechaLimite;
     }
 
