@@ -12,15 +12,17 @@
     <div class="container my-4">
         <div class="card">
             <div class="card-header">
-                <h2 th:text="${noticia.titulo}">Título de la Noticia</h2>
+                <h2 th:text="${noticia.titulo}"></h2>
+                <h3 th:text="${#dates.format(noticia.fecha, 'dd/MM/yyyy')}" class="text-end"></h3>
             </div>
+
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4" th:if="${noticia.imagen != null}">
-                        <img th:src="@{/uploads/{filename}(filename=${noticia.imagen})}" class="img-fluid" alt="Imagen de la Noticia">
+                        <img th:src="@{/noticias/verImagen/{filename}(filename=${noticia.imagen})}" class="img-fluid" alt="Imagen de la Noticia">
                     </div>
                     <div class="col-md-8">
-                        <p th:text="${noticia.texto}">Texto de la Noticia</p>
+                        <p th:text="${noticia.texto}"></p>
                     </div>
                 </div>
             </div>

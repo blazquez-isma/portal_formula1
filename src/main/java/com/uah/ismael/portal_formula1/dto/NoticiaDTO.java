@@ -1,10 +1,12 @@
 package com.uah.ismael.portal_formula1.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 
 public class NoticiaDTO {
@@ -22,6 +24,11 @@ public class NoticiaDTO {
     @NotBlank(message = "El texto es obligatorio")
     @Size(min = 500, max = 2000, message = "El texto debe tener entre 500 y 2000 caracteres")
     private String texto;
+
+    @NotNull(message = "La fecha es obligatoria")
+    private LocalDate fecha;
+
+    private UsuarioDTO administrador;
 
     public NoticiaDTO() {
     }
@@ -67,14 +74,32 @@ public class NoticiaDTO {
         this.texto = texto;
     }
 
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public UsuarioDTO getAdministrador() {
+        return administrador;
+    }
+
+    public void setAdministrador(UsuarioDTO administrador) {
+        this.administrador = administrador;
+    }
+
     @Override
     public String toString() {
         return "NoticiaDTO{" +
                 "id=" + id +
                 ", permalink='" + permalink + '\'' +
                 ", titulo='" + titulo + '\'' +
+                ", fecha=" + fecha +
                 ", imagen='" + imagen + '\'' +
                 ", texto='" + texto + '\'' +
+                ", administrador=" + administrador.getNombreUsuario() +
                 '}';
     }
 
@@ -82,6 +107,9 @@ public class NoticiaDTO {
         // Ordenar la lista
         Sort.Order order = pageable.getSort().iterator().next();
         Comparator<NoticiaDTO> comparator = Comparator.comparing(NoticiaDTO::getTitulo);
+        if(order.getProperty().equals("fecha")) {
+            comparator = Comparator.comparing(NoticiaDTO::getFecha);
+        }
         if (order.getDirection() == Sort.Direction.DESC) {
             comparator = comparator.reversed();
         }

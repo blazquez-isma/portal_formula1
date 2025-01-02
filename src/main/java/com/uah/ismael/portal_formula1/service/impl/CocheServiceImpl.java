@@ -117,7 +117,7 @@ public class CocheServiceImpl implements CocheService {
     }
 
     @Override
-    public Page<CocheDTO> getCochesByEquipo(Long idEquipo, Pageable pageable) {
+    public Page<CocheDTO> getCochesByEquipoId(Long idEquipo, Pageable pageable) {
         List<CocheDTO> coches = cocheRepository.findByEquipo_Id(idEquipo).stream()
                 .map(coche -> modelMapper.map(coche, CocheDTO.class))
                 .sorted(CocheDTO.getCochePageableComparator(pageable))

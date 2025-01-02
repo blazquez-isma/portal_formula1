@@ -2,6 +2,7 @@ package com.uah.ismael.portal_formula1.service.impl;
 
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
+import com.uah.ismael.portal_formula1.model.entity.Equipo;
 import com.uah.ismael.portal_formula1.model.entity.Rol;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.RolRepository;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -72,13 +72,56 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public boolean updateUsuario(UsuarioDTO usuario){
+        Usuario usuarioToUpdate = usuarioRepository.findById(usuario.getId()).orElse(null);
+        if(usuarioToUpdate != null){
+            if(usuarioRepository.existsByNombreUsuario(usuario.getNombreUsuario()) && !usuarioToUpdate.getNombreUsuario().equals(usuario.getNombreUsuario())){
+                throw new IllegalArgumentException("Ya existe un usuario con el nombre de usuario '" + usuario.getNombreUsuario() + "'");
+            }
+            if(usuarioRepository.existsByEmail(usuario.getEmail()) && !usuarioToUpdate.getEmail().equals(usuario.getEmail())){
+                throw new IllegalArgumentException("Ya existe un usuario con el email '" + usuario.getEmail() + "'");
+            }
+            if(usuario.getNombre() != null){
+                usuarioToUpdate.setNombre(usuario.getNombre());
+            }
+            if(usuario.getNombreUsuario() != null){
+                usuarioToUpdate.setNombreUsuario(usuario.getNombreUsuario());
+            }
+            if(usuario.getEmail() != null){
+                usuarioToUpdate.setEmail(usuario.getEmail());
+            }
+            if(usuario.getContrasena() != null){
+                usuarioToUpdate.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+            }
+            if(usuario.getEquipo() != null){
+                usuarioToUpdate.setEquipo(modelMapper.map(usuario.getEquipo(), Equipo.class));
+            }
+            if(usuario.getRoles() != null){
+                List<Rol> roles = new ArrayList<>();
+                usuario.getRoles().forEach(rolDTO -> {
+                    Rol rol = rolRepository.findById(rolDTO.getId())
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid role ID"));
+                    roles.add(rol);
+                });
+                usuarioToUpdate.setRoles(roles);
+            }
+            usuarioToUpdate.setActivo(usuario.isActivo());
+
+            usuarioRepository.save(usuarioToUpdate);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public Page<UsuarioDTO> getAllUsuarios(Pageable pageable) {
 
         List<UsuarioDTO> usuarios = usuarioRepository.findAll().stream()
                 .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
                 //.filter(user -> !user.getNombreUsuario().equals(currentUsername))
                 .peek(user -> user.getRoles().forEach(rol -> rol.setNombre(rol.getNombre().replace("ROLE_", ""))))
-                .sorted(UsuarioDTO.getUsuarioPageableComparator(pageable)).collect(Collectors.toList())
+                .sorted(UsuarioDTO.getUsuarioPageableComparator(pageable))
+                .toList();
                 ;
 
         return PageUtil.sortedPageImpl(pageable, usuarios);
@@ -96,7 +139,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public List<UsuarioDTO> getUsuariosByActivo(boolean activo) {
         return usuarioRepository.findByActivo(activo).stream()
                 .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -124,12 +167,28 @@ public class UsuarioServiceImpl implements UsuarioService {
         return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
     }
 
+    @Override
+    public List<UsuarioDTO> getUsuariosByEquipoId(Long equipoId) {
+        return usuarioRepository.findByEquipo_Id(equipoId).stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .toList();
+    }
+
+    @Override
+    public Page<UsuarioDTO> getPageUsuariosByEquipoId(Long equipoId, Pageable pageable) {
+        List<UsuarioDTO> usuarios = usuarioRepository.findByEquipo_Id(equipoId).stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .sorted(UsuarioDTO.getUsuarioPageableComparator(pageable))
+                .toList();
+        return PageUtil.sortedPageImpl(pageable, usuarios);
+    }
+
 //    @Override
 //    public List<UsuarioDTO> getUsuariosByRolName(String rolName) {
 //        if (rolName != null) {
 //            return usuarioRepository.findByRolsNombre(rolName).stream()
 //                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-//                    .collect(Collectors.toList());
+//                    .toList();
 //        }
 //        return List.of();
 //    }
@@ -139,8 +198,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 //        if (rolId != null) {
 //            return usuarioRepository.findByRolsId(rolId).stream()
 //                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-//                    .collect(Collectors.toList())
-//                    ;
+//                    .toList();
 //        }
 //        return List.of();
 //    }

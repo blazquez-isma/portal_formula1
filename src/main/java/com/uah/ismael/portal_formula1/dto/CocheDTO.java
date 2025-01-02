@@ -14,6 +14,7 @@ public class CocheDTO {
     private Float ersCurvamedia;
     private Float ersCurvarapida;
     private Float consumo;
+    private EquipoDTO equipo;
 
     public CocheDTO() {
     }
@@ -72,6 +73,14 @@ public class CocheDTO {
 
     public void setConsumo(Float consumo) {
         this.consumo = consumo;
+    }
+
+    public EquipoDTO getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(EquipoDTO equipo) {
+        this.equipo = equipo;
     }
 
     public static Comparator<CocheDTO> getCochePageableComparator(Pageable pageable) {

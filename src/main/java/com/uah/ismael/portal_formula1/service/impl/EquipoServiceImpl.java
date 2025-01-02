@@ -1,7 +1,9 @@
 package com.uah.ismael.portal_formula1.service.impl;
 
 import com.uah.ismael.portal_formula1.dto.EquipoDTO;
+import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Equipo;
+import com.uah.ismael.portal_formula1.model.entity.Piloto;
 import com.uah.ismael.portal_formula1.model.repository.EquipoRepository;
 import com.uah.ismael.portal_formula1.paginator.PageUtil;
 import com.uah.ismael.portal_formula1.service.EquipoService;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -107,4 +110,22 @@ public class EquipoServiceImpl implements EquipoService {
         }
         return null;
     }
+
+    @Override
+    public EquipoDTO addPilotoToEquipo(PilotoDTO piloto) {
+        Equipo equipo = equipoRepository.findById(piloto.getEquipo().getId()).orElse(null);
+        if (equipo != null) {
+            List<Piloto> pilotos = equipo.getPilotos();
+            pilotos = pilotos == null ? new ArrayList<>() : pilotos;
+            if (pilotos.stream().noneMatch(p -> p.getId().equals(piloto.getId()))) {
+                pilotos.add(modelMapper.map(piloto, Piloto.class));
+                equipo.setPilotos(pilotos);
+                equipo = equipoRepository.save(equipo);
+            }
+            equipo = equipoRepository.save(equipo);
+        }
+        return modelMapper.map(equipo, EquipoDTO.class);
+    }
+
+
 }

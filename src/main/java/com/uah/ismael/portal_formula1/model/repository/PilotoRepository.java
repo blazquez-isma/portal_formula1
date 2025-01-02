@@ -1,9 +1,12 @@
 package com.uah.ismael.portal_formula1.model.repository;
 
+import com.uah.ismael.portal_formula1.model.entity.Equipo;
 import com.uah.ismael.portal_formula1.model.entity.Piloto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -34,4 +37,8 @@ public interface PilotoRepository extends JpaRepository<Piloto, Long> {
     boolean existsPilotoByDorsal(Integer dorsal);
 
     boolean existsPilotoByTwitter(String twitter);
+
+    @Query("SELECT p.equipo FROM Piloto p WHERE p.id = :idPiloto")
+    Equipo findEquipoByPilotoId(@Param("idPiloto") Long idPiloto);
+
 }

@@ -35,7 +35,7 @@
                             Noticias
                         </a>
                         <div class="dropdown-menu" aria-labelledby="noticiasDropdown">
-                            <a class="dropdown-item" th:href="@{/noticias/verNoticias}">Ver Noticias</a>
+                            <a class="dropdown-item" th:href="@{/noticias}">Ver Noticias</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/noticias/crearNoticia}">Crear Noticia</a>
                         </div>
                     </li>

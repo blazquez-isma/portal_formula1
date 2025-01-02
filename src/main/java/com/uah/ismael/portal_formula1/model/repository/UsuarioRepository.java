@@ -22,4 +22,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByActivo(boolean activo);
 
+    List<Usuario> findByEquipo_Id(Long equipoId);
+
 }

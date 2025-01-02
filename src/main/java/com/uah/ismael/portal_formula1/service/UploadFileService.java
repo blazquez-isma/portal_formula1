@@ -8,13 +8,13 @@ import java.net.MalformedURLException;
 
 public interface UploadFileService {
 
-	public Resource load(String filename) throws MalformedURLException;
+	Resource load(String filename) throws MalformedURLException;
 
-	public String copy(MultipartFile file) throws IOException;
+	String copy(MultipartFile file) throws IOException;
 
-	public boolean delete(String filename);
+	boolean delete(String filename);
 
-	public void deleteAll();
+	void deleteAll();
 
-	public void init() throws IOException;
+	void init() throws IOException;
 }

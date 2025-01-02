@@ -44,15 +44,15 @@
                 </td>
                 <td data-column="estado" th:text="${usuario.activo ? 'Activo' : 'No Activo'}" th:style="${usuario.activo ? 'color: green;' : 'color: red;'}"></td>
                 <td>
-                    <form th:action="@{/templates/usuarios/activate_user}" method="post" style="display:inline;" th:if="${!usuario.activo}">
+                    <form th:action="@{/templates/usuarios/activarUsuario}" method="post" style="display:inline;" th:if="${!usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
                         <button type="submit" class="btn btn-success">Activar</button>
                     </form>
-                    <form th:action="@{/templates/usuarios/delete_user}" method="post" style="display:inline;" th:if="${!usuario.activo}">
+                    <form th:action="@{/templates/usuarios/borrarUsuario}" method="post" style="display:inline;" th:if="${!usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
                         <button type="submit" class="btn btn-danger">Rechazar</button>
                     </form>
-                    <form th:action="@{/templates/usuarios/delete_user}" method="post" th:id="'deleteForm-' + ${usuario.id}" style="display:inline;" th:if="${usuario.activo}">
+                    <form th:action="@{/templates/usuarios/borrarUsuario}" method="post" th:id="'deleteForm-' + ${usuario.id}" style="display:inline;" th:if="${usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
                         <button type="button" th:id="'deleteButton-' + ${usuario.id}" class="btn btn-warning" th:onclick="'confirmDelete(' + ${usuario.id} + ')'">Eliminar</button>
                         <button type="button" th:id="'confirmButton-' + ${usuario.id}" class="confirm-button btn btn-danger" th:onclick="'document.getElementById(\'deleteForm-' + ${usuario.id} + '\').submit()'" style="display:none;">Confirmar</button>

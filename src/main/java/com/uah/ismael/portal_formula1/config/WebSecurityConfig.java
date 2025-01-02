@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/js/**", "/css/**", "/images/**",
                                 "/", "/login", "/registro",
-                                "noticias/verNoticias", "/noticias/verNoticia/**" , "/uploads/**"
+                                "/noticias", "/noticias/verNoticia/**" , "/noticias/verImagen/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

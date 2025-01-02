@@ -15,6 +15,7 @@ public class PilotoDTO {
     private String foto;
     private String pais;
     private String twitter;
+    private EquipoDTO equipo;
 
     public PilotoDTO() {
     }
@@ -81,6 +82,14 @@ public class PilotoDTO {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public EquipoDTO getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(EquipoDTO equipo) {
+        this.equipo = equipo;
     }
 
     public static Comparator<PilotoDTO> getPilotoPageableComparator(Pageable pageable) {

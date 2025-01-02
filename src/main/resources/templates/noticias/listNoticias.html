@@ -14,12 +14,24 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Título</th>
+                <th>
+                    <a th:href="@{/noticias(page=${currentPage}, size=${elements.size}, sortField='fecha', sortDir=${sortField == 'fecha' ? reverseSortDir : 'asc'})}">
+                        Fecha
+                        <span th:if="${sortField == 'fecha'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/noticias(page=${currentPage}, size=${elements.size}, sortField='titulo', sortDir=${sortField == 'titulo' ? reverseSortDir : 'asc'})}">
+                        Titulo
+                        <span th:if="${sortField == 'titulo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
                 <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="noticia : ${elements.content}">
+                <td th:text="${#temporals.format(noticia.fecha, 'dd/MM/yyyy')}"></td>
                 <td><a th:href="${noticia.permalink}" th:text="${noticia.titulo}"></a></td>
                 <td>
                     <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
@@ -40,15 +52,15 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${elements.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                        <a class="page-link" th:href="@{/noticias(page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item" th:each="i : ${#numbers.sequence(1, elements.totalPages)}" th:classappend="${i == elements.number + 1} ? 'active'">
-                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/noticias(page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
                     </li>
                     <li class="page-item" th:classappend="${elements.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{/noticias/verNoticias(page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                        <a class="page-link" th:href="@{/noticias(page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

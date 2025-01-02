@@ -13,6 +13,8 @@ public interface UsuarioService {
 
     void deleteUsuario(Long userId);
 
+    boolean updateUsuario(UsuarioDTO usuario);
+
     Page<UsuarioDTO> getAllUsuarios(Pageable pageable);
 
     List<UsuarioDTO> getUsuariosByActivo(boolean activo);
@@ -24,6 +26,10 @@ public interface UsuarioService {
     UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario);
 
     UsuarioDTO getUsuarioByEmail(String email);
+
+    List<UsuarioDTO> getUsuariosByEquipoId(Long equipoId);
+
+    Page<UsuarioDTO> getPageUsuariosByEquipoId(Long equipoId, Pageable pageable);
 
     void activateUsuario(Long userId);
 }

@@ -1,6 +1,7 @@
 package com.uah.ismael.portal_formula1.controller;
 
 import com.uah.ismael.portal_formula1.dto.NoticiaDTO;
+import com.uah.ismael.portal_formula1.paginator.PageUtil;
 import com.uah.ismael.portal_formula1.service.NoticiaService;
 import com.uah.ismael.portal_formula1.service.UploadFileService;
 import org.slf4j.Logger;
@@ -21,8 +22,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.LocalDate;
 
 @Controller
+@RequestMapping("/noticias")
 public class NoticiaController {
 
     Logger LOG = org.slf4j.LoggerFactory.getLogger(NoticiaController.class);
@@ -34,7 +37,7 @@ public class NoticiaController {
     private UploadFileService uploadFileService;
 
 
-    @GetMapping("/noticias")
+    @GetMapping
     public String verNoticias(@RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "5") int size,
                                @RequestParam(defaultValue = "titulo") String sortField,
@@ -44,16 +47,11 @@ public class NoticiaController {
         Page<NoticiaDTO> noticiasPage = noticiaService.getAllNoticias(pageable);
 
         model.addAttribute("titulo", "Listado de Noticias");
-        model.addAttribute("elements", noticiasPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
+        PageUtil.addPaginationAttributes(model, noticiasPage, page, sortField, sortDir);
         return "noticias/listNoticias";
     }
 
-    @GetMapping("/noticias/verNoticia/{noticiaId}")
+    @GetMapping("/verNoticia/{noticiaId}")
     public String verNoticia(@PathVariable("noticiaId") Long noticiaId,
                              Model model) {
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaId);
@@ -68,7 +66,7 @@ public class NoticiaController {
         return "noticias/seeNoticia";
     }
 
-    @GetMapping("/noticias/borrarNoticia/{id}")
+    @GetMapping("/borrarNoticia/{id}")
     public String borrarNoticia(@PathVariable("id") Long noticiaId, RedirectAttributes attributes) {
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaId);
 
@@ -83,14 +81,14 @@ public class NoticiaController {
         return "redirect:/noticias";
     }
 
-    @GetMapping("/noticias/crearNoticia")
+    @GetMapping("/crearNoticia")
     public String formularioCrearNoticia(Model model) {
         model.addAttribute("titulo", "Crear Noticia");
         model.addAttribute("noticia", new NoticiaDTO());
         return "noticias/createNoticia";
     }
 
-    @PostMapping("/noticias/guardarNoticia")
+    @PostMapping("/guardarNoticia")
     public String guardarNoticia(@ModelAttribute("noticia") NoticiaDTO noticia, Model model,
                                  @RequestParam("file") MultipartFile foto, RedirectAttributes attributes) {
 
@@ -99,17 +97,18 @@ public class NoticiaController {
                     && !noticia.getImagen().isEmpty()) {
                 uploadFileService.delete(noticia.getImagen());
             }
-            String nombreFoto = null;
+            String nombreImagen = null;
             try {
-                nombreFoto = uploadFileService.copy(foto);
+                nombreImagen = uploadFileService.copy(foto);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            attributes.addFlashAttribute("msg", "Has subido correctamente '" + nombreFoto + "'");
-            noticia.setImagen(nombreFoto);
+            attributes.addFlashAttribute("msg", "Has subido correctamente '" + nombreImagen + "'");
+            noticia.setImagen(nombreImagen);
         }
 
-        if (noticia.getId() != null) {
+        noticia.setFecha(LocalDate.now());
+        if (noticia.getId() != null && noticia.getId() > 0) {
             noticiaService.updateNoticia(noticia);
         } else {
             noticiaService.addNoticia(noticia, SecurityContextHolder.getContext().getAuthentication().getName());
@@ -118,19 +117,16 @@ public class NoticiaController {
         return "redirect:/noticias";
     }
 
-    @GetMapping("/noticias/editarNoticia/{id}")
+    @GetMapping("/editarNoticia/{id}")
     public String editarNoticia(@PathVariable("id") Long noticiaID, Model model) {
-
-        LOG.debug("Editar noticia con id: " + noticiaID);
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaID);
-        LOG.debug("Noticia: " + noticia);
 
         model.addAttribute("titulo", "Editar Noticia");
         model.addAttribute("noticia", noticia);
         return "noticias/createNoticia";
     }
 
-    @GetMapping("/noticias/verNoticiasByAdmin")
+    @GetMapping("/verNoticiasByAdmin")
     public String verNoticiasByAdmin(@RequestParam("administradorNombreUsuario") String administradorNombreUsuario,
                                      @RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "5") int size,
@@ -141,28 +137,18 @@ public class NoticiaController {
         Page<NoticiaDTO> noticiasPage = noticiaService.getNoticiasByAdministradorNombreUsuario(administradorNombreUsuario, pageable);
 
         model.addAttribute("titulo", "Listado de Noticias");
-        model.addAttribute("noticiasPage", noticiasPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", noticiasPage.getTotalPages());
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
+        PageUtil.addPaginationAttributes(model, noticiasPage, page, sortField, sortDir);
         return "noticias/listNoticias";
     }
 
-    @GetMapping("/uploads/{filename}")
+    @GetMapping("/verImagen/{filename}")
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
         Resource recurso = null;
-        LOG.debug("Ver foto: " + filename);
         try {
             recurso = uploadFileService.load(filename);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        LOG.debug("Recurso: " + recurso);
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
                 .body(recurso);

@@ -20,6 +20,6 @@ public interface CocheService {
 
     CocheDTO getCocheByCodigo(String codigo);
 
-    Page<CocheDTO> getCochesByEquipo(Long idEquipo, Pageable pageable);
+    Page<CocheDTO> getCochesByEquipoId(Long idEquipo, Pageable pageable);
 
 }

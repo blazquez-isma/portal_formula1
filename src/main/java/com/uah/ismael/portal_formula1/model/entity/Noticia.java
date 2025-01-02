@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "noticia")
 public class Noticia {
@@ -37,6 +39,10 @@ public class Noticia {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "administradorID")
     private Usuario administrador;
+
+    @NotNull
+    @Column(name = "fecha", nullable = false)
+    private LocalDate fecha;
 
     public Long getId() {
         return id;
@@ -86,4 +92,11 @@ public class Noticia {
         this.administrador = administradorID;
     }
 
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 }

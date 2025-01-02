@@ -24,7 +24,7 @@
             </div>
 
             <img th:if="${noticia.imagen != null && #strings.length(noticia.imagen) > 0}" class="img-thumbnail rounded float-left"
-                 style="max-width: 25%;" th:src="@{'/ccursos/uploads/' + ${noticia.imagen}}"
+                 style="max-width: 25%;" th:src="@{'/noticias/verImagen/' + ${noticia.imagen}}"
                  th:alt="${noticia.imagen}" />
 
             <div class="mb-3">
