@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${coche.nombre}">Coche</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 th:text="${coche.nombre}"></h2>
+                <div th:if="${puedeEditar}">
+                    <a sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/coches/editarCoche/{idCoche}(idCoche=${coche.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                    <a sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/coches/eliminarCoche/{idCoche}(idCoche=${coche.id})}"
+                       th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el coche">
+                        <i class="fas fa-trash" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th><strong>Nombre</strong></th>
+                        <td th:text="${coche.nombre}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Código</strong></th>
+                        <td th:text="${coche.codigo}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>ERS Curva Lenta</strong></th>
+                        <td th:text="${coche.ersCurvalenta}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>ERS Curva Media</strong></th>
+                        <td th:text="${coche.ersCurvamedia}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>ERS Curva Rápida</strong></th>
+                        <td th:text="${coche.ersCurvarapida}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Consumo</strong></th>
+                        <td th:text="${coche.consumo}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Equipo</strong></th>
+                        <td>
+                            <a th:href="@{/equipos/verEquipo/{idEquipo}(idEquipo=${coche.equipo.id})}" th:text="${coche.equipo.nombre}"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

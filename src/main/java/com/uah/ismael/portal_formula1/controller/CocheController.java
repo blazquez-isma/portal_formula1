@@ -21,6 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/coches")
 public class CocheController {
@@ -47,10 +49,11 @@ public class CocheController {
                                     @RequestParam(defaultValue = "asc") String sortDir,
                                     Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
-        Page<CocheDTO> cochesPage = cocheService.getCochesByEquipoId(idEquipo, pageable);
+        Page<CocheDTO> cochesPage = cocheService.getPageCochesByEquipoId(idEquipo, pageable);
 
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
         model.addAttribute("titulo", "Coches del equipo " + equipo.getNombre());
+        model.addAttribute("equipo", equipo);
         PageUtil.addPaginationAttributes(model, cochesPage, page, sortField, sortDir);
         return "coches/listCoches";
     }
@@ -63,11 +66,11 @@ public class CocheController {
         return "coches/seeCoche";
     }
 
-    @GetMapping("/crearCoche/{nombreUsuario}")
-    public String crearCoche(@PathVariable("nombreUsuario") String nombreUsuario, Model model) {
-        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
+    @GetMapping("/crearCoche")
+    public String crearCoche(Model model, Principal principal) {
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
         if(usuario.getEquipo() == null) {
-            model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
+            model.addAttribute("error", "El usuario " + principal.getName() + " no pertenece a ningún equipo");
             return "redirect:/equipos";
         }
         CocheDTO coche = new CocheDTO();
@@ -86,18 +89,17 @@ public class CocheController {
     }
 
     @PostMapping("/guardarCoche")
-    public String guardarCoche(@ModelAttribute CocheDTO coche, @RequestParam("idEquipo") Long idEquipo,
-                               Model model, RedirectAttributes attributes) {
+    public String guardarCoche(@ModelAttribute CocheDTO coche, Model model, RedirectAttributes attributes) {
+        EquipoDTO equipo = equipoService.getEquipoById(coche.getEquipo().getId());
+        coche.setEquipo(equipo);
         if(coche.getId() == null) {
-            EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-            coche.setEquipo(equipo);
             cocheService.addCoche(coche);
             attributes.addFlashAttribute("success", "Coche creado correctamente");
         } else {
             cocheService.updateCoche(coche);
             attributes.addFlashAttribute("success", "Coche actualizado correctamente");
         }
-        return "redirect:/coches/" + idEquipo;
+        return "redirect:/coches/" + equipo.getId();
     }
 
     @GetMapping("/eliminarCoche/{idCoche}")

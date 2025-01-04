@@ -64,6 +64,7 @@ public class EquipoServiceImpl implements EquipoService {
                 equipoToUpdate.setLogo(equipo.getLogo());
             }
             equipoRepository.save(equipoToUpdate);
+            return true;
         }
         return false;
     }

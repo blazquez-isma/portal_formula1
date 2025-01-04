@@ -57,7 +57,7 @@
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/crearEquipo}">Crear Equipo</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/verEquipoDe/{nombreUsuario}(nombreUsuario=${#authentication.getName()})}">Ver Mi Equipo</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/pilotos/nuevo}">Añadir Piloto</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/coches/nuevo}">Añadir Coche</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/coches/crearCoche}">Añadir Coche</a>
                         </div>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">

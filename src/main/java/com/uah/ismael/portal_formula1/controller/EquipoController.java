@@ -68,10 +68,21 @@ public class EquipoController {
     @GetMapping("/verEquipo/{idEquipo}")
     public String verEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal) {
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        model.addAttribute("puedeEditar", false);
+        if(equipo == null) {
+            return "redirect:/equipos";
+        }
+        UsuarioDTO usuario = null;
+        if (principal != null && principal.getName() != null) {
+            usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
+        }
+        if(usuario != null && usuario.getEquipo() != null && usuario.getEquipo().getId().equals(equipo.getId())) {
+            model.addAttribute("puedeEditar", true);
+        }
         model.addAttribute("titulo", "Equipo: " + equipo.getNombre());
         model.addAttribute("equipo", equipo);
         model.addAttribute("responsables", usuarioService.getUsuariosByEquipoId(equipo.getId()));
-//        model.addAttribute("coches", cocheService.getCochesByEquipoId(equipo.getId()));
+        model.addAttribute("coches", cocheService.getCochesByEquipoId(equipo.getId()));
         return "equipos/seeEquipo";
     }
 
@@ -91,7 +102,6 @@ public class EquipoController {
             model.addAttribute("titulo", "Equipo de " + usuario.getNombre() + ": " + equipo.getNombre());
             model.addAttribute("equipo", equipo);
 //            model.addAttribute("responsables", usuarioService.getUsuariosByEquipoId(equipo.getId()));
-
         } else {
             redirectAttributes.addFlashAttribute("error", "No se ha encontrado el usuario con nombre de usuario " + nombreUsuario);
             return "redirect:/equipos";
@@ -101,8 +111,16 @@ public class EquipoController {
     }
 
     @GetMapping("/crearEquipo")
-    public String crearEquipo(Model model) {
-        model.addAttribute("titulo", "Crear Equipo");
+    public String crearEquipo(Model model, Principal principal, RedirectAttributes attributes) {
+        if(principal == null || principal.getName() == null) {
+            return "redirect:/login";
+        }
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
+        if (usuario.getEquipo() != null) {
+            attributes.addFlashAttribute("error", "Ya perteneces al equipo " + usuario.getEquipo().getNombre());
+            return "redirect:/equipos/verEquipo/" + usuario.getEquipo().getId();
+        }
+        model.addAttribute("titulo", "Crear Equipo para " + principal.getName());
         model.addAttribute("equipo", new EquipoDTO());
         return "equipos/createEquipo";
     }

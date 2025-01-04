@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${piloto.nombre}">Piloto</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 th:text="${piloto.nombre}"></h2>
+                <div th:if="${puedeEditar}">
+                    <a sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/pilotos/editarPiloto/{idPiloto}(idPiloto=${piloto.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                    <a sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/pilotos/eliminarPiloto/{idPiloto}(idPiloto=${piloto.id})}"
+                       th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el piloto">
+                        <i class="fas fa-trash" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th><strong>Nombre</strong></th>
+                        <td th:text="${piloto.nombre}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Apellidos</strong></th>
+                        <td th:text="${piloto.apellidos}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Siglas</strong></th>
+                        <td th:text="${piloto.siglas}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Dorsal</strong></th>
+                        <td th:text="${piloto.dorsal}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>País</strong></th>
+                        <td th:text="${piloto.pais}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Twitter</strong></th>
+                        <td th:text="${piloto.twitter}"></td>
+                    </tr>
+                    <tr>
+                        <th><strong>Equipo</strong></th>
+                        <td th:text="${piloto.equipo.nombre}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

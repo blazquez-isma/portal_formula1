@@ -4,6 +4,8 @@ import com.uah.ismael.portal_formula1.dto.CocheDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface CocheService {
 
     void addCoche(CocheDTO coche);
@@ -20,6 +22,7 @@ public interface CocheService {
 
     CocheDTO getCocheByCodigo(String codigo);
 
-    Page<CocheDTO> getCochesByEquipoId(Long idEquipo, Pageable pageable);
+    List<CocheDTO> getCochesByEquipoId(Long idEquipo);
 
+    Page<CocheDTO> getPageCochesByEquipoId(Long idEquipo, Pageable pageable);
 }
