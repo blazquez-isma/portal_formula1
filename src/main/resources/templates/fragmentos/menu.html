@@ -54,9 +54,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="usuariosDropdown">
                             <a class="dropdown-item" th:href="@{/equipos}">Ver Equipos</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/crear}">Crear Equipo</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/verPropio/{id}(id=${#authentication.getName()})}">Ver Mi Equipo</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/pilotos/nuevo}">Añadir Piloto</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/crearEquipo}">Crear Equipo</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/verEquipoDe/{nombreUsuario}(nombreUsuario=${#authentication.getName()})}">Ver Mi Equipo</a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/pilotos/nuevo}">Añadir Piloto</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/coches/nuevo}">Añadir Coche</a>
                         </div>
                     </li>

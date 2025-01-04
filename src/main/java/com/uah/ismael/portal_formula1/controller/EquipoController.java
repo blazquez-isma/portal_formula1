@@ -1,9 +1,9 @@
 package com.uah.ismael.portal_formula1.controller;
 
 import com.uah.ismael.portal_formula1.dto.EquipoDTO;
-import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.utils.Constants;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.Principal;
+import java.util.List;
 
 
 @Controller
@@ -49,7 +52,7 @@ public class EquipoController {
 
     @GetMapping
     public String verEquipos(@RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "5") int size,
+                             @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                              @RequestParam(defaultValue = "titulo") String sortField,
                              @RequestParam(defaultValue = "asc") String sortDir,
                              Model model) {
@@ -62,21 +65,24 @@ public class EquipoController {
         return "equipos/listEquipos";
     }
 
-    @GetMapping("/verEquipo/{id}")
-    public String verEquipo(@PathVariable("id") Long id, Model model) {
-        EquipoDTO equipo = equipoService.getEquipoById(id);
+    @GetMapping("/verEquipo/{idEquipo}")
+    public String verEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal) {
+        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
         model.addAttribute("titulo", "Equipo: " + equipo.getNombre());
         model.addAttribute("equipo", equipo);
-
-//        model.addAttribute("responsables", usuarioService.getUsuariosByEquipoId(equipo.getId()));
+        model.addAttribute("responsables", usuarioService.getUsuariosByEquipoId(equipo.getId()));
 //        model.addAttribute("coches", cocheService.getCochesByEquipoId(equipo.getId()));
         return "equipos/seeEquipo";
     }
 
-    @GetMapping("/verEquipoDe/{idUsuario}")
-    public String verEquipoDe(@PathVariable("idUsuario") Long idUsuario, Model model, RedirectAttributes redirectAttributes) {
-        UsuarioDTO usuario = usuarioService.getUsuarioById(idUsuario);
+    @GetMapping("/verEquipoDe/{nombreUsuario}")
+    public String verEquipoDe(@PathVariable("nombreUsuario") String nombreUsuario, Model model, RedirectAttributes redirectAttributes) {
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
         if(usuario != null) {
+            if(usuario.getEquipo() == null) {
+                redirectAttributes.addFlashAttribute("error", usuario.getNombreUsuario() + ", no pertenece a ningún equipo");
+                return "redirect:/equipos";
+            }
             EquipoDTO equipo = equipoService.getEquipoById(usuario.getEquipo().getId());
             if (equipo == null) {
                 redirectAttributes.addFlashAttribute("error", usuario.getNombreUsuario() + ", no pertenece a ningún equipo");
@@ -87,11 +93,11 @@ public class EquipoController {
 //            model.addAttribute("responsables", usuarioService.getUsuariosByEquipoId(equipo.getId()));
 
         } else {
-            redirectAttributes.addFlashAttribute("error", "No se ha encontrado el usuario con id " + idUsuario);
+            redirectAttributes.addFlashAttribute("error", "No se ha encontrado el usuario con nombre de usuario " + nombreUsuario);
             return "redirect:/equipos";
         }
 
-        return "equipos/seeEquipo";
+        return "redirect:/equipos/verEquipo/" + usuario.getEquipo().getId();
     }
 
     @GetMapping("/crearEquipo")
@@ -103,16 +109,16 @@ public class EquipoController {
 
     @PostMapping("/guardarEquipo")
     public String guardarEquipo(@ModelAttribute("equipo") EquipoDTO equipo, Model model,
-                                @RequestParam("file") MultipartFile logo,  RedirectAttributes attributes) {
+                                @RequestParam("file") MultipartFile logo,  RedirectAttributes attributes, Principal principal) {
 
         if(logo != null && !logo.isEmpty()) {
             if (equipo.getId() != null && equipo.getId() > 0 && equipo.getLogo() != null
                     && !equipo.getLogo().isEmpty()) {
-                uploadFileService.delete(equipo.getLogo());
+                uploadFileService.delete(equipo.getLogo(), Constants.EQUIPOS);
             }
             String nombreImagen = null;
             try {
-                nombreImagen = uploadFileService.copy(logo);
+                nombreImagen = uploadFileService.copy(logo, Constants.EQUIPOS);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -120,34 +126,53 @@ public class EquipoController {
             equipo.setLogo(nombreImagen);
         }
 
-        if(equipo.getId() != null && equipo.getId() > 0) {
-            equipoService.updateEquipo(equipo);
-        } else {
-            equipoService.addEquipo(equipo);
+        try {
+            if(equipo.getId() != null && equipo.getId() > 0) {
+                if(equipoService.updateEquipo(equipo)) {
+                    attributes.addFlashAttribute("success", "Equipo actualizado correctamente");
+                } else {
+                    attributes.addFlashAttribute("error", "No se ha podido actualizar el equipo");
+                }
+            } else {
+                equipo = equipoService.addEquipo(equipo);
+                //Actualizar el usuario con el equipo
+                UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
+                usuario.setEquipo(equipo);
+                usuarioService.updateUsuario(usuario);
+                attributes.addFlashAttribute("success", "Equipo creado correctamente");
+            }
+        } catch (IllegalArgumentException e) {
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
         return "redirect:/equipos";
     }
 
-    @GetMapping("/editarEquipo/{id}")
-    public String editarEquipo(@PathVariable("id") Long id, Model model) {
-        EquipoDTO equipo = equipoService.getEquipoById(id);
+    @GetMapping("/editarEquipo/{idEquipo}")
+    public String editarEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal, RedirectAttributes attributes) {
+        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        if(!hasEditPermissions(principal, attributes, equipo)){
+            return "redirect:/equipos/verEquipo/" + idEquipo;
+        }
         model.addAttribute("titulo", "Editar Equipo");
         model.addAttribute("equipo", equipo);
         return "equipos/createEquipo";
     }
 
-    @GetMapping("/borrarEquipo/{id}")
-    public String borrarEquipo(@PathVariable("id") Long id, RedirectAttributes attributes) {
-        EquipoDTO equipo = equipoService.getEquipoById(id);
+    @GetMapping("/borrarEquipo/{idEquipo}")
+    public String borrarEquipo(@PathVariable("idEquipo") Long idEquipo, Principal principal, RedirectAttributes attributes) {
+        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        if(!hasEditPermissions(principal, attributes, equipo)){
+            return "redirect:/equipos/verEquipo/" + idEquipo;
+        }
         if(equipo != null) {
             if(equipo.getLogo() != null && !equipo.getLogo().isEmpty()) {
-                uploadFileService.delete(equipo.getLogo());
+                uploadFileService.delete(equipo.getLogo(), Constants.EQUIPOS);
             }
-            equipoService.deleteEquipo(id);
+            equipoService.deleteEquipo(idEquipo);
             attributes.addFlashAttribute("success", "Equipo '" + equipo.getNombre() + "' eliminado correctamente");
         } else {
-            attributes.addFlashAttribute("error", "No se ha encontrado el equipo con id " + id);
+            attributes.addFlashAttribute("error", "No se ha encontrado el equipo con id " + idEquipo);
         }
         return "redirect:/equipos";
     }
@@ -180,17 +205,40 @@ public class EquipoController {
         return "redirect:/equipos";
     }
 
+    @GetMapping("/buscarResponsablesParaEquipo/{idEquipo}")
+    public String buscarResponsablesSinEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal, RedirectAttributes attributes) {
+        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        if(!hasEditPermissions(principal, attributes, equipo)){
+            return "redirect:/equipos/verEquipo/" + idEquipo;
+        }
+        return "redirect:/usuarios/buscarResponsablesParaEquipo/" + idEquipo;
+    }
 
     @GetMapping("/verImagen/{filename}")
     public ResponseEntity<Resource> verImagen(@PathVariable String filename) {
         Resource recurso = null;
         try {
-            recurso = uploadFileService.load(filename);
+            recurso = uploadFileService.load(filename, Constants.EQUIPOS);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
                 .body(recurso);
+    }
+
+    //Tiene permisos para editar o borrar el equipo si es administrador o si es responsable del equipo
+    private boolean hasEditPermissions(Principal principal, RedirectAttributes attributes, EquipoDTO equipo) {
+        if(principal != null && principal.getName() != null){
+            UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
+            boolean isAdmin = usuario.getRoles().stream().anyMatch(rol -> rol.getNombre().equals("ROLE_ADMINISTRADOR"));
+            if(!isAdmin &&
+                    usuario.getEquipo() == null ||
+                    (usuario.getEquipo() != null && !usuario.getEquipo().getId().equals(equipo.getId()))) {
+                attributes.addFlashAttribute("error", "No tienes permisos para editar o borrar este equipo");
+                return false;
+            }
+        }
+        return true;
     }
 }

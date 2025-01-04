@@ -24,4 +24,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByEquipo_Id(Long equipoId);
 
+    @Query("SELECT u FROM Usuario u JOIN u.roles r WHERE r.nombre = :roleName AND u.equipo IS NULL")
+    List<Usuario> findByRolesNombreAndEquipoIsNull(String roleName);
+
 }

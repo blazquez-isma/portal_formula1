@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface EquipoService {
 
-    void addEquipo(EquipoDTO equipo);
+    EquipoDTO addEquipo(EquipoDTO equipo);
 
     boolean updateEquipo(EquipoDTO equipo);
 

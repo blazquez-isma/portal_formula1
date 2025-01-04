@@ -2,7 +2,9 @@ package com.uah.ismael.portal_formula1.controller;
 
 import com.uah.ismael.portal_formula1.dto.EquipoDTO;
 import com.uah.ismael.portal_formula1.dto.PilotoDTO;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
+import com.uah.ismael.portal_formula1.utils.Constants;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,7 @@ public class PilotoController {
 
     @GetMapping
     public String verPilotos(@RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "5") int size,
+                             @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                              @RequestParam(defaultValue = "nombre") String sortField,
                              @RequestParam(defaultValue = "asc") String sortDir,
                              Model model) {
@@ -62,7 +64,7 @@ public class PilotoController {
     @GetMapping("/{idEquipo}")
     public String verPilotosDeEquipo(@PathVariable("idEquipo") Long idEquipo,
                                      @RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "5") int size,
+                                     @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                      @RequestParam(defaultValue = "nombre") String sortField,
                                      @RequestParam(defaultValue = "asc") String sortDir,
                                      Model model) {
@@ -84,12 +86,16 @@ public class PilotoController {
         return "pilotos/seePiloto";
     }
 
-    @GetMapping("/crearPiloto/{idEquipo}")
-    public String crearPiloto(@PathVariable("idEquipo") Long idEquipo, Model model) {
-        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+    @GetMapping("/crearPiloto/{nombreUsuario}")
+    public String crearPiloto(@PathVariable("nombreUsuario") String nombreUsuario, Model model) {
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
+        if(usuario.getEquipo() == null) {
+            model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
+            return "redirect:/equipos";
+        }
         PilotoDTO piloto = new PilotoDTO();
-        piloto.setEquipo(equipo);
-        model.addAttribute("titulo", "Crear Piloto");
+        piloto.setEquipo(usuario.getEquipo());
+        model.addAttribute("titulo", "Crear Piloto para equipo " + usuario.getEquipo().getNombre());
         model.addAttribute("piloto", piloto);
         return "pilotos/createPiloto";
     }
@@ -109,11 +115,11 @@ public class PilotoController {
         if(foto != null && !foto.isEmpty()) {
             if (piloto.getId() != null && piloto.getId() > 0 && piloto.getFoto() != null
                     && !piloto.getFoto().isEmpty()) {
-                uploadFileService.delete(piloto.getFoto());
+                uploadFileService.delete(piloto.getFoto(), Constants.PILOTOS);
             }
             String nombreImagen = null;
             try {
-                nombreImagen = uploadFileService.copy(foto);
+                nombreImagen = uploadFileService.copy(foto, Constants.PILOTOS);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -140,7 +146,7 @@ public class PilotoController {
         PilotoDTO piloto = pilotoService.getPilotoById(idPiloto);
         if(piloto != null) {
             if(piloto.getFoto() != null && !piloto.getFoto().isEmpty()) {
-                uploadFileService.delete(piloto.getFoto());
+                uploadFileService.delete(piloto.getFoto(), Constants.PILOTOS);
             }
             pilotoService.deletePiloto(idPiloto);
             attributes.addFlashAttribute("success", "Piloto eliminado correctamente");
@@ -155,7 +161,7 @@ public class PilotoController {
     public ResponseEntity<Resource> verImagen(@PathVariable String filename) {
         Resource recurso = null;
         try {
-            recurso = uploadFileService.load(filename);
+            recurso = uploadFileService.load(filename, Constants.PILOTOS);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

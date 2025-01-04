@@ -7,7 +7,7 @@ import com.uah.ismael.portal_formula1.model.entity.Rol;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.RolRepository;
 import com.uah.ismael.portal_formula1.model.repository.UsuarioRepository;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.UsuarioService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -158,6 +158,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario) {
         Usuario user = usuarioRepository.findByNombreUsuario(nombreUsuario);
+        System.out.println("Usuario: " + user);
         return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
     }
 
@@ -183,24 +184,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         return PageUtil.sortedPageImpl(pageable, usuarios);
     }
 
-//    @Override
-//    public List<UsuarioDTO> getUsuariosByRolName(String rolName) {
-//        if (rolName != null) {
-//            return usuarioRepository.findByRolsNombre(rolName).stream()
-//                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-//                    .toList();
-//        }
-//        return List.of();
-//    }
-//
-//    @Override
-//    public List<UsuarioDTO> getUsuariosByRolId(Long rolId) {
-//        if (rolId != null) {
-//            return usuarioRepository.findByRolsId(rolId).stream()
-//                    .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-//                    .toList();
-//        }
-//        return List.of();
-//    }
+    @Override
+    public Page<UsuarioDTO> getResponsablesSinEquipo(Pageable pageable) {
+        List<UsuarioDTO> usuarios = usuarioRepository.findByRolesNombreAndEquipoIsNull("ROLE_RESPONSABLE").stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .sorted(UsuarioDTO.getUsuarioPageableComparator(pageable))
+                .toList();
+        return PageUtil.sortedPageImpl(pageable, usuarios);
+    }
+
 
 }

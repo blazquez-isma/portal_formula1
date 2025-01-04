@@ -5,7 +5,7 @@ import com.uah.ismael.portal_formula1.model.entity.Noticia;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.NoticiaRepository;
 import com.uah.ismael.portal_formula1.model.repository.UsuarioRepository;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.NoticiaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

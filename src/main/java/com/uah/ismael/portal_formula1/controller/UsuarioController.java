@@ -1,7 +1,10 @@
 package com.uah.ismael.portal_formula1.controller;
 
+import com.uah.ismael.portal_formula1.dto.EquipoDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.service.EquipoService;
+import com.uah.ismael.portal_formula1.utils.Constants;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -21,12 +26,14 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private EquipoService equipoService;
 
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
     public String showAllUsers(@RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size,
+                               @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                @RequestParam(defaultValue = "nombreUsuario") String sortField,
                                @RequestParam(defaultValue = "asc") String sortDir,
                                Model model) {
@@ -57,7 +64,7 @@ public class UsuarioController {
     @GetMapping("/verResponsables/{idEquipo}")
     public String showResponsablesEquipo(@PathVariable("idEquipo") Long idEquipo,
                                          @RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "5") int size,
+                                         @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                          @RequestParam(defaultValue = "nombreUsuario") String sortField,
                                          @RequestParam(defaultValue = "asc") String sortDir,
                                          Model model) {
@@ -70,5 +77,20 @@ public class UsuarioController {
         return "usuarios/showUsuarios";
     }
 
+    @GetMapping("/buscarResponsablesParaEquipo/{idEquipo}")
+    public String buscarResponsablesSinEquipo(@PathVariable("idEquipo") Long idEquipo,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
+                                              @RequestParam(defaultValue = "nombreUsuario") String sortField,
+                                              @RequestParam(defaultValue = "asc") String sortDir,
+                                              Model model) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
+        Page<UsuarioDTO> usuarioPage = usuarioService.getResponsablesSinEquipo(pageable);
+        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        model.addAttribute("titulo", "Añadir Responsable a Equipo " + equipo.getNombre());
+        model.addAttribute("equipo", equipo);
+        PageUtil.addPaginationAttributes(model, usuarioPage, page, sortField, sortDir);
+        return "usuarios/listResponsablesForEquipo";
+    }
 
 }

@@ -41,7 +41,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         System.out.println("Usuario: " + usuario + " Password: " + password);
         UsuarioDTO usuarioLogueado = usuarioService.getUsuarioByEmail(usuario);
-        System.out.println("Usuario logueado correo: " + usuarioLogueado);
         if(usuarioLogueado == null) {
             usuarioLogueado = usuarioService.getUsuarioByNombreUsuario(usuario);
         }

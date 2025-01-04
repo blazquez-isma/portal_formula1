@@ -3,7 +3,7 @@ package com.uah.ismael.portal_formula1.service.impl;
 import com.uah.ismael.portal_formula1.dto.CocheDTO;
 import com.uah.ismael.portal_formula1.model.entity.Coche;
 import com.uah.ismael.portal_formula1.model.repository.CocheRepository;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.CocheService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;

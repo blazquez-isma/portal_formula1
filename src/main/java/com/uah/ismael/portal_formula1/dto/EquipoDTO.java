@@ -52,6 +52,16 @@ public class EquipoDTO {
         this.twitter = twitter;
     }
 
+    @Override
+    public String toString() {
+        return "EquipoDTO{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", logo='" + logo + '\'' +
+                ", twitter='" + twitter + '\'' +
+                '}';
+    }
+
     public static Comparator<EquipoDTO> getEquipoPageableComparator(Pageable pageable) {
         // Ordenar la lista
         Sort.Order order = pageable.getSort().iterator().next();

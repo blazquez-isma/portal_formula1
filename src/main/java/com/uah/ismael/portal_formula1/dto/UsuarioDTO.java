@@ -118,14 +118,20 @@ public class UsuarioDTO {
     public static Comparator<UsuarioDTO> getUsuarioPageableComparator(Pageable pageable) {
         // Ordenar la lista
         Sort.Order order = pageable.getSort().iterator().next();
-        Comparator<UsuarioDTO> comparator = Comparator.comparing(usuarioDTO -> {
-            return switch (order.getProperty()) {
-                case "roles" -> usuarioDTO.getRoles().stream().map(RolDTO::getNombre).sorted().collect(Collectors.joining(", "));
-                case "activo" -> usuarioDTO.isActivo() ? "Activo" : "No Activo";
-                default -> usuarioDTO.getNombreUsuario();
-            };
-        });
-
+        Comparator<UsuarioDTO> comparator;
+        if(order.getProperty().equals("nombre")) {
+            comparator = Comparator.comparing(UsuarioDTO::getNombre);
+        } else if(order.getProperty().equals("email")) {
+            comparator = Comparator.comparing(UsuarioDTO::getEmail);
+        } else if(order.getProperty().equals("activo")) {
+            comparator = Comparator.comparing(UsuarioDTO::isActivo);
+        } else if(order.getProperty().equals("roles")) {
+            comparator = Comparator.comparing(usuarioDTO -> {
+                return usuarioDTO.getRoles().stream().map(RolDTO::getNombre).sorted().collect(Collectors.joining(", "));
+            });
+        }else {
+            comparator = Comparator.comparing(UsuarioDTO::getNombreUsuario);
+        }
         if (order.getDirection() == Sort.Direction.DESC) {
             comparator = comparator.reversed();
         }

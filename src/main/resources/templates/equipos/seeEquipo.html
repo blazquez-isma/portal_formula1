@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${equipo.nombre}">Equipo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 th:text="${equipo.nombre}"></h2>
+                <div>
+                    <a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_RESPONSABLE')" th:href="@{/equipos/editarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                    <a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_RESPONSABLE')" th:href="@{/equipos/borrarEquipo/{idEquipo}(idEquipo=${equipo.id})}"
+                       th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el equipo">
+                        <i class="fas fa-trash" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4" th:if="${equipo.logo != null}">
+                        <img th:src="@{/equipos/verImagen/{filename}(filename=${equipo.logo})}" class="img-fluid" alt="Logo del Equipo">
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <th><strong>Twitter</strong></th>
+                                <td th:text="${equipo.twitter}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Responsables</strong></th>
+                                <td>
+                                    <ul>
+                                        <li th:each="responsable : ${responsables}">
+<!--                                            <a th:href="@{/equipos/verResponsable/{idResponsable}(idResponsable=${responsable.idResponsable})}" th:text="${responsable.nombre}"></a>-->
+                                            <a th:text="${responsable.nombreUsuario}"></a>
+                                            <span th:text="'  (' + ${responsable.email} + ')'"></span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+<!--                            <tr>-->
+<!--                                <th>Reparto</th>-->
+<!--                                <td>-->
+<!--                                    <ul>-->
+<!--                                        <li th:each="actor : ${pelicula.actores}">-->
+<!--                                            <a th:href="@{/cpeliculas/actores/ver/{id}(id=${actor.idActor})}" th:text="${actor.nombre}"></a>-->
+<!--                                            <span th:text="' - ' + ${actor.fechaNacimiento} + ' (' + ${actor.paisNacimiento} + ')'"></span>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <th>Críticas</th>-->
+<!--                                <td>-->
+<!--                                    <a class="btn btn-primary" role="button" th:href="@{/ccriticas/buscarPor(searchField='pelicula', tituloPelicula=${pelicula.titulo})}"> Ver Críticas</a>-->
+<!--                                    <a sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="btn btn-primary" role="button" th:href="@{/ccriticas/nueva/{idPelicula}(idPelicula=${pelicula.idPelicula})}"> Poner Nueva Crítica</a>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_RESPONSABLE')" class="btn btn-primary" role="button"
+           th:href="@{/equipos/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id})}">Añadir Responsables</a>
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

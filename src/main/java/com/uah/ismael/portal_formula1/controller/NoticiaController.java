@@ -1,7 +1,8 @@
 package com.uah.ismael.portal_formula1.controller;
 
 import com.uah.ismael.portal_formula1.dto.NoticiaDTO;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.utils.Constants;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.NoticiaService;
 import com.uah.ismael.portal_formula1.service.UploadFileService;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class NoticiaController {
 
     @GetMapping
     public String verNoticias(@RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size,
+                               @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                @RequestParam(defaultValue = "titulo") String sortField,
                                @RequestParam(defaultValue = "asc") String sortDir,
                                Model model) {
@@ -71,7 +72,7 @@ public class NoticiaController {
         NoticiaDTO noticia = noticiaService.getNoticiaById(noticiaId);
 
         if (noticia != null && noticia.getImagen() != null && !noticia.getImagen().isEmpty()) {
-            if(uploadFileService.delete(noticia.getImagen())) {
+            if(uploadFileService.delete(noticia.getImagen(), Constants.NOTICIAS)) {
                 attributes.addFlashAttribute("msg", "Imagen " + noticia.getImagen() + " eliminada con exito!");
             }
         }
@@ -95,11 +96,11 @@ public class NoticiaController {
         if(foto != null && !foto.isEmpty()) {
             if (noticia.getId() != null && noticia.getId() > 0 && noticia.getImagen() != null
                     && !noticia.getImagen().isEmpty()) {
-                uploadFileService.delete(noticia.getImagen());
+                uploadFileService.delete(noticia.getImagen(), Constants.NOTICIAS);
             }
             String nombreImagen = null;
             try {
-                nombreImagen = uploadFileService.copy(foto);
+                nombreImagen = uploadFileService.copy(foto, Constants.NOTICIAS);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -129,7 +130,7 @@ public class NoticiaController {
     @GetMapping("/verNoticiasByAdmin")
     public String verNoticiasByAdmin(@RequestParam("administradorNombreUsuario") String administradorNombreUsuario,
                                      @RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "5") int size,
+                                     @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                      @RequestParam(defaultValue = "nombreUsuario") String sortField,
                                      @RequestParam(defaultValue = "asc") String sortDir,
                                      Model model) {
@@ -145,7 +146,7 @@ public class NoticiaController {
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
         Resource recurso = null;
         try {
-            recurso = uploadFileService.load(filename);
+            recurso = uploadFileService.load(filename, Constants.NOTICIAS);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

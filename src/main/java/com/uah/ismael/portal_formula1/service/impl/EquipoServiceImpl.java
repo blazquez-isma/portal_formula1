@@ -5,7 +5,7 @@ import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Equipo;
 import com.uah.ismael.portal_formula1.model.entity.Piloto;
 import com.uah.ismael.portal_formula1.model.repository.EquipoRepository;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.EquipoService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -33,14 +33,15 @@ public class EquipoServiceImpl implements EquipoService {
     }
 
     @Override
-    public void addEquipo(EquipoDTO equipo) {
+    public EquipoDTO addEquipo(EquipoDTO equipo) {
         if(equipoRepository.existsEquipoByNombre(equipo.getNombre())) {
             throw new IllegalArgumentException("Ya existe un equipo con el nombre '" + equipo.getNombre() + "'");
         }
         if(equipoRepository.existsEquipoByTwitter(equipo.getTwitter())) {
             throw new IllegalArgumentException("Ya existe un equipo con el twitter '" + equipo.getTwitter() + "'");
         }
-        equipoRepository.save(modelMapper.map(equipo, Equipo.class));
+        Equipo equipoSaved = equipoRepository.save(modelMapper.map(equipo, Equipo.class));
+        return modelMapper.map(equipoSaved, EquipoDTO.class);
     }
 
     @Override

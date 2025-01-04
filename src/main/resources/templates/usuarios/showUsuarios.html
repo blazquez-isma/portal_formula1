@@ -16,9 +16,21 @@
             <thead>
             <tr>
                 <th>
+                    <a th:href="@{/usuarios(page=${currentPage}, size=${elements.size}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
+                        Nombre
+                        <span th:if="${sortField == 'nombre'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
                     <a th:href="@{/usuarios(page=${currentPage}, size=${elements.size}, sortField='nombreUsuario', sortDir=${sortField == 'nombreUsuario' ? reverseSortDir : 'asc'})}">
                         Nombre de Usuario
                         <span th:if="${sortField == 'nombreUsuario'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/usuarios(page=${currentPage}, size=${elements.size}, sortField='email', sortDir=${sortField == 'email' ? reverseSortDir : 'asc'})}">
+                        Email
+                        <span th:if="${sortField == 'email'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th>
@@ -38,21 +50,23 @@
             </thead>
             <tbody>
             <tr th:each="usuario : ${elements.content}">
+                <td data-column="nombre" th:text="${usuario.nombre}"></td>
                 <td data-column="nombreUsuario" th:text="${usuario.nombreUsuario}"></td>
+                <td data-column="email" th:text="${usuario.email}"></td>
                 <td data-column="roles">
                     <span th:each="rol : ${usuario.roles}" th:text="${rol.nombre} + ' '"></span>
                 </td>
                 <td data-column="estado" th:text="${usuario.activo ? 'Activo' : 'No Activo'}" th:style="${usuario.activo ? 'color: green;' : 'color: red;'}"></td>
                 <td>
-                    <form th:action="@{/templates/usuarios/activarUsuario}" method="post" style="display:inline;" th:if="${!usuario.activo}">
+                    <form th:action="@{/usuarios/activarUsuario}" method="post" style="display:inline;" th:if="${!usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
                         <button type="submit" class="btn btn-success">Activar</button>
                     </form>
-                    <form th:action="@{/templates/usuarios/borrarUsuario}" method="post" style="display:inline;" th:if="${!usuario.activo}">
+                    <form th:action="@{/usuarios/borrarUsuario}" method="post" style="display:inline;" th:if="${!usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
                         <button type="submit" class="btn btn-danger">Rechazar</button>
                     </form>
-                    <form th:action="@{/templates/usuarios/borrarUsuario}" method="post" th:id="'deleteForm-' + ${usuario.id}" style="display:inline;" th:if="${usuario.activo}">
+                    <form th:action="@{/usuarios/borrarUsuario}" method="post" th:id="'deleteForm-' + ${usuario.id}" style="display:inline;" th:if="${usuario.activo}">
                         <input type="hidden" th:value="${usuario.id}" name="userId"/>
                         <button type="button" th:id="'deleteButton-' + ${usuario.id}" class="btn btn-warning" th:onclick="'confirmDelete(' + ${usuario.id} + ')'">Eliminar</button>
                         <button type="button" th:id="'confirmButton-' + ${usuario.id}" class="confirm-button btn btn-danger" th:onclick="'document.getElementById(\'deleteForm-' + ${usuario.id} + '\').submit()'" style="display:none;">Confirmar</button>

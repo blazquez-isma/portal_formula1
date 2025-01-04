@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<!--      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"-->
-
 <head>
     <meta charset="UTF-8">
-    <title>Ver Noticias</title>
+    <title>Ver Equipos</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
 <div class="container">
     <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
     <div class="container my-4">
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>
-                    <a th:href="@{/noticias(page=${currentPage}, size=${elements.size}, sortField='fecha', sortDir=${sortField == 'fecha' ? reverseSortDir : 'asc'})}">
-                        Fecha
-                        <span th:if="${sortField == 'fecha'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    <a th:href="@{/equipos(page=${currentPage}, size=${elements.size}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
+                        Nombre
+                        <span th:if="${sortField == 'nombre'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th>
-                    <a th:href="@{/noticias(page=${currentPage}, size=${elements.size}, sortField='titulo', sortDir=${sortField == 'titulo' ? reverseSortDir : 'asc'})}">
-                        Titulo
-                        <span th:if="${sortField == 'titulo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    <a th:href="@{/equipos(page=${currentPage}, size=${elements.size}, sortField='twitter', sortDir=${sortField == 'twitter' ? reverseSortDir : 'asc'})}">
+                        Twitter
+                        <span th:if="${sortField == 'twitter'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="noticia : ${elements.content}">
-                <td th:text="${#temporals.format(noticia.fecha, 'dd/MM/yyyy')}"></td>
-                <td><a th:href="${noticia.permalink}" th:text="${noticia.titulo}"></a></td>
+            <tr th:each="equipo : ${elements.content}">
+                <td><a th:href="@{/equipos/verEquipo/{idEquipo}(idEquipo=${equipo.id})}" th:text="${equipo.nombre}"></a></td>
+                <td th:text="${equipo.twitter}"></td>
                 <td>
                     <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
-                        <a th:href="@{/noticias/editarNoticia/{id}(id=${noticia.id})}" class="btn btn-warning">Editar</a>
-                        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/noticias/borrarNoticia/{id}(id=${noticia.id})}"
-                           th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar la noticia.">
-                            <i class="fas fa-trash" aria-hidden="true"></i></a>
+                        <a th:href="@{/equipos/editarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/equipos/borrarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">Borrar</a>
                     </div>
                 </td>
             </tr>
@@ -48,15 +48,15 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${elements.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{/noticias(page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                        <a class="page-link" th:href="@{/equipos(page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item" th:each="i : ${#numbers.sequence(1, elements.totalPages)}" th:classappend="${i == elements.number + 1} ? 'active'">
-                        <a class="page-link" th:href="@{/noticias(page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/equipos(page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
                     </li>
                     <li class="page-item" th:classappend="${elements.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{/noticias(page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                        <a class="page-link" th:href="@{/equipos(page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -65,7 +65,7 @@
         </div>
     </div>
     <div class="d-flex justify-content-between">
-        <nav  th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
     </div>
     <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>

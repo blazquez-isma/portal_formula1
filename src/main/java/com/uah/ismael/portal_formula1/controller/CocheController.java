@@ -2,7 +2,9 @@ package com.uah.ismael.portal_formula1.controller;
 
 import com.uah.ismael.portal_formula1.dto.CocheDTO;
 import com.uah.ismael.portal_formula1.dto.EquipoDTO;
-import com.uah.ismael.portal_formula1.paginator.PageUtil;
+import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
+import com.uah.ismael.portal_formula1.utils.Constants;
+import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.CocheService;
 import com.uah.ismael.portal_formula1.service.EquipoService;
 import com.uah.ismael.portal_formula1.service.PilotoService;
@@ -40,7 +42,7 @@ public class CocheController {
     @RequestMapping("/{idEquipo}")
     public String verCochesDeEquipo(@PathVariable("idEquipo") Long idEquipo,
                                     @RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "5") int size,
+                                    @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                     @RequestParam(defaultValue = "nombre") String sortField,
                                     @RequestParam(defaultValue = "asc") String sortDir,
                                     Model model) {
@@ -61,12 +63,16 @@ public class CocheController {
         return "coches/seeCoche";
     }
 
-    @GetMapping("/crearCoche/{idEquipo}")
-    public String crearCoche(@PathVariable("idEquipo") Long idEquipo, Model model) {
-        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+    @GetMapping("/crearCoche/{nombreUsuario}")
+    public String crearCoche(@PathVariable("nombreUsuario") String nombreUsuario, Model model) {
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
+        if(usuario.getEquipo() == null) {
+            model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
+            return "redirect:/equipos";
+        }
         CocheDTO coche = new CocheDTO();
-        coche.setEquipo(equipo);
-        model.addAttribute("titulo", "Crear coche para el equipo " + equipo.getNombre());
+        coche.setEquipo(usuario.getEquipo());
+        model.addAttribute("titulo", "Crear coche para el equipo " + usuario.getEquipo().getNombre());
         model.addAttribute("coche", coche);
         return "coches/createCoche";
     }

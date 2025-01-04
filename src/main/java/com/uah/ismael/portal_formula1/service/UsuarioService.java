@@ -32,4 +32,6 @@ public interface UsuarioService {
     Page<UsuarioDTO> getPageUsuariosByEquipoId(Long equipoId, Pageable pageable);
 
     void activateUsuario(Long userId);
+
+    Page<UsuarioDTO> getResponsablesSinEquipo(Pageable pageable);
 }

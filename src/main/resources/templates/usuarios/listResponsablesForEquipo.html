@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Responsables Sin Equipo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+<!--        <form th:action="@{/usuarios/buscarResponsablesSinEquipo}" method="get">-->
+<!--            <div class="form-group">-->
+<!--                <label for="nombreUsuario">Nombre de Usuario</label>-->
+<!--                <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" th:value="${nombreUsuario}">-->
+<!--            </div>-->
+<!--            <button type="submit" class="btn btn-primary">Buscar</button>-->
+<!--        </form>-->
+        <table class="table table-striped mt-4" th:if="${elements != null}">
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/usuarios/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number}, size=${elements.size}, sortField='nombreUsuario', sortDir=${sortField == 'nombreUsuario' ? reverseSortDir : 'asc'})}">
+                        Nombre de Usuario
+                        <span th:if="${sortField == 'nombreUsuario'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/usuarios/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number}, size=${elements.size}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
+                        Nombre
+                        <span th:if="${sortField == 'nombre'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/usuarios/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number}, size=${elements.size}, sortField='email', sortDir=${sortField == 'email' ? reverseSortDir : 'asc'})}">
+                        Email
+                        <span th:if="${sortField == 'email'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usuario : ${elements}">
+                <td th:text="${usuario.nombreUsuario}"></td>
+                <td th:text="${usuario.nombre}"></td>
+                <td th:text="${usuario.email}"></td>
+                <td>
+                    <a th:href="@{/equipos/{idEquipo}/nuevoResponsable/{idUsuario}(idEquipo=${equipo.id}, idUsuario=${usuario.id})}" class="btn btn-success">Añadir</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <nav th:if="${elements.totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${elements.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/usuarios/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, elements.totalPages - 1)}" th:classappend="${elements.number == i} ? 'active'">
+                    <a class="page-link" th:href="@{/usuarios/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id}, page=${i}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${elements.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/usuarios/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="d-flex justify-content-between">
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

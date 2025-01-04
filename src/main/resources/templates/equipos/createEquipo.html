@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Equipo</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="form-container">
+        <form th:action="@{/equipos/guardarEquipo}" th:object="${equipo}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" maxlength="100" required />
+            </div>
+            <div class="form-group">
+                <label for="twitter">Twitter:</label>
+                <input type="text" id="twitter" th:field="*{twitter}" class="form-control" maxlength="100" required />
+            </div>
+
+            <img th:if="${equipo.logo != null && #strings.length(equipo.logo) > 0}" class="img-thumbnail rounded float-left"
+                 style="max-width: 25%;" th:src="@{'/equipos/verImagen/' + ${equipo.logo}}"
+                 th:alt="${equipo.logo}" />
+
+            <div class="mb-3">
+                <label for="file" class="col-sm-2 col-form-label">Logo</label>
+                <div class="col-sm-6">
+                    <input type="file" id="file" name="file" class="form-control"/>
+                </div>
+            </div>
+
+            <input type="hidden" th:field="*{logo}"/>
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

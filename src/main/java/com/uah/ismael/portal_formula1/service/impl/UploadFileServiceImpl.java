@@ -1,6 +1,7 @@
 package com.uah.ismael.portal_formula1.service.impl;
 
 import com.uah.ismael.portal_formula1.service.UploadFileService;
+import com.uah.ismael.portal_formula1.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -22,10 +23,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 	private final Logger LOG = LoggerFactory.getLogger(UploadFileServiceImpl.class);
 
-	private final static String UPLOADS_FOLDER = "uploads";
+	private static String UPLOADS_FOLDER = Constants.UPLOADS_FOLDER;
 
 	@Override
-	public Resource load(String filename) throws MalformedURLException {
+	public Resource load(String filename, String type) throws MalformedURLException {
+		setPath(type);
 		Path pathFoto = getPath(filename);
 		LOG.debug("pathFoto: " + pathFoto);
 
@@ -38,9 +40,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	}
 
 	@Override
-	public String copy(MultipartFile file) throws IOException {
+	public String copy(MultipartFile file, String type) throws IOException {
+		setPath(type);
 		init();
-
 		String originalFilename = file.getOriginalFilename();
 		String uniqueFilename = originalFilename;
 		Path rootPath = getPath(uniqueFilename);
@@ -62,7 +64,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 	}
 
 	@Override
-	public boolean delete(String filename) {
+	public boolean delete(String filename, String type) {
+		setPath(type);
 		Path rootPath = getPath(filename);
 		File archivo = rootPath.toFile();
 
@@ -90,4 +93,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 		if (!Files.exists(path))
 			Files.createDirectory(path);
 	}
+
+	private void setPath(String type){
+		switch (type) {
+			case Constants.NOTICIAS -> UPLOADS_FOLDER = Constants.NOTICIAS_PATH;
+			case Constants.EQUIPOS -> UPLOADS_FOLDER = Constants.EQUIPOS_PATH;
+			case Constants.PILOTOS -> UPLOADS_FOLDER = Constants.PILOTOS_PATH;
+			default -> UPLOADS_FOLDER = Constants.UPLOADS_FOLDER;
+		}
+	}
+
 }

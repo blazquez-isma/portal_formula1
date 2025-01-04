@@ -1,4 +1,4 @@
-package com.uah.ismael.portal_formula1.paginator;
+package com.uah.ismael.portal_formula1.utils;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

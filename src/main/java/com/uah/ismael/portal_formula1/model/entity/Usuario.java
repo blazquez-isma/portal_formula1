@@ -43,7 +43,7 @@ public class Usuario {
     @Column(name = "activo", nullable = false)
     private Boolean activo = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "equipoID")
     private Equipo equipo;

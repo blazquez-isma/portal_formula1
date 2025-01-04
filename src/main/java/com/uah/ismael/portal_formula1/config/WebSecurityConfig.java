@@ -1,5 +1,6 @@
 package com.uah.ismael.portal_formula1.config;
 
+import com.uah.ismael.portal_formula1.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,10 +38,8 @@ public class WebSecurityConfig {
                         .usernameParameter("nombreUsuario")
                         .passwordParameter("contrasena"))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/js/**", "/css/**", "/images/**",
-                                "/", "/login", "/registro",
-                                "/noticias", "/noticias/verNoticia/**" , "/noticias/verImagen/**"
-                        ).permitAll()
+                        .requestMatchers(Constants.PUBLIC_PATHS)
+                        .permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
