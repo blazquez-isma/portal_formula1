@@ -92,6 +92,21 @@ public class PilotoDTO {
         this.equipo = equipo;
     }
 
+    @Override
+    public String toString() {
+        return "PilotoDTO{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", siglas='" + siglas + '\'' +
+                ", dorsal=" + dorsal +
+                ", foto='" + foto + '\'' +
+                ", pais='" + pais + '\'' +
+                ", twitter='" + twitter + '\'' +
+                ", equipo=" + equipo.getNombre() +
+                '}';
+    }
+
     public static Comparator<PilotoDTO> getPilotoPageableComparator(Pageable pageable) {
         // Ordenar la lista
         Sort.Order order = pageable.getSort().iterator().next();

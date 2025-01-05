@@ -176,12 +176,19 @@ public class PilotoServiceImpl implements PilotoService {
     }
 
     @Override
-    public Page<PilotoDTO> getPilotosByEquipoId(Pageable pageable, Long equipoId) {
+    public Page<PilotoDTO> getPilotosByEquipoId(Long equipoId, Pageable pageable) {
         List<PilotoDTO> pilotos = pilotoRepository.findByEquipo_Id(equipoId).stream()
                 .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
                 .sorted(PilotoDTO.getPilotoPageableComparator(pageable))
                 .toList();
 
         return PageUtil.sortedPageImpl(pageable, pilotos);
+    }
+
+    @Override
+    public List<PilotoDTO> getPilotosByEquipoId(Long equipoId) {
+        return pilotoRepository.findByEquipo_Id(equipoId).stream()
+                .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
+                .toList();
     }
 }

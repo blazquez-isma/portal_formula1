@@ -53,13 +53,30 @@
                             Equipos
                         </a>
                         <div class="dropdown-menu" aria-labelledby="usuariosDropdown">
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/verEquipoDe/{nombreUsuario}(nombreUsuario=${#authentication.getName()})}">Ver Mi Equipo</a>
                             <a class="dropdown-item" th:href="@{/equipos}">Ver Equipos</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/crearEquipo}">Crear Equipo</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/equipos/verEquipoDe/{nombreUsuario}(nombreUsuario=${#authentication.getName()})}">Ver Mi Equipo</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/pilotos/nuevo}">Añadir Piloto</a>
-                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_RESPONSABLE')" th:href="@{/coches/crearCoche}">Añadir Coche</a>
                         </div>
                     </li>
+                    <li sec:authorize="hasRole('ROLE_RESPONSABLE')" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="cochesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Coches
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="cochesDropdown">
+                            <a class="dropdown-item" th:href="@{/coches/byUsuario/{nombreUsuario}(nombreUsuario=${#authentication.getName()})}">Ver Mis Coches</a>
+                            <a class="dropdown-item" th:href="@{/coches/crearCoche}">Añadir Coche</a>
+                        </div>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_RESPONSABLE')" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pilotosDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Pilotos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="pilotosDropdown">
+                            <a class="dropdown-item" th:href="@{/pilotos/byUsuario/{nombreUsuario}(nombreUsuario=${#authentication.getName()})}">Ver Mis Pilotos</a>
+                            <a class="dropdown-item" th:href="@{/pilotos/crearPiloto}">Añadir Piloto</a>
+                        </div>
+                    </li>
+
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a class="nav-link" th:href="@{/logout}">Cerrar Sesión</a>
                     </li>

@@ -13,9 +13,8 @@
         <div class="card">
             <div class="card-header">
                 <h2 th:text="${noticia.titulo}"></h2>
-                <h3 th:text="${#dates.format(noticia.fecha, 'dd/MM/yyyy')}" class="text-end"></h3>
+                <h5 th:text="${#temporals.format(noticia.fecha, 'dd/MM/yyyy')}" class="text-right"></h5>
             </div>
-
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4" th:if="${noticia.imagen != null}">

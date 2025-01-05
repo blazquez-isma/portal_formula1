@@ -37,6 +37,7 @@ public class NoticiaServiceImpl implements NoticiaService {
             Noticia noticia = new Noticia();
             noticia.setTitulo(noticiaDto.getTitulo());
             noticia.setTexto(noticiaDto.getTexto());
+            noticia.setFecha(noticiaDto.getFecha());
             if (noticiaDto.getImagen() != null) {
                 noticia.setImagen(noticiaDto.getImagen());
             }

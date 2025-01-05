@@ -43,8 +43,9 @@ public class UsuarioController {
 
         model.addAttribute("titulo", "Listado de Usuarios");
         PageUtil.addPaginationAttributes(model, usuarioPage, page, sortField, sortDir);
-
-        return "usuarios/showUsuarios";
+        model.addAttribute("isResponsableList", false);
+        model.addAttribute("baseUrl", "/usuarios");
+        return "usuarios/listUsuarios";
     }
 
     @PostMapping("/activarUsuario")
@@ -72,9 +73,13 @@ public class UsuarioController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<UsuarioDTO> usuarioPage = usuarioService.getPageUsuariosByEquipoId(idEquipo, pageable);
 
-        model.addAttribute("titulo", "Listado de Responsables de Equipo");
+        EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        model.addAttribute("titulo", "Responsables del Equipo " + equipo.getNombre());
+        model.addAttribute("idEquipo", idEquipo);
+        model.addAttribute("isResponsableList", true);
+        model.addAttribute("baseUrl", "/usuarios/verResponsables/" + idEquipo);
         PageUtil.addPaginationAttributes(model, usuarioPage, page, sortField, sortDir);
-        return "usuarios/showUsuarios";
+        return "usuarios/listUsuarios";
     }
 
     @GetMapping("/buscarResponsablesParaEquipo/{idEquipo}")

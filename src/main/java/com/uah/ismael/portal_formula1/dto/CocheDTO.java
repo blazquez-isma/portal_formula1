@@ -89,6 +89,12 @@ public class CocheDTO {
         Comparator<CocheDTO> comparator;
         if ("codigo".equals(order.getProperty())) {
             comparator = Comparator.comparing(CocheDTO::getCodigo);
+        } else if("ersCurvalenta".equals(order.getProperty())) {
+            comparator = Comparator.comparing(CocheDTO::getErsCurvalenta);
+        } else if("ersCurvamedia".equals(order.getProperty())) {
+            comparator = Comparator.comparing(CocheDTO::getErsCurvamedia);
+        } else if("ersCurvarapida".equals(order.getProperty())) {
+            comparator = Comparator.comparing(CocheDTO::getErsCurvarapida);
         } else if ("consumo".equals(order.getProperty())) {
             comparator = Comparator.comparing(CocheDTO::getConsumo);
         } else {

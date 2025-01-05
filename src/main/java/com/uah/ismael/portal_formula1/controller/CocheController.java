@@ -41,26 +41,56 @@ public class CocheController {
     @Autowired
     private PilotoService pilotoService;
 
-    @RequestMapping("/{idEquipo}")
+
+    @GetMapping("/byUsuario/{nombreUsuario}")
+    public String verCochesDeEquipo(@PathVariable("nombreUsuario") String nombreUsuario,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
+                                    @RequestParam(defaultValue = "nombre") String sortField,
+                                    @RequestParam(defaultValue = "asc") String sortDir,
+                                    Model model) {
+
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
+        if(usuario.getEquipo() == null) {
+            model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
+            return "redirect:/equipos";
+        }
+        EquipoDTO equipo = usuario.getEquipo();
+        return commonSeeCoches(page, size, sortField, sortDir, model, equipo);
+    }
+
+    @RequestMapping("/byEquipo/{idEquipo}")
     public String verCochesDeEquipo(@PathVariable("idEquipo") Long idEquipo,
                                     @RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                     @RequestParam(defaultValue = "nombre") String sortField,
                                     @RequestParam(defaultValue = "asc") String sortDir,
                                     Model model) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
-        Page<CocheDTO> cochesPage = cocheService.getPageCochesByEquipoId(idEquipo, pageable);
-
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        return commonSeeCoches(page, size, sortField, sortDir, model, equipo);
+    }
+
+    private String commonSeeCoches(int page, int size, String sortField, String sortDir, Model model, EquipoDTO equipo) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
+        Page<CocheDTO> cochesPage = cocheService.getCochesByEquipoId(equipo.getId(), pageable);
         model.addAttribute("titulo", "Coches del equipo " + equipo.getNombre());
-        model.addAttribute("equipo", equipo);
+        model.addAttribute("idEquipo", equipo.getId());
         PageUtil.addPaginationAttributes(model, cochesPage, page, sortField, sortDir);
         return "coches/listCoches";
     }
 
     @GetMapping("/verCoche/{idCoche}")
-    public String verCoche(@PathVariable("idCoche") Long idCoche, Model model) {
+    public String verCoche(@PathVariable("idCoche") Long idCoche, Model model, Principal principal) {
         CocheDTO coche = cocheService.getCocheById(idCoche);
+        if(coche == null) {
+            model.addAttribute("error", "No se ha encontrado el coche con id " + idCoche);
+            return "redirect:/equipos";
+        }
+        if(usuarioService.hasEditPermissions(principal, coche.getEquipo())) {
+            model.addAttribute("puedeEditar", true);
+        } else {
+            model.addAttribute("puedeEditar", false);
+        }
         model.addAttribute("titulo", "Coche " + coche.getNombre());
         model.addAttribute("coche", coche);
         return "coches/seeCoche";
@@ -68,6 +98,9 @@ public class CocheController {
 
     @GetMapping("/crearCoche")
     public String crearCoche(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
         UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
         if(usuario.getEquipo() == null) {
             model.addAttribute("error", "El usuario " + principal.getName() + " no pertenece a ningún equipo");
@@ -92,14 +125,18 @@ public class CocheController {
     public String guardarCoche(@ModelAttribute CocheDTO coche, Model model, RedirectAttributes attributes) {
         EquipoDTO equipo = equipoService.getEquipoById(coche.getEquipo().getId());
         coche.setEquipo(equipo);
-        if(coche.getId() == null) {
-            cocheService.addCoche(coche);
-            attributes.addFlashAttribute("success", "Coche creado correctamente");
-        } else {
-            cocheService.updateCoche(coche);
-            attributes.addFlashAttribute("success", "Coche actualizado correctamente");
+        try {
+            if(coche.getId() == null || coche.getId() <= 0) {
+                cocheService.addCoche(coche);
+                attributes.addFlashAttribute("success", "Coche creado correctamente");
+            } else {
+                cocheService.updateCoche(coche);
+                attributes.addFlashAttribute("success", "Coche actualizado correctamente");
+            }
+        } catch (IllegalArgumentException e) {
+            attributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/coches/" + equipo.getId();
+        return "redirect:/coches/byEquipo/" + equipo.getId();
     }
 
     @GetMapping("/eliminarCoche/{idCoche}")
@@ -108,7 +145,7 @@ public class CocheController {
         if(coche != null) {
             cocheService.deleteCoche(idCoche);
             attributes.addFlashAttribute("success", "Coche eliminado correctamente");
-            return "redirect:/coches/" + coche.getEquipo().getId();
+            return "redirect:/coches/byEquipo/" + coche.getEquipo().getId();
         } else {
             attributes.addFlashAttribute("error", "No se ha podido eliminar el coche");
             return "redirect:/coches/";

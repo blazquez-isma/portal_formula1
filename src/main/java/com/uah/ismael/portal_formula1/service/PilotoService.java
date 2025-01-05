@@ -4,6 +4,8 @@ import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface PilotoService {
 
     void addPiloto(PilotoDTO piloto);
@@ -30,5 +32,7 @@ public interface PilotoService {
 
     PilotoDTO getPilotoByTwitter(String twitter);
 
-    Page<PilotoDTO> getPilotosByEquipoId(Pageable pageable, Long equipoId);
+    List<PilotoDTO> getPilotosByEquipoId(Long equipoId);
+
+    Page<PilotoDTO> getPilotosByEquipoId(Long equipoId, Pageable pageable);
 }

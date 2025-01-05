@@ -36,7 +36,10 @@
                                 <td th:text="${equipo.twitter}"></td>
                             </tr>
                             <tr>
-                                <th><strong>Responsables</strong></th>
+                                <th>
+                                    <a th:if="${puedeEditar}" th:href="@{/usuarios/verResponsables/{idEquipo}(idEquipo=${equipo.id})}"><strong>Responsables</strong></a>
+                                    <a th:if="${!puedeEditar}"><strong>Responsables</strong></a>
+                                </th>
                                 <td>
                                     <ul>
                                         <li th:each="responsable : ${responsables}">
@@ -52,39 +55,40 @@
                             </tr>
                             <tr>
                                 <th sec:authorize="isAuthenticated()">
-                                    <a th:href="@{/coches/{idEquipo}(idEquipo=${equipo.id})}"><strong>Coches</strong></a>
+                                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${equipo.id})}"><strong>Coches</strong></a>
                                 </th>
-                                <td>
+                                <td sec:authorize="isAuthenticated()">
                                     <ul>
                                         <li th:each="coche : ${coches}">
-                                            <a th:href="@{/coches/verCoche/{idCoche}(idCoche=${coche.id})}" th:text="${coche.nombre}"></a>
-                                            <span th:text="'  (' + ${coche.codigo} + ')'"></span>
+                                            <a th:if="${puedeEditar}" th:href="@{/coches/verCoche/{idCoche}(idCoche=${coche.id})}" th:text="${coche.nombre} + ' (' + ${coche.codigo} + ')'"></a>
+                                            <a th:if="${!puedeEditar}" th:text="${coche.nombre}"></a>
                                             <a th:if="${puedeEditar}"
                                                th:href="@{/coches/eliminarCoche/{idCoche}(idCoche=${coche.id})}"
                                                class="btn btn-danger btn-sm mx-1"
-                                               onclick="return confirm('¿Estas seguro?')" role="button" title="Eliminar el responsable.">X</a>
+                                               onclick="return confirm('¿Estas seguro?')" role="button" title="Eliminar el coche">X</a>
                                         </li>
                                     </ul>
                                 </td>
                             </tr>
-<!--                            <tr>-->
-<!--                                <th>Reparto</th>-->
-<!--                                <td>-->
-<!--                                    <ul>-->
-<!--                                        <li th:each="actor : ${pelicula.actores}">-->
-<!--                                            <a th:href="@{/cpeliculas/actores/ver/{id}(id=${actor.idActor})}" th:text="${actor.nombre}"></a>-->
-<!--                                            <span th:text="' - ' + ${actor.fechaNacimiento} + ' (' + ${actor.paisNacimiento} + ')'"></span>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <th>Críticas</th>-->
-<!--                                <td>-->
-<!--                                    <a class="btn btn-primary" role="button" th:href="@{/ccriticas/buscarPor(searchField='pelicula', tituloPelicula=${pelicula.titulo})}"> Ver Críticas</a>-->
-<!--                                    <a sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="btn btn-primary" role="button" th:href="@{/ccriticas/nueva/{idPelicula}(idPelicula=${pelicula.idPelicula})}"> Poner Nueva Crítica</a>-->
-<!--                                </td>-->
-<!--                            </tr>-->
+                            <tr>
+                                <th>
+                                    <a th:href="@{/pilotos/byEquipo/{idEquipo}(idEquipo=${equipo.id})}"><strong>Pilotos</strong></a>
+                                </th>
+                                <td>
+                                    <ul>
+                                        <li th:each="piloto : ${pilotos}">
+<!--                                            <a th:if="${puedeEditar}" th:href="@{/pilotos/verPiloto/{idPiloto}(idPiloto=${piloto.id})}"-->
+<!--                                               th:text="${piloto.nombre} + ' ' + ${piloto.apellidos} + ' (' + ${piloto.siglas} + ') - ' + ${piloto.dorsal}"></a>-->
+<!--                                            <a th:if="${!puedeEditar}" th:text="${piloto.nombre} + ' ' + ${piloto.apellidos} + ' (' + ${piloto.siglas} + ') - ' + ${piloto.dorsal}"></a>-->
+                                            <a th:href="@{/pilotos/verPiloto/{idPiloto}(idPiloto=${piloto.id})}" th:text="${piloto.nombre} + ' ' + ${piloto.apellidos} + ' (' + ${piloto.siglas} + ') - ' + ${piloto.dorsal}"></a>
+                                            <a th:if="${puedeEditar}"
+                                               th:href="@{/pilotos/eliminarPiloto/{idPiloto}(idPiloto=${piloto.id})}"
+                                               class="btn btn-danger btn-sm mx-1"
+                                               onclick="return confirm('¿Estas seguro?')" role="button" title="Eliminar el Piloto">X</a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

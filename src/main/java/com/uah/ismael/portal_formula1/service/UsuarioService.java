@@ -1,10 +1,13 @@
 package com.uah.ismael.portal_formula1.service;
 
+import com.uah.ismael.portal_formula1.dto.EquipoDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface UsuarioService {
@@ -34,4 +37,6 @@ public interface UsuarioService {
     void activateUsuario(Long userId);
 
     Page<UsuarioDTO> getResponsablesSinEquipo(Pageable pageable);
+
+    boolean hasEditPermissions(Principal principal, EquipoDTO equipo);
 }

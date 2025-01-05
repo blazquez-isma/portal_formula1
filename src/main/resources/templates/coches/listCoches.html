@@ -17,15 +17,39 @@
             <thead>
             <tr>
                 <th>
-                    <a th:href="@{/coches/{idEquipo}(idEquipo=${equipo.id}, page=${currentPage}, size=${elements.size}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
+                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${currentPage}, size=${elements.size}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
                         Nombre
                         <span th:if="${sortField == 'nombre'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th>
-                    <a th:href="@{/coches/{idEquipo}(idEquipo=${equipo.id}, page=${currentPage}, size=${elements.size}, sortField='codigo', sortDir=${sortField == 'codigo' ? reverseSortDir : 'asc'})}">
+                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${currentPage}, size=${elements.size}, sortField='codigo', sortDir=${sortField == 'codigo' ? reverseSortDir : 'asc'})}">
                         Código
                         <span th:if="${sortField == 'codigo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${currentPage}, size=${elements.size}, sortField='consumo', sortDir=${sortField == 'consumo' ? reverseSortDir : 'asc'})}">
+                        Consumo (L/100km)
+                        <span th:if="${sortField == 'consumo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${currentPage}, size=${elements.size}, sortField='ersCurvalenta', sortDir=${sortField == 'ersCurvalenta' ? reverseSortDir : 'asc'})}">
+                        ERS Curva Lenta (kWh)
+                        <span th:if="${sortField == 'ersCurvalenta'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${currentPage}, size=${elements.size}, sortField='ersCurvamedia', sortDir=${sortField == 'ersCurvamedia' ? reverseSortDir : 'asc'})}">
+                        ERS Curva Media (kWh)
+                        <span th:if="${sortField == 'ersCurvamedia'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${currentPage}, size=${elements.size}, sortField='ersCurvarapida', sortDir=${sortField == 'ersCurvarapida' ? reverseSortDir : 'asc'})}">
+                        ERS Curva Rápida (kWh)
+                        <span th:if="${sortField == 'ersCurvarapida'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th sec:authorize="hasRole('ROLE_RESPONSABLE')">Acciones</th>
@@ -35,10 +59,14 @@
             <tr th:each="coche : ${elements.content}">
                 <td><a th:href="@{/coches/verCoche/{idCoche}(idCoche=${coche.id})}" th:text="${coche.nombre}"></a></td>
                 <td th:text="${coche.codigo}"></td>
+                <td th:text="${coche.consumo}"></td>
+                <td th:text="${coche.ersCurvalenta}"></td>
+                <td th:text="${coche.ersCurvamedia}"></td>
+                <td th:text="${coche.ersCurvarapida}"></td>
                 <td>
                     <div sec:authorize="hasRole('ROLE_RESPONSABLE')">
-                        <a th:href="@{/coches/editarCoche/{idCoche}(idCoche=${coche.id})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/coches/eliminarCoche/{idCoche}(idCoche=${coche.id})}" th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar el coche">
+                        <a th:href="@{/coches/editarCoche/{idCoche}(idCoche=${coche.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                        <a th:href="@{/coches/eliminarCoche/{idCoche}(idCoche=${coche.id})}" th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el coche">
                             <i class="fas fa-trash" aria-hidden="true"></i></a>
                     </div>
                 </td>
@@ -49,15 +77,15 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${elements.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{/coches/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                        <a class="page-link" th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li class="page-item" th:each="i : ${#numbers.sequence(1, elements.totalPages)}" th:classappend="${i == elements.number + 1} ? 'active'">
-                        <a class="page-link" th:href="@{/coches/{idEquipo}(idEquipo=${equipo.id}, page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
                     </li>
                     <li class="page-item" th:classappend="${elements.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{/coches/{idEquipo}(idEquipo=${equipo.id}, page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                        <a class="page-link" th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${idEquipo}, page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -66,6 +94,8 @@
         </div>
     </div>
     <div class="d-flex justify-content-between">
+        <a th:href="@{/coches/crearCoche}" class="btn btn-success">Añadir Coche</a>
+        <a th:href="@{/equipos/verEquipo/{idEquipo}(idEquipo=${idEquipo})}" class="btn btn-primary">Volver al Equipo</a>
         <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
     </div>
     <div th:replace="~{fragmentos/footer :: footer}"></div>

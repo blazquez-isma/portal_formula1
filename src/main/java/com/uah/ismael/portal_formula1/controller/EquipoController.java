@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
-import java.util.List;
 
 
 @Controller
@@ -59,7 +57,6 @@ public class EquipoController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<EquipoDTO> equiposPage = equipoService.getAllEquipos(pageable);
-
         model.addAttribute("titulo", "Listado de Equipos");
         PageUtil.addPaginationAttributes(model, equiposPage, page, sortField, sortDir);
         return "equipos/listEquipos";
@@ -68,21 +65,19 @@ public class EquipoController {
     @GetMapping("/verEquipo/{idEquipo}")
     public String verEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal) {
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-        model.addAttribute("puedeEditar", false);
         if(equipo == null) {
             return "redirect:/equipos";
         }
-        UsuarioDTO usuario = null;
-        if (principal != null && principal.getName() != null) {
-            usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
-        }
-        if(usuario != null && usuario.getEquipo() != null && usuario.getEquipo().getId().equals(equipo.getId())) {
+        if(usuarioService.hasEditPermissions(principal, equipo)){
             model.addAttribute("puedeEditar", true);
+        } else {
+            model.addAttribute("puedeEditar", false);
         }
         model.addAttribute("titulo", "Equipo: " + equipo.getNombre());
         model.addAttribute("equipo", equipo);
         model.addAttribute("responsables", usuarioService.getUsuariosByEquipoId(equipo.getId()));
         model.addAttribute("coches", cocheService.getCochesByEquipoId(equipo.getId()));
+        model.addAttribute("pilotos", pilotoService.getPilotosByEquipoId(equipo.getId()));
         return "equipos/seeEquipo";
     }
 
@@ -169,7 +164,8 @@ public class EquipoController {
     @GetMapping("/editarEquipo/{idEquipo}")
     public String editarEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal, RedirectAttributes attributes) {
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-        if(!hasEditPermissions(principal, attributes, equipo)){
+        if(!usuarioService.hasEditPermissions(principal, equipo)){
+            attributes.addFlashAttribute("error", "No tienes permisos para editar o borrar este equipo");
             return "redirect:/equipos/verEquipo/" + idEquipo;
         }
         model.addAttribute("titulo", "Editar Equipo");
@@ -180,7 +176,8 @@ public class EquipoController {
     @GetMapping("/borrarEquipo/{idEquipo}")
     public String borrarEquipo(@PathVariable("idEquipo") Long idEquipo, Principal principal, RedirectAttributes attributes) {
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-        if(!hasEditPermissions(principal, attributes, equipo)){
+        if(!usuarioService.hasEditPermissions(principal, equipo)){
+            attributes.addFlashAttribute("error", "No tienes permisos para editar o borrar este equipo");
             return "redirect:/equipos/verEquipo/" + idEquipo;
         }
         if(equipo != null) {
@@ -209,7 +206,7 @@ public class EquipoController {
         return "redirect:/equipos";
     }
 
-    @GetMapping("/{idEquipo}/quitarResponsable/{idUsuario}")
+    @RequestMapping(value = "/{idEquipo}/quitarResponsable/{idUsuario}", method = {RequestMethod.GET, RequestMethod.POST})
     public String quitarResponsable(@PathVariable("idEquipo") Long idEquipo, @PathVariable("idUsuario") Long idUsuario, RedirectAttributes attributes) {
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
         UsuarioDTO usuario = usuarioService.getUsuarioById(idUsuario);
@@ -226,7 +223,8 @@ public class EquipoController {
     @GetMapping("/buscarResponsablesParaEquipo/{idEquipo}")
     public String buscarResponsablesSinEquipo(@PathVariable("idEquipo") Long idEquipo, Model model, Principal principal, RedirectAttributes attributes) {
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-        if(!hasEditPermissions(principal, attributes, equipo)){
+        if(!usuarioService.hasEditPermissions(principal, equipo)){
+            attributes.addFlashAttribute("error", "No tienes permisos para editar o borrar este equipo");
             return "redirect:/equipos/verEquipo/" + idEquipo;
         }
         return "redirect:/usuarios/buscarResponsablesParaEquipo/" + idEquipo;
@@ -245,18 +243,4 @@ public class EquipoController {
                 .body(recurso);
     }
 
-    //Tiene permisos para editar o borrar el equipo si es administrador o si es responsable del equipo
-    private boolean hasEditPermissions(Principal principal, RedirectAttributes attributes, EquipoDTO equipo) {
-        if(principal != null && principal.getName() != null){
-            UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
-            boolean isAdmin = usuario.getRoles().stream().anyMatch(rol -> rol.getNombre().equals("ROLE_ADMINISTRADOR"));
-            if(!isAdmin &&
-                    usuario.getEquipo() == null ||
-                    (usuario.getEquipo() != null && !usuario.getEquipo().getId().equals(equipo.getId()))) {
-                attributes.addFlashAttribute("error", "No tienes permisos para editar o borrar este equipo");
-                return false;
-            }
-        }
-        return true;
-    }
 }

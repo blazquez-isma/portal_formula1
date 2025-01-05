@@ -24,5 +24,5 @@ public interface CocheService {
 
     List<CocheDTO> getCochesByEquipoId(Long idEquipo);
 
-    Page<CocheDTO> getPageCochesByEquipoId(Long idEquipo, Pageable pageable);
+    Page<CocheDTO> getCochesByEquipoId(Long idEquipo, Pageable pageable);
 }

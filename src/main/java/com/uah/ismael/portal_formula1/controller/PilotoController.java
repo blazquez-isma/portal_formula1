@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/pilotos")
@@ -46,51 +47,69 @@ public class PilotoController {
     @Autowired
     private UploadFileService uploadFileService;
 
-    @GetMapping
-    public String verPilotos(@RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
-                             @RequestParam(defaultValue = "nombre") String sortField,
-                             @RequestParam(defaultValue = "asc") String sortDir,
-                             Model model) {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
-        Page<PilotoDTO> pilotosPage = pilotoService.getAllPilotos(pageable);
-
-        model.addAttribute("titulo", "Pilotos");
-        PageUtil.addPaginationAttributes(model, pilotosPage, page, sortField, sortDir);
-        return "pilotos/listPilotos";
+    @GetMapping("/byUsuario/{nombreUsuario}")
+    public String verPilotosDeEquipo(@PathVariable("nombreUsuario") String nombreUsuario,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
+                                     @RequestParam(defaultValue = "nombre") String sortField,
+                                     @RequestParam(defaultValue = "asc") String sortDir,
+                                     Model model) {
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
+        if(usuario.getEquipo() == null) {
+            model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
+            return "redirect:/equipos";
+        }
+        EquipoDTO equipo = usuario.getEquipo();
+        return commonSeePilotos(page, size, sortField, sortDir, model, equipo);
     }
 
-    @GetMapping("/{idEquipo}")
+    @GetMapping("/byEquipo/{idEquipo}")
     public String verPilotosDeEquipo(@PathVariable("idEquipo") Long idEquipo,
                                      @RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                      @RequestParam(defaultValue = "nombre") String sortField,
                                      @RequestParam(defaultValue = "asc") String sortDir,
                                      Model model) {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
-        Page<PilotoDTO> pilotosPage = pilotoService.getPilotosByEquipoId(pageable, idEquipo);
-
+        System.out.println("ID EQUIPO: " + idEquipo);
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
+        System.out.println("Pilotos de equipo: " + equipo.getNombre());
+        return commonSeePilotos(page, size, sortField, sortDir, model, equipo);
+    }
+
+    private String commonSeePilotos(int page, int size, String sortField, String sortDir, Model model, EquipoDTO equipo) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
+        Page<PilotoDTO> pilotosPage = pilotoService.getPilotosByEquipoId(equipo.getId(), pageable);
         model.addAttribute("titulo", "Pilotos de " + equipo.getNombre());
+        model.addAttribute("idEquipo", equipo.getId());
         PageUtil.addPaginationAttributes(model, pilotosPage, page, sortField, sortDir);
         return "pilotos/listPilotos";
     }
 
     @GetMapping("/verPiloto/{idPiloto}")
-    public String verPiloto(@PathVariable("idPiloto") Long idPiloto, Model model) {
+    public String verPiloto(@PathVariable("idPiloto") Long idPiloto, Model model, Principal principal) {
         PilotoDTO piloto = pilotoService.getPilotoById(idPiloto);
+        if(piloto == null) {
+            model.addAttribute("error", "No se ha encontrado el piloto con id " + idPiloto);
+            return "redirect:/equipos";
+        }
+        if(usuarioService.hasEditPermissions(principal, piloto.getEquipo())) {
+            model.addAttribute("puedeEditar", true);
+        } else {
+            model.addAttribute("puedeEditar", false);
+        }
         model.addAttribute("titulo", "Piloto: " + piloto.getNombre());
         model.addAttribute("piloto", piloto);
         return "pilotos/seePiloto";
     }
 
-    @GetMapping("/crearPiloto/{nombreUsuario}")
-    public String crearPiloto(@PathVariable("nombreUsuario") String nombreUsuario, Model model) {
-        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
+    @GetMapping("/crearPiloto")
+    public String crearPiloto(Principal principal, Model model) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
         if(usuario.getEquipo() == null) {
-            model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
+            model.addAttribute("error", "El usuario " + principal.getName() + " no pertenece a ningún equipo");
             return "redirect:/equipos";
         }
         PilotoDTO piloto = new PilotoDTO();
@@ -109,9 +128,8 @@ public class PilotoController {
     }
 
     @PostMapping("/guardarPiloto")
-    public String guardarPiloto(@ModelAttribute("piloto") PilotoDTO piloto, Model model, @RequestParam("idEquipo") Long idEquipo,
+    public String guardarPiloto(@ModelAttribute("piloto") PilotoDTO piloto, Model model,
                                 @RequestParam("file") MultipartFile foto, RedirectAttributes attributes) {
-
         if(foto != null && !foto.isEmpty()) {
             if (piloto.getId() != null && piloto.getId() > 0 && piloto.getFoto() != null
                     && !piloto.getFoto().isEmpty()) {
@@ -127,18 +145,22 @@ public class PilotoController {
             piloto.setFoto(nombreImagen);
         }
 
-        if(piloto.getId() != null && piloto.getId() > 0) {
-            pilotoService.updatePiloto(piloto);
-            attributes.addFlashAttribute("success", "Piloto actualizado correctamente");
-        } else {
-//            EquipoDTO equipo = equipoService.addPilotoToEquipo(piloto);
-            EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-            piloto.setEquipo(equipo);
-            pilotoService.addPiloto(piloto);
-            attributes.addFlashAttribute("success", "Piloto creado correctamente");
+
+        EquipoDTO equipo = equipoService.getEquipoById(piloto.getEquipo().getId());
+        piloto.setEquipo(equipo);
+        try {
+            if(piloto.getId() != null && piloto.getId() > 0) {
+                pilotoService.updatePiloto(piloto);
+                attributes.addFlashAttribute("success", "Piloto actualizado correctamente");
+            } else {
+                pilotoService.addPiloto(piloto);
+                attributes.addFlashAttribute("success", "Piloto creado correctamente");
+            }
+        } catch (IllegalArgumentException e) {
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
-        return "redirect:/pilotos/" + piloto.getEquipo().getId();
+        return "redirect:/pilotos/byEquipo/" + equipo.getId();
     }
 
     @GetMapping("/eliminarPiloto/{idPiloto}")
@@ -150,7 +172,7 @@ public class PilotoController {
             }
             pilotoService.deletePiloto(idPiloto);
             attributes.addFlashAttribute("success", "Piloto eliminado correctamente");
-            return "redirect:/pilotos/" + piloto.getEquipo().getId();
+            return "redirect:/pilotos/byEquipo/" + piloto.getEquipo().getId();
         } else {
             attributes.addFlashAttribute("error", "No se ha podido eliminar el piloto");
             return "redirect:/pilotos/";

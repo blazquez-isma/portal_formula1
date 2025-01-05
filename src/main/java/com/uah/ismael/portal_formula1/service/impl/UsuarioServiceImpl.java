@@ -1,5 +1,6 @@
 package com.uah.ismael.portal_formula1.service.impl;
 
+import com.uah.ismael.portal_formula1.dto.EquipoDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioDTO;
 import com.uah.ismael.portal_formula1.dto.UsuarioNuevoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Equipo;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +97,8 @@ public class UsuarioServiceImpl implements UsuarioService {
             }
             if(usuario.getEquipo() != null){
                 usuarioToUpdate.setEquipo(modelMapper.map(usuario.getEquipo(), Equipo.class));
+            } else {
+                usuarioToUpdate.setEquipo(null);
             }
             if(usuario.getRoles() != null){
                 List<Rol> roles = new ArrayList<>();
@@ -193,5 +197,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         return PageUtil.sortedPageImpl(pageable, usuarios);
     }
 
-
+    //Tiene permisos para editar o borrar el equipo si es administrador o si es responsable del equipo
+    @Override
+    public boolean hasEditPermissions(Principal principal, EquipoDTO equipo) {
+        if(principal != null && principal.getName() != null){
+            UsuarioDTO usuario = this.getUsuarioByNombreUsuario(principal.getName());
+            boolean isAdmin = usuario.getRoles().stream().anyMatch(rol -> rol.getNombre().equals("ROLE_ADMINISTRADOR"));
+            return (isAdmin ||
+                    usuario.getEquipo() != null) &&
+                    (usuario.getEquipo() == null || usuario.getEquipo().getId().equals(equipo.getId()));
+        }
+        return false;
+    }
 }
