@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${votacion.titulo}">Votación</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 th:text="${votacion.titulo}"></h2>
+            </div>
+            <div class="card-body">
+                <p><strong>Fecha Límite:</strong> <span th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></span></p>
+                <p><strong>Descripción:</strong> <span th:text="${votacion.descripcion}"></span></p>
+                <h3>Pilotos</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Siglas</th>
+                        <th>Dorsal</th>
+                        <th>Porcentaje de Votos</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="piloto : ${votacion.pilotos}">
+                        <td><img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 50px;" alt="Foto del Piloto"></td>
+                        <td th:text="${piloto.nombre}"></td>
+                        <td th:text="${piloto.apellidos}"></td>
+                        <td th:text="${piloto.siglas}"></td>
+                        <td th:text="${piloto.dorsal}"></td>
+                        <td th:text="${#numbers.formatDecimal(piloto.porcentajeVotos, 2, 2)} + '%'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:if="${isActiva}">
+                    <a th:href="@{/votaciones/votar/{idVotacion}(idVotacion=${votacion.id})}" class="btn btn-primary">Votar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

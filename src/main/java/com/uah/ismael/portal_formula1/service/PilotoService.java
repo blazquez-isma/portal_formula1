@@ -35,4 +35,5 @@ public interface PilotoService {
     List<PilotoDTO> getPilotosByEquipoId(Long equipoId);
 
     Page<PilotoDTO> getPilotosByEquipoId(Long equipoId, Pageable pageable);
+
 }

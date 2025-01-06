@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VotacionDTO {
 
@@ -19,7 +18,7 @@ public class VotacionDTO {
 
     private String descripcion;
 
-    private Timestamp fechaLiminte;
+    private Timestamp fechaLimite;
 
     List<PilotoDTO> pilotos;
 
@@ -55,12 +54,12 @@ public class VotacionDTO {
         this.descripcion = descripcion;
     }
 
-    public Timestamp getFechaLiminte() {
-        return fechaLiminte;
+    public Timestamp getFechaLimite() {
+        return fechaLimite;
     }
 
-    public void setFechaLiminte(Timestamp fechaLiminte) {
-        this.fechaLiminte = fechaLiminte;
+    public void setFechaLimite(Timestamp fechaLimite) {
+        this.fechaLimite = fechaLimite;
     }
 
     public List<PilotoDTO> getPilotos() {
@@ -94,7 +93,7 @@ public class VotacionDTO {
                 ", permalink='" + permalink + '\'' +
                 ", titulo='" + titulo + '\'' +
                 ", descripcion='" + descripcion + '\'' +
-                ", fechaLiminte=" + fechaLiminte +
+                ", fechaLimite=" + fechaLimite +
                 ", pilotos=" + pilotos +
                 '}';
     }
@@ -103,8 +102,8 @@ public class VotacionDTO {
         // Ordenar la lista
         Sort.Order order = pageable.getSort().iterator().next();
         Comparator<VotacionDTO> comparator;
-        if(order.getProperty().equals("fechaLiminte")) {
-            comparator = Comparator.comparing(VotacionDTO::getFechaLiminte);
+        if(order.getProperty().equals("fechaLimite")) {
+            comparator = Comparator.comparing(VotacionDTO::getFechaLimite);
         } else {
             comparator = Comparator.comparing(VotacionDTO::getTitulo);
         }

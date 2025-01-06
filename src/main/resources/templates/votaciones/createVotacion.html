@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Votación</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu('Crear Votación')}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="form-container">
+        <form th:action="@{/votaciones/guardarVotacion}" th:object="${votacion}" method="post" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" th:field="*{titulo}" class="form-control" maxlength="100" required />
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" th:field="*{descripcion}" class="form-control" maxlength="500" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="fechaLimite">Fecha Límite:</label>
+                <input type="datetime-local" id="fechaLimite" th:field="*{fechaLimite}" class="form-control" required />
+            </div>
+
+            <h3>Buscar Pilotos</h3>
+            <div class="form-group">
+                <label for="campoBusqueda">Campo de Búsqueda:</label>
+                <select id="campoBusqueda" class="form-control">
+                    <option value="nombre">Nombre</option>
+                    <option value="apellidos">Apellidos</option>
+                    <option value="siglas">Siglas</option>
+                    <option value="dorsal">Dorsal</option>
+                    <option value="pais">País</option>
+                    <option value="twitter">Twitter</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="valorBusqueda">Valor de Búsqueda:</label>
+                <input type="text" id="valorBusqueda" class="form-control" />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="buscarPilotos()">Buscar</button>
+
+            <h3>Pilotos Seleccionados</h3>
+            <ul id="listaPilotosSeleccionados" class="list-group">
+                <!-- Aquí se añadirán los pilotos seleccionados -->
+            </ul>
+
+            <input type="hidden" th:field="*{pilotos}" />
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+<script>
+    function buscarPilotos() {
+        // Implementar la lógica para buscar pilotos y añadirlos a la lista de seleccionados
+    }
+</script>
+</body>
+</html>
