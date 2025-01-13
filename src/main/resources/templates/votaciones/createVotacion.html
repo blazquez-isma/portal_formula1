@@ -24,8 +24,9 @@
             </div>
             <div class="form-group">
                 <label for="fechaLimite">Fecha Límite:</label>
-                <input type="datetime-local" id="fechaLimite" th:field="*{fechaLimite}" class="form-control" required />
+                <input type="datetime-local" id="fechaLimite" name="fechaLimiteStr" class="form-control" required />
             </div>
+
 
             <h3>Buscar Pilotos</h3>
             <div class="form-group">
@@ -45,12 +46,18 @@
             </div>
             <button type="button" class="btn btn-primary" onclick="buscarPilotos()">Buscar</button>
 
+            <h3>Resultados de la Búsqueda</h3>
+            <ul id="resultadosBusqueda" class="list-group">
+                <!-- Aquí se mostrarán los resultados -->
+            </ul>
+
             <h3>Pilotos Seleccionados</h3>
             <ul id="listaPilotosSeleccionados" class="list-group">
                 <!-- Aquí se añadirán los pilotos seleccionados -->
             </ul>
 
-            <input type="hidden" th:field="*{pilotos}" />
+<!--            <input type="hidden" th:field="*{pilotos}" id="pilotosSeleccionados" />-->
+            <input type="hidden" id="idsPilotos" name="idsPilotos" />
 
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary">Guardar</button>
@@ -59,6 +66,10 @@
         </form>
     </div>
 
+
+    <div class="d-flex justify-content-between">
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
     <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>
 <script th:src="@{/js/jquery.min.js}"></script>
@@ -67,8 +78,46 @@
 <script th:src="@{/js/goBack.js}"></script>
 <script>
     function buscarPilotos() {
-        // Implementar la lógica para buscar pilotos y añadirlos a la lista de seleccionados
+        const campo = document.getElementById('campoBusqueda').value;
+        const valor = document.getElementById('valorBusqueda').value;
+
+        fetch(`/pilotos/buscar?campo=${campo}&valor=${valor}`)
+            .then(response => response.json())
+            .then(data => {
+                const resultados = document.getElementById('resultadosBusqueda');
+                resultados.innerHTML = '';
+
+                data.forEach(piloto => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = `${piloto.nombre} ${piloto.apellidos}`;
+
+                    const button = document.createElement('button');
+                    button.textContent = 'Añadir';
+                    button.className = 'btn btn-sm btn-success ml-2';
+                    button.onclick = () => agregarPiloto(piloto);
+
+                    li.appendChild(button);
+                    resultados.appendChild(li);
+                });
+            });
     }
+
+    function agregarPiloto(piloto) {
+        const lista = document.getElementById('listaPilotosSeleccionados');
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.textContent = `${piloto.nombre} ${piloto.apellidos}`;
+        lista.appendChild(li);
+
+        const hiddenInput = document.getElementById('idsPilotos');
+        const ids = hiddenInput.value ? hiddenInput.value.split(',').map(Number) : [];
+        if (!ids.includes(piloto.id)) {
+            ids.push(piloto.id);
+            hiddenInput.value = ids.join(',');
+        }
+    }
+
 </script>
 </body>
 </html>

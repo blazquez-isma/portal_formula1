@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Listado de Votaciones</title>
@@ -16,26 +16,35 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>
+                <th class="col-3">
                     <a th:href="@{/votaciones(page=${currentPage}, size=${elements.size}, sortField='titulo', sortDir=${sortField == 'titulo' ? reverseSortDir : 'asc'})}">
                         Título
                         <span th:if="${sortField == 'titulo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th>
+                <th class="col-2">
                     <a th:href="@{/votaciones(page=${currentPage}, size=${elements.size}, sortField='fechaLimite', sortDir=${sortField == 'fechaLimite' ? reverseSortDir : 'asc'})}">
                         Fecha Límite
                         <span th:if="${sortField == 'fechaLimite'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th>Descripción</th>
+                <th class="col-7">Descripción</th>
+                <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="votacion : ${elements.content}">
-                <td><a th:href="@{/votaciones/verVotación/{idVotacion}(idVotacion=${votacion.id})}" th:text="${votacion.titulo}"></a></td>
-                <td th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:text="${votacion.descripcion}"></td>
+                <td class="col-3"><a th:href="@{/votaciones/verVotación/{idVotacion}(idVotacion=${votacion.id})}" th:text="${votacion.titulo}"></a></td>
+                <td class="col-2" th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="col-7" th:text="${votacion.descripcion}"></td>
+                <td>
+                    <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+<!--                        <a th:href="@{/votaciones/editarVotacion/{idVotacion}(idVotacion=${votacion.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>-->
+                        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/votaciones/eliminarVotacion/{idVotacion}(idVotacion=${votacion.id})}"
+                           th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar la Votación.">
+                            <i class="fas fa-trash" aria-hidden="true"></i></a>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>

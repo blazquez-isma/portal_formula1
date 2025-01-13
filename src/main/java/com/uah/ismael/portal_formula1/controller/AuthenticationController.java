@@ -30,7 +30,7 @@ public class AuthenticationController {
 
     @GetMapping("/")
     public String home(Model model, Principal principal) {
-        String titulo = "Bienvenido a la aplicación de Formula 1";
+        String titulo = "Bienvenido al Portal de Formula 1";
         if (principal != null) {
             titulo = "Bienvenido, " + principal.getName();
         }

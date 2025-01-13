@@ -7,7 +7,8 @@ public class Constants {
             "/", "/login", "/registro",
             "/noticias", "/noticias/verNoticia/**", "/noticias/verImagen/**",
             "/equipos", "/equipos/verEquipo/**", "/equipos/verImagen/**",
-            "/pilotos/**"
+            "/pilotos/**", "/votaciones",
+            "/votaciones/verVotacion/**", "/votaciones/verImagen/**", "/votaciones/votar/**"
     };
 
 

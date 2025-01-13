@@ -109,33 +109,24 @@ public class PilotoServiceImpl implements PilotoService {
     }
 
     @Override
-    public Page<PilotoDTO> getPilotosByNombre(Pageable pageable, String nombre) {
-        List<PilotoDTO> pilotos = pilotoRepository.findByNombreContainingIgnoreCase(nombre).stream()
+    public List<PilotoDTO> getPilotosByNombre(String nombre) {
+        return pilotoRepository.findByNombreContainingIgnoreCase(nombre).stream()
                 .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
-                .sorted(PilotoDTO.getPilotoPageableComparator(pageable))
                 .toList();
-
-        return PageUtil.sortedPageImpl(pageable, pilotos);
     }
 
     @Override
-    public Page<PilotoDTO> getPilotosByApellido(Pageable pageable, String apellidos) {
-        List<PilotoDTO> pilotos = pilotoRepository.findByApellidosContainingIgnoreCase(apellidos).stream()
+    public List<PilotoDTO> getPilotosByApellido(String apellidos) {
+        return pilotoRepository.findByApellidosContainingIgnoreCase(apellidos).stream()
                 .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
-                .sorted(PilotoDTO.getPilotoPageableComparator(pageable))
                 .toList();
-
-        return PageUtil.sortedPageImpl(pageable, pilotos);
     }
 
     @Override
-    public Page<PilotoDTO> getPilotosByNombreAndApellidos(Pageable pageable, String nombre, String apellidos) {
-        List<PilotoDTO> pilotos = pilotoRepository.findByNombreAndApellidos(nombre, apellidos).stream()
+    public List<PilotoDTO> getPilotosByNombreAndApellidos(String nombre, String apellidos) {
+        return pilotoRepository.findByNombreAndApellidos(nombre, apellidos).stream()
                 .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
-                .sorted(PilotoDTO.getPilotoPageableComparator(pageable))
                 .toList();
-
-        return PageUtil.sortedPageImpl(pageable, pilotos);
     }
 
     @Override
@@ -157,13 +148,10 @@ public class PilotoServiceImpl implements PilotoService {
     }
 
     @Override
-    public Page<PilotoDTO> getPilotosByPais(Pageable pageable, String pais) {
-        List<PilotoDTO> pilotos = pilotoRepository.findByPais(pais).stream()
+    public List<PilotoDTO> getPilotosByPais(String pais) {
+        return pilotoRepository.findByPais(pais).stream()
                 .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
-                .sorted(PilotoDTO.getPilotoPageableComparator(pageable))
                 .toList();
-
-        return PageUtil.sortedPageImpl(pageable, pilotos);
     }
 
     @Override

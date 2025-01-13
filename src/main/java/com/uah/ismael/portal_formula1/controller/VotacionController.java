@@ -1,8 +1,10 @@
 package com.uah.ismael.portal_formula1.controller;
 
+import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import com.uah.ismael.portal_formula1.dto.VotacionDTO;
 import com.uah.ismael.portal_formula1.dto.VotoDTO;
 import com.uah.ismael.portal_formula1.model.repository.VotoRepository;
+import com.uah.ismael.portal_formula1.service.PilotoService;
 import com.uah.ismael.portal_formula1.service.UploadFileService;
 import com.uah.ismael.portal_formula1.service.VotacionService;
 import com.uah.ismael.portal_formula1.service.VotoService;
@@ -10,6 +12,7 @@ import com.uah.ismael.portal_formula1.utils.Constants;
 import com.uah.ismael.portal_formula1.utils.PageUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +20,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/votaciones")
@@ -34,6 +41,9 @@ public class VotacionController {
 
     @Autowired
     private VotoService votoService;
+
+    @Autowired
+    private PilotoService pilotoService;
 
     @Autowired
     private UploadFileService uploadFileService;
@@ -101,19 +111,37 @@ public class VotacionController {
         return "votaciones/createVotacion";
     }
 
-    @GetMapping("/editarVotacion/{idVotacion}")
-    @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
-    public String editarVotacion(@PathVariable("idVotacion") Long idVotacion,
-                               Model model) {
-        VotacionDTO votacion = votacionService.getVotacionById(idVotacion);
-        model.addAttribute("votacion", votacion);
-        return "votaciones/createVotacion";
-    }
+//    @GetMapping("/editarVotacion/{idVotacion}")
+//    @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
+//    public String editarVotacion(@PathVariable("idVotacion") Long idVotacion,
+//                               Model model) {
+//        VotacionDTO votacion = votacionService.getVotacionById(idVotacion);
+//        model.addAttribute("votacion", votacion);
+//        return "votaciones/createVotacion";
+//    }
 
     @PostMapping("/guardarVotacion")
     @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
-    public String guardarVotacion(@ModelAttribute("votacion") VotacionDTO votacion, RedirectAttributes redirectAttributes) {
-        if(votacion.getId() == null) {
+    public String guardarVotacion(@ModelAttribute("votacion") VotacionDTO votacion,
+                                  @RequestParam("fechaLimiteStr") String fechaLimiteStr,
+                                  @RequestParam("idsPilotos") List<Long> idsPilotos,
+                                  RedirectAttributes redirectAttributes) {
+        System.out.println("Fecha Limite: " + fechaLimiteStr);
+
+        if (!fechaLimiteStr.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}")) {
+            redirectAttributes.addFlashAttribute("error", "El formato de fecha y hora no es válido");
+            return "redirect:/votaciones/crearVotacion";
+        }
+        // Convertir fechaLimite de String a Timestamp
+        Timestamp fechaLimite = Timestamp.valueOf(fechaLimiteStr.replace("T", " ") + ":00");
+        votacion.setFechaLimite(fechaLimite);
+
+        List<PilotoDTO> pilotos = idsPilotos.stream()
+                .map(pilotoService::getPilotoById)
+                .collect(Collectors.toList());
+        votacion.setPilotos(pilotos);
+
+        if (votacion.getId() == null) {
             votacionService.addVotacion(votacion);
             redirectAttributes.addFlashAttribute("success", "Votación creada correctamente");
         } else {

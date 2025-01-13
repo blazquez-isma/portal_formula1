@@ -17,7 +17,7 @@ public class Votacion {
     private Long id;
 
     @Size(max = 255)
-    @NotNull
+//    @NotNull
     @Column(name = "permalink", nullable = false)
     private String permalink;
 

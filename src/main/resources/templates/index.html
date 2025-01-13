@@ -9,14 +9,20 @@
 <div class="container">
     <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
 
-    <div class="container my-4 align-content-center">
-        <div class="sketchfab-embed-wrapper">
-            <iframe title="Ferrari 248 (2006)" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share width="640" height="480" src="https://sketchfab.com/models/d3162726a0c94d78b5f8ad99dc79a12d/embed?autostart=1&camera=0&preload=1">
-            </iframe>
-        </div>
+<!--    <div class="container d-flex justify-content-center my-4">-->
+<!--        <div class="sketchfab-embed-wrapper">-->
+<!--            <iframe title="Ferrari 248 (2006)" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share width="640" height="480" src="https://sketchfab.com/models/d3162726a0c94d78b5f8ad99dc79a12d/embed?autostart=1&camera=0&preload=1">-->
+<!--            </iframe>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="container my-4 text-center">
+<!--        <h6>Explora las últimas noticias, equipos, pilotos y votaciones sobre la Fórmula 1.</h6>-->
+        <img src="/images/wallpaper2.jpg" class="img-fluid" style="opacity: 0.9" alt="Imagen de Portada">
     </div>
+
     <div class="d-flex justify-content-between">
-        <nav  th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
     </div>
     <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>

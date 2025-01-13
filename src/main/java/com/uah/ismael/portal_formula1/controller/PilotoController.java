@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/pilotos")
@@ -191,4 +192,19 @@ public class PilotoController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
                 .body(recurso);
     }
+
+    @GetMapping("/buscar")
+    @ResponseBody
+    public List<PilotoDTO> buscarPilotos(@RequestParam String campo, @RequestParam String valor) {
+        return switch (campo.toLowerCase()) {
+            case "nombre" -> pilotoService.getPilotosByNombre(valor);
+            case "apellidos" -> pilotoService.getPilotosByApellido(valor);
+            case "siglas" -> List.of(pilotoService.getPilotoBySiglas(valor));
+            case "dorsal" -> List.of(pilotoService.getPilotoByDorsal(Integer.parseInt(valor)));
+            case "pais" -> pilotoService.getPilotosByPais(valor);
+            case "twitter" -> List.of(pilotoService.getPilotoByTwitter(valor));
+            default -> throw new IllegalArgumentException("Campo de búsqueda no válido");
+        };
+    }
+
 }
