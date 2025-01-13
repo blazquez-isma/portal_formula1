@@ -3,7 +3,6 @@ package com.uah.ismael.portal_formula1.controller;
 import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import com.uah.ismael.portal_formula1.dto.VotacionDTO;
 import com.uah.ismael.portal_formula1.dto.VotoDTO;
-import com.uah.ismael.portal_formula1.model.repository.VotoRepository;
 import com.uah.ismael.portal_formula1.service.PilotoService;
 import com.uah.ismael.portal_formula1.service.UploadFileService;
 import com.uah.ismael.portal_formula1.service.VotacionService;
@@ -12,7 +11,6 @@ import com.uah.ismael.portal_formula1.utils.Constants;
 import com.uah.ismael.portal_formula1.utils.PageUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,14 +18,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -88,17 +86,34 @@ public class VotacionController {
         return "votaciones/listVotaciones";
     }
 
-    @GetMapping("/verVotación/{idVotacion}")
+    @GetMapping("/verVotacion/{idVotacion}")
     public String verVotacion(@PathVariable("idVotacion") Long idVotacion,
-                            Model model) {
+                              @RequestParam(defaultValue = "nombre") String sortField,
+                              @RequestParam(defaultValue = "asc") String sortDir,
+                              Model model) {
         VotacionDTO votacion = votacionService.getVotacionById(idVotacion);
         boolean isActiva = votacion.getFechaLimite().after(new java.util.Date());
         List<VotoDTO> votos = votoService.getVotosByVotacionId(idVotacion);
+
+        // Calcular el porcentaje de votos de cada piloto
+        int totalVotos = votos.size();
+        votacion.getPilotos().forEach(piloto -> {
+            long votosPiloto = votos.stream().filter(voto -> voto.getPiloto().getId().equals(piloto.getId())).count();
+            double porcentajeVotos = totalVotos > 0 ? (votosPiloto * 100.0) / totalVotos : 0;
+            piloto.setPorcentajeVotos(porcentajeVotos);
+        });
+
+        // Ordenar la lista de pilotos
+        Comparator<PilotoDTO> comparator = PilotoDTO.getPilotoPageableComparator(PageRequest.of(0, 10, Sort.by(Sort.Direction.fromString(sortDir), sortField)));
+        votacion.getPilotos().sort(comparator);
 
         model.addAttribute("titulo", "Votación: " + votacion.getTitulo());
         model.addAttribute("votacion", votacion);
         model.addAttribute("isActiva", isActiva);
         model.addAttribute("votos", votos);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "votaciones/seeVotacion";
     }
 
@@ -168,19 +183,46 @@ public class VotacionController {
     public String votar(@PathVariable("idVotacion") Long idVotacion, Model model) {
         VotacionDTO votacion = votacionService.getVotacionById(idVotacion);
         model.addAttribute("votacion", votacion);
+        model.addAttribute("voto", new VotoDTO());
         return "votaciones/formVotar";
     }
 
     @PostMapping("/votar")
-    public String votar(@ModelAttribute("voto") VotoDTO voto, RedirectAttributes redirectAttributes) {
+    public String votar(@RequestParam("votacionId") Long votacionId,
+                        @RequestParam("pilotoId") Optional<Long> pilotoIdOpt,
+                        @ModelAttribute("voto") VotoDTO voto,
+                        RedirectAttributes redirectAttributes) {
+
+        if (pilotoIdOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Debes seleccionar un piloto");
+            return "redirect:/votaciones/votar/" + votacionId;
+        }
+        Long pilotoId = pilotoIdOpt.get();
+
+        System.out.println("Votacion: " + votacionId + " Piloto: " + pilotoId + "\n Voto: " + voto);
+
+        if (voto.getNombreVotante() == null || voto.getNombreVotante().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "El nombre del votante no puede estar vacío");
+            return "redirect:/votaciones/votar/" + votacionId;
+        }
+
+        if (voto.getEmail() == null || voto.getEmail().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "El email del votante no puede estar vacío");
+            return "redirect:/votaciones/votar/" + votacionId;
+        }
+
         try {
+            VotacionDTO votacion = votacionService.getVotacionById(votacionId);
+            voto.setVotacion(votacion);
+            PilotoDTO piloto = pilotoService.getPilotoById(pilotoId);
+            voto.setPiloto(piloto);
             votoService.addVoto(voto);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/votaciones/votar/" + voto.getVotacion().getId();
         }
         redirectAttributes.addFlashAttribute("success", "Voto realizado correctamente");
-        return "redirect:/votaciones";
+        return "redirect:/votaciones/verVotacion/" + voto.getVotacion().getId();
     }
 
 }

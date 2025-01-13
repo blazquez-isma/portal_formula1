@@ -25,21 +25,53 @@
                     <thead>
                     <tr>
                         <th>Foto</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Siglas</th>
-                        <th>Dorsal</th>
-<!--                        <th>Porcentaje de Votos</th>-->
+                        <th>
+                            <a th:href="@{/votaciones/verVotacion/{idVotacion}(idVotacion=${votacion.id}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
+                                Nombre
+                                <span th:if="${sortField == 'nombre'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{/votaciones/verVotacion/{idVotacion}(idVotacion=${votacion.id}, sortField='apellidos', sortDir=${sortField == 'apellidos' ? reverseSortDir : 'asc'})}">
+                                Apellidos
+                                <span th:if="${sortField == 'apellidos'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{/votaciones/verVotacion/{idVotacion}(idVotacion=${votacion.id}, sortField='siglas', sortDir=${sortField == 'siglas' ? reverseSortDir : 'asc'})}">
+                                Siglas
+                                <span th:if="${sortField == 'siglas'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{/votaciones/verVotacion/{idVotacion}(idVotacion=${votacion.id}, sortField='dorsal', sortDir=${sortField == 'dorsal' ? reverseSortDir : 'asc'})}">
+                                Dorsal
+                                <span th:if="${sortField == 'dorsal'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{/votaciones/verVotacion/{idVotacion}(idVotacion=${votacion.id}, sortField='equipo', sortDir=${sortField == 'equipo' ? reverseSortDir : 'asc'})}">
+                                Equipo
+                                <span th:if="${sortField == 'equipo'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a th:href="@{/votaciones/verVotacion/{idVotacion}(idVotacion=${votacion.id}, sortField='porcentajeVotos', sortDir=${sortField == 'porcentajeVotos' ? reverseSortDir : 'asc'})}">
+                                Porcentaje de Votos
+                                <span th:if="${sortField == 'porcentajeVotos'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                            </a>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="piloto : ${votacion.pilotos}">
-                        <td><img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 50px;" alt="Foto del Piloto"></td>
+                        <td><img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 80px;" alt="Foto del Piloto"></td>
                         <td th:text="${piloto.nombre}"></td>
                         <td th:text="${piloto.apellidos}"></td>
                         <td th:text="${piloto.siglas}"></td>
                         <td th:text="${piloto.dorsal}"></td>
-<!--                        <td th:text="${#numbers.formatDecimal(piloto.porcentajeVotos, 2, 2)} + '%'"></td>-->
+                        <td th:text="${piloto.equipo.nombre}"></td>
+                        <td th:text="${#numbers.formatDecimal(piloto.porcentajeVotos, 2, 1)} + ' %'"></td>
                     </tr>
                     </tbody>
                 </table>

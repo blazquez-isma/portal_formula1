@@ -13,7 +13,8 @@
     <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
 
     <div class="form-container">
-        <form th:action="@{/votaciones/votar}" th:object="${voto}" method="post" class="needs-validation" novalidate>
+        <form th:action="@{/votaciones/votar}" th:object="${voto}" method="post" novalidate>
+
             <h3>Información de la Votación</h3>
             <p><strong>Título:</strong> <span th:text="${votacion.titulo}"></span></p>
             <p><strong>Fecha Límite:</strong> <span th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></span></p>
@@ -24,15 +25,17 @@
                 <ul class="list-group">
                     <li class="list-group-item" th:each="piloto : ${votacion.pilotos}">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" th:field="*{piloto}" th:value="${piloto.id}" />
+                            <input class="form-check-input" type="radio" name="pilotoId" th:value="${piloto.id}" required />
                             <label class="form-check-label">
-                                <img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 50px;" alt="Foto del Piloto">
+                                <img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 70px;" alt="Foto del Piloto">
                                 <span th:text="${piloto.nombre} + ' ' + ${piloto.apellidos} + ' (' + ${piloto.siglas} + ') - ' + ${piloto.dorsal}"></span>
                             </label>
                         </div>
                     </li>
                 </ul>
             </div>
+
+            <input type="hidden" name="votacionId" th:value="${votacion.id}" />
 
             <div class="form-group">
                 <label for="nombreVotante">Nombre:</label>

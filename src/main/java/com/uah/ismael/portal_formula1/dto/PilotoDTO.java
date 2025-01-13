@@ -16,6 +16,7 @@ public class PilotoDTO {
     private String pais;
     private String twitter;
     private EquipoDTO equipo;
+    private double porcentajeVotos;
 
     public PilotoDTO() {
     }
@@ -92,6 +93,14 @@ public class PilotoDTO {
         this.equipo = equipo;
     }
 
+    public double getPorcentajeVotos() {
+        return porcentajeVotos;
+    }
+
+    public void setPorcentajeVotos(double porcentajeVotos) {
+        this.porcentajeVotos = porcentajeVotos;
+    }
+
     @Override
     public String toString() {
         return "PilotoDTO{" +
@@ -122,7 +131,11 @@ public class PilotoDTO {
             comparator = Comparator.comparing(PilotoDTO::getPais);
         } else if("twitter".equals(order.getProperty())) {
             comparator = Comparator.comparing(PilotoDTO::getTwitter);
-        }else {
+        } else if ("porcentajeVotos".equals(order.getProperty())) {
+            comparator = Comparator.comparing(PilotoDTO::getPorcentajeVotos);
+        } else if("equipo".equals(order.getProperty())) {
+            comparator = Comparator.comparing(piloto -> piloto.getEquipo().getNombre());
+        } else {
             comparator = Comparator.comparing(PilotoDTO::getNombre);
         }
 
