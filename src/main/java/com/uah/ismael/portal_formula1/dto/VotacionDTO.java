@@ -107,7 +107,7 @@ public class VotacionDTO {
         } else {
             comparator = Comparator.comparing(VotacionDTO::getTitulo);
         }
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;

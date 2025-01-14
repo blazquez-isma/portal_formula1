@@ -132,7 +132,7 @@ public class UsuarioDTO {
         }else {
             comparator = Comparator.comparing(UsuarioDTO::getNombreUsuario);
         }
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;

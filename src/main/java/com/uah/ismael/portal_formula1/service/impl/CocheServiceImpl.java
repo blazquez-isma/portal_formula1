@@ -69,6 +69,7 @@ public class CocheServiceImpl implements CocheService {
                 cocheToUpdate.setConsumo(coche.getConsumo());
             }
             cocheRepository.save(cocheToUpdate);
+            return true;
         }
         return false;
     }

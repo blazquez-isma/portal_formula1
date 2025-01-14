@@ -80,7 +80,7 @@ public class VotoDTO {
         } else {
             comparator = Comparator.comparing(VotoDTO::getEmail);
         }
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;

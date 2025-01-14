@@ -29,8 +29,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 	public Resource load(String filename, String type) throws MalformedURLException {
 		setPath(type);
 		Path pathFoto = getPath(filename);
-		LOG.debug("pathFoto: " + pathFoto);
-
 		Resource recurso = new UrlResource(pathFoto.toUri());
 
 		if (!recurso.exists() || !recurso.isReadable()) {
@@ -99,6 +97,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 			case Constants.NOTICIAS -> UPLOADS_FOLDER = Constants.NOTICIAS_PATH;
 			case Constants.EQUIPOS -> UPLOADS_FOLDER = Constants.EQUIPOS_PATH;
 			case Constants.PILOTOS -> UPLOADS_FOLDER = Constants.PILOTOS_PATH;
+			case Constants.CIRCUITOS -> UPLOADS_FOLDER = Constants.CIRCUITOS_PATH;
 			default -> UPLOADS_FOLDER = Constants.UPLOADS_FOLDER;
 		}
 	}

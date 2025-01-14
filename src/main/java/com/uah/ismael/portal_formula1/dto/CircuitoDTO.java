@@ -1,60 +1,27 @@
-package com.uah.ismael.portal_formula1.model.entity;
+package com.uah.ismael.portal_formula1.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.sql.Date;
+import java.util.Comparator;
 
-@Entity
-@Table(name = "circuito")
-public class Circuito {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+public class CircuitoDTO {
+
     private Long id;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "nombre", nullable = false)
     private String nombre;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "ciudad", nullable = false)
     private String ciudad;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "pais", nullable = false)
     private String pais;
-
-    @Size(max = 255)
-    @Column(name = "trazado")
     private String trazado;
-
-    @NotNull
-    @Column(name = "numeroVueltas", nullable = false)
     private Integer numeroVueltas;
-
-    @NotNull
-    @Column(name = "longitud", nullable = false)
     private Float longitud;
-
-    @NotNull
-    @Column(name = "curvasLentas", nullable = false)
     private Integer curvasLentas;
-
-    @NotNull
-    @Column(name = "curvasMedias", nullable = false)
     private Integer curvasMedias;
-
-    @NotNull
-    @Column(name = "curvasRapidas", nullable = false)
     private Integer curvasRapidas;
-
-    @Column(name ="fechaCalendario")
     private Date fechaCalendario;
+
+    public CircuitoDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -143,4 +110,35 @@ public class Circuito {
     public void setFechaCalendario(Date fechaCalendario) {
         this.fechaCalendario = fechaCalendario;
     }
+
+    public static Comparator<CircuitoDTO> getCircuitoPageableComparator(Pageable pageable){
+        Sort.Order order = pageable.getSort().iterator().next();
+        Comparator<CircuitoDTO> comparator;
+        if("ciudad".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getCiudad);
+        }else if("pais".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getPais);
+        }else if("traazado".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getTrazado);
+        }else if("numeroVueltas".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getNumeroVueltas);
+        }else if("longitud".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getLongitud);
+        }else if("curvasLentas".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getCurvasLentas);
+        }else if("curvasMedias".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getCurvasMedias);
+        }else if("curvasRapidas".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getCurvasRapidas);
+        }else if("fechaCalendario".equals(order.getProperty())){
+            comparator = Comparator.comparing(CircuitoDTO::getFechaCalendario);
+        }else{
+            comparator = Comparator.comparing(CircuitoDTO::getNombre);
+        }
+        if (order.getDirection().isDescending()) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
+    }
+
 }

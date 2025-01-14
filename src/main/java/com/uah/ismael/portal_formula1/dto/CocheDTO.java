@@ -100,7 +100,7 @@ public class CocheDTO {
         } else {
             comparator = Comparator.comparing(CocheDTO::getNombre);
         }
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;

@@ -139,7 +139,7 @@ public class PilotoDTO {
             comparator = Comparator.comparing(PilotoDTO::getNombre);
         }
 
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;

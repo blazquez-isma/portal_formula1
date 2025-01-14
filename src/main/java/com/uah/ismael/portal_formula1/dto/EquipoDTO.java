@@ -71,7 +71,7 @@ public class EquipoDTO {
         } else {
             comparator = Comparator.comparing(EquipoDTO::getNombre);
         }
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;

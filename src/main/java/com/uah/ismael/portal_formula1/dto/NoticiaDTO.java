@@ -110,7 +110,7 @@ public class NoticiaDTO {
         if(order.getProperty().equals("fecha")) {
             comparator = Comparator.comparing(NoticiaDTO::getFecha);
         }
-        if (order.getDirection() == Sort.Direction.DESC) {
+        if (order.getDirection().isDescending()) {
             comparator = comparator.reversed();
         }
         return comparator;
