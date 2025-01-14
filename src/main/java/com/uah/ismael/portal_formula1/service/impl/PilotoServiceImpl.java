@@ -180,4 +180,11 @@ public class PilotoServiceImpl implements PilotoService {
                 .toList();
     }
 
+    @Override
+    public List<PilotoDTO> getPilotosByEquipoNombre(String nombre) {
+        return pilotoRepository.findByEquipo_NombreContainingIgnoreCase(nombre).stream()
+                .map(piloto -> modelMapper.map(piloto, PilotoDTO.class))
+                .toList();
+    }
+
 }

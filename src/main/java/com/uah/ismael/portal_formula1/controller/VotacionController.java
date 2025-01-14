@@ -57,7 +57,7 @@ public class VotacionController {
         Page<VotacionDTO> votacionPage = votacionService.getAllVotaciones(pageable);
         model.addAttribute("titulo", "Listado de Votaciones");
         PageUtil.addPaginationAttributes(model, votacionPage, page, sortField, sortDir);
-        return "votaciones/listVotaciones";
+        return "votaciones/listAllVotaciones";
     }
 
     @GetMapping("/activas")
@@ -70,7 +70,7 @@ public class VotacionController {
         Page<VotacionDTO> votacionPage = votacionService.getVotacionesActivas(pageable);
         model.addAttribute("titulo", "Listado de Votaciones Activas");
         PageUtil.addPaginationAttributes(model, votacionPage, page, sortField, sortDir);
-        return "votaciones/listVotaciones";
+        return "votaciones/listVotacionesActivas";
     }
 
     @GetMapping("/finalizadas")
@@ -83,7 +83,7 @@ public class VotacionController {
         Page<VotacionDTO> votacionPage = votacionService.getVotacionesFinalizadas(pageable);
         model.addAttribute("titulo", "Listado de Votaciones Finalizadas");
         PageUtil.addPaginationAttributes(model, votacionPage, page, sortField, sortDir);
-        return "votaciones/listVotaciones";
+        return "votaciones/listVotacionesFinalizadas";
     }
 
     @GetMapping("/verVotacion/{idVotacion}")
@@ -106,6 +106,12 @@ public class VotacionController {
         // Ordenar la lista de pilotos
         Comparator<PilotoDTO> comparator = PilotoDTO.getPilotoPageableComparator(PageRequest.of(0, 10, Sort.by(Sort.Direction.fromString(sortDir), sortField)));
         votacion.getPilotos().sort(comparator);
+
+        double maxPorcentajeVotos = votacion.getPilotos().stream()
+                .max(Comparator.comparingDouble(PilotoDTO::getPorcentajeVotos))
+                .orElseThrow(() -> new IllegalArgumentException("No pilotos found"))
+                .getPorcentajeVotos();
+        model.addAttribute("maxPorcentajeVotos", maxPorcentajeVotos);
 
         model.addAttribute("titulo", "Votación: " + votacion.getTitulo());
         model.addAttribute("votacion", votacion);
@@ -140,16 +146,27 @@ public class VotacionController {
     public String guardarVotacion(@ModelAttribute("votacion") VotacionDTO votacion,
                                   @RequestParam("fechaLimiteStr") String fechaLimiteStr,
                                   @RequestParam("idsPilotos") List<Long> idsPilotos,
+                                    Model model,
                                   RedirectAttributes redirectAttributes) {
         System.out.println("Fecha Limite: " + fechaLimiteStr);
 
         if (!fechaLimiteStr.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}")) {
-            redirectAttributes.addFlashAttribute("error", "El formato de fecha y hora no es válido");
-            return "redirect:/votaciones/crearVotacion";
+            model.addAttribute("error", "El formato de fecha y hora no es válido");
+            model.addAttribute("votacion", votacion);
+            return "votaciones/createVotacion";
         }
+
         // Convertir fechaLimite de String a Timestamp
         Timestamp fechaLimite = Timestamp.valueOf(fechaLimiteStr.replace("T", " ") + ":00");
         votacion.setFechaLimite(fechaLimite);
+
+        System.out.println("Votacion: " + votacion);
+
+        if(idsPilotos.isEmpty()) {
+            model.addAttribute("error", "Debes seleccionar al menos un piloto");
+            model.addAttribute("votacion", votacion);
+            return "votaciones/createVotacion";
+        }
 
         List<PilotoDTO> pilotos = idsPilotos.stream()
                 .map(pilotoService::getPilotoById)

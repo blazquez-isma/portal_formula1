@@ -69,6 +69,7 @@ public class VotacionServiceImpl implements VotacionService {
     public Page<VotacionDTO> getAllVotaciones(Pageable pageable){
         List<VotacionDTO> votaciones = votacionRepository.findAll().stream()
                 .map(votacion -> modelMapper.map(votacion, VotacionDTO.class))
+                .sorted(VotacionDTO.getVotacionPageableComparator(pageable))
                 .toList();
 
         return PageUtil.sortedPageImpl(pageable, votaciones);
@@ -78,6 +79,7 @@ public class VotacionServiceImpl implements VotacionService {
     public Page<VotacionDTO> getVotacionesActivas(Pageable pageable){
         List<VotacionDTO> votaciones = votacionRepository.findByFechaLimiteAfter(new Timestamp(System.currentTimeMillis())).stream()
                 .map(votacion -> modelMapper.map(votacion, VotacionDTO.class))
+                .sorted(VotacionDTO.getVotacionPageableComparator(pageable))
                 .toList();
 
         return PageUtil.sortedPageImpl(pageable, votaciones);
@@ -87,6 +89,7 @@ public class VotacionServiceImpl implements VotacionService {
     public Page<VotacionDTO> getVotacionesFinalizadas(Pageable pageable){
         List<VotacionDTO> votaciones = votacionRepository.findByFechaLimiteBefore(new Timestamp(System.currentTimeMillis())).stream()
                 .map(votacion -> modelMapper.map(votacion, VotacionDTO.class))
+                .sorted(VotacionDTO.getVotacionPageableComparator(pageable))
                 .toList();
 
         return PageUtil.sortedPageImpl(pageable, votaciones);

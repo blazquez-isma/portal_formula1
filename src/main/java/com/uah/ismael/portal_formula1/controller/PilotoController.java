@@ -203,6 +203,7 @@ public class PilotoController {
             case "dorsal" -> List.of(pilotoService.getPilotoByDorsal(Integer.parseInt(valor)));
             case "pais" -> pilotoService.getPilotosByPais(valor);
             case "twitter" -> List.of(pilotoService.getPilotoByTwitter(valor));
+            case "equipo" -> pilotoService.getPilotosByEquipoNombre(valor);
             default -> throw new IllegalArgumentException("Campo de búsqueda no válido");
         };
     }

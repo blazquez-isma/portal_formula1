@@ -32,6 +32,8 @@ public interface PilotoRepository extends JpaRepository<Piloto, Long> {
     
     List<Piloto> findByEquipo_Id(Long equipoId);
 
+    List<Piloto> findByEquipo_NombreContainingIgnoreCase(String nombreEquipo);
+
     boolean existsPilotoBySiglas(String siglas);
 
     boolean existsPilotoByDorsal(Integer dorsal);

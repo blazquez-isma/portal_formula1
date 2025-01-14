@@ -28,10 +28,10 @@ public class VotoServiceImpl implements VotoService {
 
     @Override
     public void addVoto(VotoDTO voto) {
-        if(votoRepository.existsByNombreVotante(voto.getNombreVotante())) {
+        if(votoRepository.existsByNombreVotanteAndVotacion_Id(voto.getNombreVotante(), voto.getVotacion().getId())) {
             throw new IllegalArgumentException("Ya existe un voto a nombre de '" + voto.getNombreVotante() + "'");
         }
-        if(votoRepository.existsByEmail(voto.getEmail())) {
+        if(votoRepository.existsByEmailAndVotacion_Id(voto.getEmail(), voto.getVotacion().getId())) {
             throw new IllegalArgumentException("Ya existe un voto con email '" + voto.getEmail() + "'");
         }
         votoRepository.save(modelMapper.map(voto, Voto.class));

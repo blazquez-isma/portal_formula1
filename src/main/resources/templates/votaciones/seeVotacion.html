@@ -14,12 +14,21 @@
 
     <div class="container my-4">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between">
                 <h2 th:text="${votacion.titulo}"></h2>
+                <div th:if="${isActiva}">
+                    <a th:href="@{/votaciones/votar/{idVotacion}(idVotacion=${votacion.id})}" class="btn btn-primary">Votar</a>
+                </div>
             </div>
             <div class="card-body">
-                <p><strong>Fecha Límite:</strong> <span th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></span></p>
-                <p><strong>Descripción:</strong> <span th:text="${votacion.descripcion}"></span></p>
+                <p><span th:text="${votacion.descripcion}"></span></p>
+                <div th:if="${isActiva}">
+                    <p><strong>Fecha Límite: <span th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></span></strong></p>
+                </div>
+                <div th:if="${!isActiva}">
+                    <p class="alert-danger"><strong>La votación terminó el <span th:text="${#dates.format(votacion.fechaLimite, 'dd/MM/yyyy HH:mm')}"></span> </strong></p>
+                </div>
+
                 <h3>Pilotos</h3>
                 <table class="table table-striped">
                     <thead>
@@ -64,8 +73,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="piloto : ${votacion.pilotos}">
-                        <td><img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 80px;" alt="Foto del Piloto"></td>
+                    <tr th:each="piloto : ${votacion.pilotos}" th:classappend="${piloto.porcentajeVotos == maxPorcentajeVotos} ? 'table-success'">
+<!--                        <td><img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 80px;" alt="Foto del Piloto"></td>-->
+                        <td>
+                            <a href="#" th:attr="data-image-url=@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" onclick="showImageModal(this); return false;">
+                                <img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 80px;" alt="Foto del Piloto">
+                            </a>
+                        </td>
                         <td th:text="${piloto.nombre}"></td>
                         <td th:text="${piloto.apellidos}"></td>
                         <td th:text="${piloto.siglas}"></td>
@@ -86,9 +100,28 @@
     </div>
     <div th:replace="~{fragmentos/footer :: footer}"></div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="modalImage" src="" class="img-fluid" alt="Imagen del Piloto">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/goBack.js}"></script>
+<script>
+    function showImageModal(element) {
+        var imageUrl = element.getAttribute('data-image-url');
+        $('#modalImage').attr('src', imageUrl);
+        $('#imageModal').modal('show');
+    }
+</script>
 </body>
 </html>

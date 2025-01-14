@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface VotoRepository extends JpaRepository<Voto, Long> {
 
-    boolean existsByNombreVotante(String nombreVotante);
+    boolean existsByNombreVotanteAndVotacion_Id(String nombreVotante, Long votacionId);
 
     Voto findByNombreVotante(String nombreVotante);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndVotacion_Id(String email, Long votacionId);
 
     Voto findByEmail(String email);
 
-    boolean existsByNombreVotanteOrEmail(String nombreVotante, String email);
+    boolean existsByNombreVotanteOrEmailAndVotacion_Id(String nombreVotante, String email, Long votacionId);
 
     Voto findByNombreVotanteAndEmail(String nombreVotante, String email);
 

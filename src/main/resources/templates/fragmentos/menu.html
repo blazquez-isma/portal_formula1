@@ -45,6 +45,8 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="votacionesDropdown">
                             <a class="dropdown-item" th:href="@{/votaciones}">Ver Votaciones</a>
+                            <a class="dropdown-item" th:href="@{/votaciones/activas}">Votaciones Activas</a>
+                            <a class="dropdown-item" th:href="@{/votaciones/finalizadas}">Votaciones Finalizadas</a>
                             <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/votaciones/crearVotacion}">Crear Votación</a>
                         </div>
                     </li>

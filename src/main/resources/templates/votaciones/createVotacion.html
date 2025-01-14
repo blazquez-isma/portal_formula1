@@ -20,11 +20,12 @@
             </div>
             <div class="form-group">
                 <label for="descripcion">Descripción:</label>
-                <textarea id="descripcion" th:field="*{descripcion}" class="form-control" maxlength="500" required></textarea>
+                <textarea id="descripcion" th:field="*{descripcion}" class="form-control" maxlength="500" required>
+                </textarea>
             </div>
             <div class="form-group">
                 <label for="fechaLimite">Fecha Límite:</label>
-                <input type="datetime-local" id="fechaLimite" name="fechaLimiteStr" class="form-control" required />
+                <input type="datetime-local" id="fechaLimite" name="fechaLimiteStr" th:value="${#dates.format(votacion.fechaLimite, 'yyyy-MM-dd''T''HH:mm')}" class="form-control" required />
             </div>
 
 
@@ -38,6 +39,7 @@
                     <option value="dorsal">Dorsal</option>
                     <option value="pais">País</option>
                     <option value="twitter">Twitter</option>
+                    <option value="equipo">Equipo</option>
                 </select>
             </div>
             <div class="form-group">

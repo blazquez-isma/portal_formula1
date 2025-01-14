@@ -8,7 +8,8 @@ public class Constants {
             "/noticias", "/noticias/verNoticia/**", "/noticias/verImagen/**",
             "/equipos", "/equipos/verEquipo/**", "/equipos/verImagen/**",
             "/pilotos/**", "/pilotos/verImagen/**",
-            "/votaciones", "/votaciones/verVotacion/**", "/votaciones/verImagen/**", "/votaciones/votar/**"
+            "/votaciones", "votaciones/activas", "votaciones/finalizadas", "/votaciones/verVotacion/**", "/votaciones/verImagen/**",
+            "/votaciones/votar/**"
     };
 
 
