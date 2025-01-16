@@ -118,7 +118,7 @@ public class CircuitoDTO {
             comparator = Comparator.comparing(CircuitoDTO::getCiudad);
         }else if("pais".equals(order.getProperty())){
             comparator = Comparator.comparing(CircuitoDTO::getPais);
-        }else if("traazado".equals(order.getProperty())){
+        }else if("trazado".equals(order.getProperty())){
             comparator = Comparator.comparing(CircuitoDTO::getTrazado);
         }else if("numeroVueltas".equals(order.getProperty())){
             comparator = Comparator.comparing(CircuitoDTO::getNumeroVueltas);

@@ -72,11 +72,18 @@ public class CircuitoServiceImpl implements CircuitoService {
             if(circuito.getCurvasRapidas() != null){
                 circuitoToUpdate.setCurvasRapidas(circuito.getCurvasRapidas());
             }
+            if(circuito.getFechaCalendario() == null && circuitoToUpdate.getFechaCalendario() != null){
+                circuitoToUpdate.setFechaCalendario(null);
+            }
             if(circuito.getFechaCalendario() != null
                     && !circuito.getFechaCalendario().equals(circuitoToUpdate.getFechaCalendario())
-                    && circuitoRepository.existsByFechaCalendario(circuito.getFechaCalendario())
-                    && circuito.getFechaCalendario().after(new Date())
             ){
+                if(circuitoRepository.existsByFechaCalendario(circuito.getFechaCalendario())){
+                    throw new IllegalArgumentException("Ya existe un circuito con fecha de calendario '" + circuito.getFechaCalendario() + "'");
+                }
+                if(circuito.getFechaCalendario().before(new Date())){
+                    throw new IllegalArgumentException("La fecha de calendario no puede ser anterior a la fecha actual");
+                }
                 circuitoToUpdate.setFechaCalendario(circuito.getFechaCalendario());
             }
             circuitoRepository.save(circuitoToUpdate);

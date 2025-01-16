@@ -9,11 +9,12 @@ public class Constants {
             "/equipos", "/equipos/verEquipo/**", "/equipos/verImagen/**",
             "/pilotos/**", "/pilotos/verImagen/**",
             "/votaciones", "votaciones/activas", "votaciones/finalizadas", "/votaciones/verVotacion/**", "/votaciones/verImagen/**",
-            "/votaciones/votar/**"
+            "/votaciones/votar/**",
+            "/circuitos/verCircuito/**", "/circuitos/verImagen/**", "/circuitos/verCalendario"
     };
 
 
-    public static final String DEFAULT_SIZE = "5";
+    public static final String DEFAULT_SIZE = "6";
 
     public static final String NOTICIAS = "noticias";
     public static final String EQUIPOS = "equipos";

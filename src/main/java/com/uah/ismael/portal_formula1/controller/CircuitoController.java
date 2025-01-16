@@ -24,7 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 
 @Controller
 @RequestMapping("/circuitos")
@@ -52,11 +53,31 @@ public class CircuitoController {
         return "circuitos/listCircuitos";
     }
 
-    @GetMapping("/calendario")
-    public String verCalendario(Model model) {
+    @GetMapping("/verCalendario")
+    public String verCalendario(@RequestParam(value = "mes", required = false) Integer mes,
+                                Model model) {
         List<CircuitoDTO> circuitos = circuitoService.getCircuitosFechaNotNull();
-        model.addAttribute("titulo", "Calendario");
-        return "circuitos/calendario";
+        List<CircuitoDTO> circuitosPorMes = null;
+        List<Integer> auxIntMeses = Arrays.asList(Calendar.JANUARY, Calendar.FEBRUARY, Calendar.MARCH, Calendar.APRIL,
+                Calendar.MAY, Calendar.JUNE, Calendar.JULY, Calendar.AUGUST, Calendar.SEPTEMBER, Calendar.OCTOBER,
+                Calendar.NOVEMBER, Calendar.DECEMBER);
+        List<String> nombresMeses = Arrays.asList(
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        );
+        if (mes != null && auxIntMeses.contains(mes)) {
+            circuitosPorMes = circuitos.stream().filter(c -> {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(c.getFechaCalendario());
+                return cal.get(Calendar.MONTH) == mes;
+            }).toList();
+        }
+
+        model.addAttribute("titulo", "Calendario de Circuitos");
+        model.addAttribute("circuitosPorMes", circuitosPorMes);
+        model.addAttribute("mesSeleccionado", mes);
+        model.addAttribute("nombresMeses", nombresMeses);
+        return "circuitos/showCalendar";
     }
     
     @GetMapping("/verCircuito/{idCircuito}")
@@ -74,6 +95,8 @@ public class CircuitoController {
     public String crearCircuito(Model model) {
         model.addAttribute("titulo", "Crear Circuito");
         model.addAttribute("circuito", new CircuitoDTO());
+        model.addAttribute("addCalendario", false);
+        model.addAttribute("editMode", false);
         return "circuitos/createCircuito";
     }
 
@@ -85,12 +108,64 @@ public class CircuitoController {
         }
         model.addAttribute("titulo", "Editar Circuito: " + circuito.getNombre());
         model.addAttribute("circuito", circuito);
-        return "circuitos/createEquipo";
+        model.addAttribute("addCalendario", false);
+        model.addAttribute("editMode", true);
+        return "circuitos/createCircuito";
+    }
+
+    @GetMapping("/anadirACalendario/{idCircuito}")
+    public String anadirACalendario(@PathVariable("idCircuito") Long idCircuito, Model model) {
+        CircuitoDTO circuito = circuitoService.getCircuitoById(idCircuito);
+        if(circuito == null) {
+            return "redirect:/circuitos";
+        }
+        model.addAttribute("titulo", "Añadir a calendario: " + circuito.getNombre());
+        model.addAttribute("circuito", circuito);
+        model.addAttribute("addCalendario", true);
+        model.addAttribute("editMode", true);
+        return "circuitos/createCircuito";
+    }
+
+    @GetMapping("/quitarDeCalendario/{idCircuito}")
+    public String quitarDeCalendario(@PathVariable("idCircuito") Long idCircuito, RedirectAttributes attributes) {
+        CircuitoDTO circuito = circuitoService.getCircuitoById(idCircuito);
+        if(circuito != null) {
+            circuito.setFechaCalendario(null);
+            circuitoService.updateCircuito(circuito);
+            attributes.addFlashAttribute("success", "Circuito eliminado del calendario correctamente");
+        } else {
+            attributes.addFlashAttribute("error", "No se ha podido eliminar el circuito del calendario");
+        }
+        return "redirect:/circuitos";
+    }
+
+    @PostMapping("/guardarCircuitoCalendario")
+    public String guardarCircuitoCalendario(@ModelAttribute("circuito") CircuitoDTO circuito,
+                                            @RequestParam("fechaCalendarioStr") String fechaCalendarioStr,
+                                            RedirectAttributes attributes) {
+        try {
+            circuito = circuitoService.getCircuitoById(circuito.getId());
+            Date fechaCalendario = (fechaCalendarioStr == null || fechaCalendarioStr.isEmpty()) ? null : Date.valueOf(fechaCalendarioStr);
+            circuito.setFechaCalendario(fechaCalendario);
+
+            if(circuito.getId() != null && circuito.getId() > 0) {
+                if(circuitoService.updateCircuito(circuito)) {
+                    attributes.addFlashAttribute("success", "Circuito añadido al calendario correctamente");
+                } else {
+                    attributes.addFlashAttribute("error", "No se ha podido añadir el circuito al calendario");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            attributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/circuitos";
     }
 
     @PostMapping("/guardarCircuito")
     public String guardarCircuito(@ModelAttribute("circuito") CircuitoDTO circuito,
-                                  @RequestParam("file") MultipartFile trazado, RedirectAttributes attributes){
+                                  @RequestParam("file") MultipartFile trazado,
+                                  @RequestParam("fechaCalendarioStr") String fechaCalendarioStr,
+                                  RedirectAttributes attributes){
         if(trazado != null && !trazado.isEmpty()) {
             if(circuito.getId() != null && circuito.getId() > 0
                     && circuito.getTrazado() != null && !circuito.getTrazado().isEmpty()) {
@@ -107,6 +182,9 @@ public class CircuitoController {
         }
 
         try {
+            Date fechaCalendario = (fechaCalendarioStr == null || fechaCalendarioStr.isEmpty()) ? null : Date.valueOf(fechaCalendarioStr);
+            circuito.setFechaCalendario(fechaCalendario);
+
             if(circuito.getId() != null && circuito.getId() > 0) {
                if(circuitoService.updateCircuito(circuito)) {
                    attributes.addFlashAttribute("success", "Circuito actualizado correctamente");
@@ -114,10 +192,15 @@ public class CircuitoController {
                    attributes.addFlashAttribute("error", "No se ha podido actualizar el circuito");
                }
             } else {
-                circuitoService.addCircuito(circuito);
-                attributes.addFlashAttribute("success", "Circuito creado correctamente");
-            }
+                if(trazado == null || trazado.isEmpty()) {
+                    attributes.addFlashAttribute("error", "Debes subir un trazado para el circuito");
+                }
 
+
+                    circuitoService.addCircuito(circuito);
+                    attributes.addFlashAttribute("success", "Circuito creado correctamente");
+
+            }
         } catch (IllegalArgumentException e) {
             attributes.addFlashAttribute("error", e.getMessage());
         }
@@ -128,6 +211,10 @@ public class CircuitoController {
     public String borrarCircuito(@PathVariable("idCircuito") Long idCircuito, RedirectAttributes attributes) {
         CircuitoDTO circuito = circuitoService.getCircuitoById(idCircuito);
         if(circuito != null) {
+            if(circuito.getFechaCalendario() != null){
+                attributes.addFlashAttribute("error", "No se puede eliminar un circuito que está en el calendario");
+                return "redirect:/circuitos";
+            }
             if(circuito.getTrazado() != null && !circuito.getTrazado().isEmpty()) {
                 uploadFileService.delete(circuito.getTrazado(), Constants.CIRCUITOS);
             }
@@ -138,7 +225,6 @@ public class CircuitoController {
         }
         return "redirect:/circuitos";
     }
-
 
     @GetMapping("/verImagen/{filename}")
     public ResponseEntity<Resource> verImagen(@PathVariable String filename) {

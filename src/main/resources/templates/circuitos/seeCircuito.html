@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${circuito.nombre}">Circuito</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 th:text="${circuito.nombre}"></h2>
+                <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                    <a th:href="@{/circuitos/editarCircuito/{idCircuito}(idCircuito=${circuito.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                    <a th:href="@{/circuitos/borrarCircuito/{idCircuito}(idCircuito=${circuito.id})}"
+                       th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el circuito">
+                        <i class="fas fa-trash" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div th:if="${circuito.trazado != null}">
+                        <img th:src="@{/circuitos/verImagen/{filename}(filename=${circuito.trazado})}" class="img-fluid" alt="Trazado del Circuito">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <th><strong>Nombre</strong></th>
+                                <td th:text="${circuito.nombre}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Ciudad</strong></th>
+                                <td th:text="${circuito.ciudad}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>País</strong></th>
+                                <td th:text="${circuito.pais}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Número de Vueltas</strong></th>
+                                <td th:text="${circuito.numeroVueltas}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Longitud (m)</strong></th>
+                                <td th:text="${circuito.longitud}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Nº Curvas Lentas</strong></th>
+                                <td th:text="${circuito.curvasLentas}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Nº Curvas Medias</strong></th>
+                                <td th:text="${circuito.curvasMedias}"></td>
+                            </tr>
+                            <tr>
+                                <th><strong>Nº Curvas Rápidas</strong></th>
+                                <td th:text="${circuito.curvasRapidas}"></td>
+                            </tr>
+                            <tr th:if="${circuito.fechaCalendario != null}">
+                                <th><strong>Fecha Calendario</strong></th>
+                                <td th:text="${#dates.format(circuito.fechaCalendario, 'dd/MM/yyyy')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>

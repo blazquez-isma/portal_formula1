@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver Circuitos</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
+    <div class="container my-4">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>
+                    <a th:href="@{/circuitos(page=${currentPage}, size=${elements.size}, sortField='nombre', sortDir=${sortField == 'nombre' ? reverseSortDir : 'asc'})}">
+                        Nombre
+                        <span th:if="${sortField == 'nombre'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/circuitos(page=${currentPage}, size=${elements.size}, sortField='ciudad', sortDir=${sortField == 'ciudad' ? reverseSortDir : 'asc'})}">
+                        Ciudad
+                        <span th:if="${sortField == 'ciudad'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/circuitos(page=${currentPage}, size=${elements.size}, sortField='pais', sortDir=${sortField == 'pais' ? reverseSortDir : 'asc'})}">
+                        País
+                        <span th:if="${sortField == 'pais'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/circuitos(page=${currentPage}, size=${elements.size}, sortField='numeroVueltas', sortDir=${sortField == 'numeroVueltas' ? reverseSortDir : 'asc'})}">
+                        Número de Vueltas
+                        <span th:if="${sortField == 'numeroVueltas'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{/circuitos(page=${currentPage}, size=${elements.size}, sortField='longitud', sortDir=${sortField == 'longitud' ? reverseSortDir : 'asc'})}">
+                        Longitud (m)
+                        <span th:if="${sortField == 'longitud'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+                <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="circuito : ${elements.content}">
+                <td><a th:href="@{/circuitos/verCircuito/{idCircuito}(idCircuito=${circuito.id})}" th:text="${circuito.nombre}"></a></td>
+                <td th:text="${circuito.ciudad}"></td>
+                <td th:text="${circuito.pais}"></td>
+                <td th:text="${circuito.numeroVueltas}"></td>
+                <td th:text="${circuito.longitud}"></td>
+                <td>
+                    <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+                        <a th:if="${circuito.fechaCalendario == null}" th:href="@{circuitos/anadirACalendario/{idCircuito}(idCircuito=${circuito.id})}" class="btn btn-success btn-sm mx-1">Añadir a Calendario</a>
+                        <a th:if="${circuito.fechaCalendario != null}" th:href="@{circuitos/quitarDeCalendario/{idCircuito}(idCircuito=${circuito.id})}" class="btn btn-danger btn-sm mx-1">Quitar de Calendario</a>
+                        <a th:href="@{/circuitos/editarCircuito/{idCircuito}(idCircuito=${circuito.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                        <a th:href="@{/circuitos/borrarCircuito/{idCircuito}(idCircuito=${circuito.id})}" th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el circuito">
+                            <i class="fas fa-trash" aria-hidden="true"></i></a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:if="${elements.totalElements > 0}">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${elements.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/circuitos(page=${elements.number - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, elements.totalPages)}" th:classappend="${i == elements.number + 1} ? 'active'">
+                        <a class="page-link" th:href="@{/circuitos(page=${i - 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${elements.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/circuitos(page=${elements.number + 1}, size=${elements.size}, sortField=${sortField}, sortDir=${sortDir})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/circuitos/crearCircuito}" class="btn btn-primary">Nuevo Circuito</a>
+        <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+    </div>
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+</body>
+</html>
