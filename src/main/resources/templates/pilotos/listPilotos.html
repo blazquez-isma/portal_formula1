@@ -52,7 +52,7 @@
                         <span th:if="${sortField == 'twitter'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th sec:authorize="hasRole('ROLE_RESPONSABLE')">Acciones</th>
+                <th sec:authorize="hasRole('ROLE_RESPONSABLE')" th:if="${puedeEditar}">Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -64,7 +64,7 @@
                 <td><a th:href="@{/pilotos/verPiloto/{idPiloto}(idPiloto=${piloto.id})}" th:text="${piloto.pais}"></a></td>
                 <td><a th:href="@{/pilotos/verPiloto/{idPiloto}(idPiloto=${piloto.id})}" th:text="${piloto.twitter}"></a></td>
                 <td>
-                    <div sec:authorize="hasRole('ROLE_RESPONSABLE')">
+                    <div sec:authorize="hasRole('ROLE_RESPONSABLE')" th:if="${puedeEditar}">
                         <a th:href="@{/pilotos/editarPiloto/{idPiloto}(idPiloto=${piloto.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
                         <a th:href="@{/pilotos/eliminarPiloto/{idPiloto}(idPiloto=${piloto.id})}" th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el piloto">
                             <i class="fas fa-trash" aria-hidden="true"></i></a>

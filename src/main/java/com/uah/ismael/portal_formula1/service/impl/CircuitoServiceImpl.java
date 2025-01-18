@@ -109,13 +109,20 @@ public class CircuitoServiceImpl implements CircuitoService {
     }
 
     @Override
-    public Page<CircuitoDTO> getAllCircuitos(Pageable pageable) {
+    public Page<CircuitoDTO> getAllCircuitosPage(Pageable pageable) {
         List<CircuitoDTO> circuitos = circuitoRepository.findAll().stream()
                 .map(circuito -> modelMapper.map(circuito, CircuitoDTO.class))
                 .sorted(CircuitoDTO.getCircuitoPageableComparator(pageable))
                 .toList();
 
         return PageUtil.sortedPageImpl(pageable, circuitos);
+    }
+
+    @Override
+    public List<CircuitoDTO> getAllCircuitos() {
+        return circuitoRepository.findAll().stream()
+                .map(circuito -> modelMapper.map(circuito, CircuitoDTO.class))
+                .toList();
     }
 
     @Override

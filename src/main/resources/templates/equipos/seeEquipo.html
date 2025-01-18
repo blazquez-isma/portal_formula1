@@ -35,10 +35,9 @@
                                 <th><strong>Twitter</strong></th>
                                 <td th:text="${equipo.twitter}"></td>
                             </tr>
-                            <tr>
+                            <tr th:if="${puedeEditar}">
                                 <th>
-                                    <a th:if="${puedeEditar}" th:href="@{/usuarios/verResponsables/{idEquipo}(idEquipo=${equipo.id})}"><strong>Responsables</strong></a>
-                                    <a th:if="${!puedeEditar}"><strong>Responsables</strong></a>
+                                    <a th:href="@{/usuarios/verResponsables/{idEquipo}(idEquipo=${equipo.id})}"><strong>Responsables</strong></a>
                                 </th>
                                 <td>
                                     <ul>
@@ -53,11 +52,11 @@
                                     </ul>
                                 </td>
                             </tr>
-                            <tr>
-                                <th sec:authorize="isAuthenticated()">
+                            <tr sec:authorize="isAuthenticated()" th:if="${puedeEditar}">
+                                <th>
                                     <a th:href="@{/coches/byEquipo/{idEquipo}(idEquipo=${equipo.id})}"><strong>Coches</strong></a>
                                 </th>
-                                <td sec:authorize="isAuthenticated()">
+                                <td sec:authorize="isAuthenticated()" th:if="${puedeEditar}">
                                     <ul>
                                         <li th:each="coche : ${coches}">
                                             <a th:if="${puedeEditar}" th:href="@{/coches/verCoche/{idCoche}(idCoche=${coche.id})}" th:text="${coche.nombre} + ' (' + ${coche.codigo} + ')'"></a>

@@ -146,10 +146,8 @@ public class VotacionController {
     public String guardarVotacion(@ModelAttribute("votacion") VotacionDTO votacion,
                                   @RequestParam("fechaLimiteStr") String fechaLimiteStr,
                                   @RequestParam("idsPilotos") List<Long> idsPilotos,
-                                    Model model,
+                                  Model model,
                                   RedirectAttributes redirectAttributes) {
-        System.out.println("Fecha Limite: " + fechaLimiteStr);
-
         if (!fechaLimiteStr.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}")) {
             model.addAttribute("error", "El formato de fecha y hora no es válido");
             model.addAttribute("votacion", votacion);
@@ -160,10 +158,8 @@ public class VotacionController {
         Timestamp fechaLimite = Timestamp.valueOf(fechaLimiteStr.replace("T", " ") + ":00");
         votacion.setFechaLimite(fechaLimite);
 
-        System.out.println("Votacion: " + votacion);
-
-        if(idsPilotos.isEmpty()) {
-            model.addAttribute("error", "Debes seleccionar al menos un piloto");
+        if (idsPilotos.size() < 5 || idsPilotos.size() > 10) {
+            model.addAttribute("error", "Debes seleccionar entre 5 y 10 pilotos");
             model.addAttribute("votacion", votacion);
             return "votaciones/createVotacion";
         }

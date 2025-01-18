@@ -13,7 +13,8 @@
     <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
 
     <div class="form-container">
-        <form th:action="@{/votaciones/guardarVotacion}" th:object="${votacion}" method="post" class="needs-validation" novalidate>
+        <form th:action="@{/votaciones/guardarVotacion}" th:object="${votacion}" method="post"
+              onsubmit="return validarPilotosSeleccionados()">
             <div class="form-group">
                 <label for="titulo">Título:</label>
                 <input type="text" id="titulo" th:field="*{titulo}" class="form-control" maxlength="100" required />
@@ -46,14 +47,14 @@
                 <label for="valorBusqueda">Valor de Búsqueda:</label>
                 <input type="text" id="valorBusqueda" class="form-control" />
             </div>
-            <button type="button" class="btn btn-primary" onclick="buscarPilotos()">Buscar</button>
+            <button type="button" class="btn btn-primary m-md-2" onclick="buscarPilotos()">Buscar</button>
 
-            <h3>Resultados de la Búsqueda</h3>
+            <h3 class="my-3">Resultados de la Búsqueda</h3>
             <ul id="resultadosBusqueda" class="list-group">
                 <!-- Aquí se mostrarán los resultados -->
             </ul>
 
-            <h3>Pilotos Seleccionados</h3>
+            <h3 class="my-3">Pilotos Seleccionados</h3>
             <ul id="listaPilotosSeleccionados" class="list-group">
                 <!-- Aquí se añadirán los pilotos seleccionados -->
             </ul>
@@ -61,8 +62,7 @@
             <input type="hidden" id="idsPilotos" name="idsPilotos" />
 
             <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
+                <button type="submit" class="btn btn-primary my-4">Guardar</button>
             </div>
         </form>
     </div>
@@ -145,6 +145,27 @@
         listItem.remove();
     }
 
+    document.getElementById('votacionForm').addEventListener('submit', function(event) {
+        if (!this.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            alert('Por favor, rellena todos los campos obligatorios.');
+        } else if (!validarPilotosSeleccionados()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
+    function validarPilotosSeleccionados() {
+        const hiddenInput = document.getElementById('idsPilotos');
+        const ids = hiddenInput.value ? hiddenInput.value.split(',').map(Number) : [];
+
+        if (ids.length < 5 || ids.length > 10) {
+            alert('Debes seleccionar entre 5 y 10 pilotos.');
+            return false;
+        }
+        return true;
+    }
 
 </script>
 </body>

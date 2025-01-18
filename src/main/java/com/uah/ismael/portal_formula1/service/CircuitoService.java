@@ -16,7 +16,9 @@ public interface CircuitoService {
 
     CircuitoDTO getCircuitoById(Long id);
 
-    Page<CircuitoDTO> getAllCircuitos(Pageable pageable);
+    Page<CircuitoDTO> getAllCircuitosPage(Pageable pageable);
+
+    List<CircuitoDTO> getAllCircuitos();
 
     List<CircuitoDTO> getCircuitosFechaNotNull();
 

@@ -43,7 +43,7 @@
                                     <input class="form-check-input" type="radio" name="pilotoId" th:value="${piloto.id}" required />
                                     <label class="form-check-label">
                                         <img th:src="@{/pilotos/verImagen/{filename}(filename=${piloto.foto})}" class="img-thumbnail" style="max-width: 70px;" alt="Foto del Piloto">
-                                        <span th:text="${piloto.nombre} + ' ' + ${piloto.apellidos} + ' (' + ${piloto.siglas} + ') - ' + ${piloto.dorsal}"></span>
+                                        <span th:text="${piloto.nombre} + ' ' + ${piloto.apellidos} + ' (' + ${piloto.dorsal} + ') - ' + ${piloto.equipo.nombre}"></span>
                                     </label>
                                 </div>
                             </li>

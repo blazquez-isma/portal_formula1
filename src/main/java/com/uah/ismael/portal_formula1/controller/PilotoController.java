@@ -54,14 +54,14 @@ public class PilotoController {
                                      @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                      @RequestParam(defaultValue = "nombre") String sortField,
                                      @RequestParam(defaultValue = "asc") String sortDir,
-                                     Model model) {
+                                     Model model, Principal principal) {
         UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(nombreUsuario);
         if(usuario.getEquipo() == null) {
             model.addAttribute("error", "El usuario " + nombreUsuario + " no pertenece a ningún equipo");
             return "redirect:/equipos";
         }
         EquipoDTO equipo = usuario.getEquipo();
-        return commonSeePilotos(page, size, sortField, sortDir, model, equipo);
+        return commonSeePilotos(page, size, sortField, sortDir, model, equipo, principal);
     }
 
     @GetMapping("/byEquipo/{idEquipo}")
@@ -70,16 +70,23 @@ public class PilotoController {
                                      @RequestParam(defaultValue = Constants.DEFAULT_SIZE) int size,
                                      @RequestParam(defaultValue = "nombre") String sortField,
                                      @RequestParam(defaultValue = "asc") String sortDir,
-                                     Model model) {
+                                     Model model, Principal principal) {
         System.out.println("ID EQUIPO: " + idEquipo);
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
         System.out.println("Pilotos de equipo: " + equipo.getNombre());
-        return commonSeePilotos(page, size, sortField, sortDir, model, equipo);
+        return commonSeePilotos(page, size, sortField, sortDir, model, equipo, principal);
     }
 
-    private String commonSeePilotos(int page, int size, String sortField, String sortDir, Model model, EquipoDTO equipo) {
+    private String commonSeePilotos(int page, int size, String sortField, String sortDir, Model model, EquipoDTO equipo, Principal principal) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
         Page<PilotoDTO> pilotosPage = pilotoService.getPilotosByEquipoId(equipo.getId(), pageable);
+
+        if(usuarioService.hasEditPermissions(principal, equipo)) {
+            model.addAttribute("puedeEditar", true);
+        } else {
+            model.addAttribute("puedeEditar", false);
+        }
+
         model.addAttribute("titulo", "Pilotos de " + equipo.getNombre());
         model.addAttribute("idEquipo", equipo.getId());
         PageUtil.addPaginationAttributes(model, pilotosPage, page, sortField, sortDir);

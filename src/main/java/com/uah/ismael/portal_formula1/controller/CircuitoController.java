@@ -47,7 +47,7 @@ public class CircuitoController {
                                Model model) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortField));
-        Page<CircuitoDTO> circuitosPage = circuitoService.getAllCircuitos(pageable);
+        Page<CircuitoDTO> circuitosPage = circuitoService.getAllCircuitosPage(pageable);
         model.addAttribute("titulo", "Circuitos");
         PageUtil.addPaginationAttributes(model,circuitosPage, page, sortField, sortDir);
         return "circuitos/listCircuitos";

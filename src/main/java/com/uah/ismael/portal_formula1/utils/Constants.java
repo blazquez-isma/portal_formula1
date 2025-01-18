@@ -13,9 +13,6 @@ public class Constants {
             "/circuitos/verCircuito/**", "/circuitos/verImagen/**", "/circuitos/verCalendario"
     };
 
-
-    public static final String DEFAULT_SIZE = "6";
-
     public static final String NOTICIAS = "noticias";
     public static final String EQUIPOS = "equipos";
     public static final String PILOTOS = "pilotos";
@@ -26,4 +23,7 @@ public class Constants {
     public static final String PILOTOS_PATH = "uploads/pilotos";
     public static final String CIRCUITOS_PATH = "uploads/circuitos";
 
+    public static final String DEFAULT_SIZE = "6";
+    public static final double LIMITE_ENERGIA_VUELTA = 0.6;
+    public static final double CAPACIDAD_BATERIA = 1.20;
 }
