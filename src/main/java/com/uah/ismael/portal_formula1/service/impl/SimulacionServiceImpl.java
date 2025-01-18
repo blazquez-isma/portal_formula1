@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class SimulacionServiceImpl implements SimulacionService {
     @Override
     public double calcularConsumoPorVuelta(CocheDTO coche, CircuitoDTO circuito) {
-        return coche.getConsumo() * (circuito.getLongitud() * 1000.0);
+        return coche.getConsumo() * (circuito.getLongitud() / 1000.0);
     }
 
     @Override

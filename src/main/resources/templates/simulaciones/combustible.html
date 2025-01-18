@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Simulación de Combustible</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
+
+    <form th:action="@{/simulaciones/combustible}" method="post" class="mb-4">
+        <div class="form-group">
+            <label for="coche">Coche:</label>
+            <select id="coche" name="cocheId" class="form-control" required>
+                <option th:each="coche : ${coches}"
+                        th:value="${coche.id}"
+                        th:text="${coche.nombre}"
+                        th:selected="${coche.id == cocheSeleccionado?.id}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="circuito">Circuito:</label>
+            <select id="circuito" name="circuitoId" class="form-control" required>
+                <option th:each="circuito : ${circuitos}"
+                        th:value="${circuito.id}"
+                        th:text="${circuito.nombre}"
+                        th:selected="${circuito.id == circuitoSeleccionado?.id}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Calcular</button>
+    </form>
+
+
+    <div th:if="${consumoTotal != null}">
+        <h4>Resultados:</h4>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Coche</th>
+                <th>Circuito</th>
+                <th>Longitud del Circuito (m)</th>
+                <th>Vueltas</th>
+                <th>Consumo por Vuelta (L)</th>
+                <th>Consumo Total (L)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${cocheSeleccionado.nombre}"></td>
+                <td th:text="${circuitoSeleccionado.nombre}"></td>
+                <td th:text="${circuitoSeleccionado.longitud}"></td>
+                <td th:text="${circuitoSeleccionado.numeroVueltas}"></td>
+                <td th:text="${#numbers.formatDecimal(consumoPorVuelta, 2, 2)}"></td>
+                <td th:text="${#numbers.formatDecimal(consumoTotal, 2, 2)}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="~{fragmentos/footer :: footer}"></div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script></body>
+</html>

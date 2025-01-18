@@ -13,14 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/simulaciones")
 public class SimulacionController {
 
     @Autowired
@@ -35,31 +32,20 @@ public class SimulacionController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping
-    public String mostrarSimulacion(Model model, Principal principal, RedirectAttributes redirectAttributes) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
-        if (usuario == null) {
-            return "redirect:/login";
-        }
-        if(usuario.getEquipo() == null) {
-            redirectAttributes.addFlashAttribute("error", "Debes estar en un equipo para acceder a esta sección");
-            return "redirect:/equipos";
-        }
-        model.addAttribute("titulo", "Simulación para " + usuario.getEquipo().getNombre());
-        model.addAttribute("coches", cocheService.getCochesByEquipoId(usuario.getEquipo().getId()));
-        model.addAttribute("circuitos", circuitoService.getAllCircuitos());
-        model.addAttribute("estilosConduccion", EstiloConduccion.values());
-        return "simulaciones/simulacion";
+    @GetMapping("/simulaciones/combustible")
+    public String mostrarSimulacionCombustible(Model model, Principal principal) {
+        validarUsuario(principal, model);
+        return "simulaciones/combustible";
     }
 
-    @PostMapping("/combustible")
+    @PostMapping("/simulaciones/combustible")
     public String calcularCombustible(
             @RequestParam("cocheId") Long cocheId,
             @RequestParam("circuitoId") Long circuitoId,
-            Model model) {
+            Model model,
+            Principal principal) {
+
+        validarUsuario(principal, model);
 
         CocheDTO coche = cocheService.getCocheById(cocheId);
         CircuitoDTO circuito = circuitoService.getCircuitoById(circuitoId);
@@ -67,21 +53,31 @@ public class SimulacionController {
         double consumoPorVuelta = simulacionService.calcularConsumoPorVuelta(coche, circuito);
         double consumoTotal = simulacionService.calcularConsumoTotal(coche, circuito, circuito.getNumeroVueltas());
 
-        model.addAttribute("titulo", "Simulación de combustible");
-        model.addAttribute("coche", coche);
-        model.addAttribute("circuito", circuito);
+        model.addAttribute("cocheSeleccionado", coche);
+        model.addAttribute("circuitoSeleccionado", circuito);
         model.addAttribute("consumoPorVuelta", consumoPorVuelta);
         model.addAttribute("consumoTotal", consumoTotal);
 
-        return "simulaciones/resultCombustible";
+        return "simulaciones/combustible";
     }
 
-    @PostMapping("/ers")
+
+    @GetMapping("/simulaciones/ers")
+    public String mostrarSimulacionERS(Model model, Principal principal) {
+        validarUsuario(principal, model);
+        model.addAttribute("estilosConduccion", EstiloConduccion.values());
+        return "simulaciones/ers";
+    }
+
+    @PostMapping("/simulaciones/ers")
     public String calcularERS(
             @RequestParam("cocheId") Long cocheId,
             @RequestParam("circuitoId") Long circuitoId,
             @RequestParam("estiloConduccion") String estiloConduccion,
-            Model model) {
+            Model model,
+            Principal principal) {
+
+        validarUsuario(principal, model);
 
         CocheDTO coche = cocheService.getCocheById(cocheId);
         CircuitoDTO circuito = circuitoService.getCircuitoById(circuitoId);
@@ -89,13 +85,26 @@ public class SimulacionController {
         double ersPorVuelta = simulacionService.calcularERSPorVuelta(coche, circuito, estiloConduccion);
         int vueltasParaCargar = simulacionService.calcularVueltasParaCargarBateria(coche, circuito, estiloConduccion);
 
-        model.addAttribute("titulo", "Simulación de ERS");
-        model.addAttribute("coche", coche);
-        model.addAttribute("circuito", circuito);
+        model.addAttribute("cocheSeleccionado", coche);
+        model.addAttribute("circuitoSeleccionado", circuito);
+        model.addAttribute("estiloSeleccionado", estiloConduccion);
         model.addAttribute("ersPorVuelta", ersPorVuelta);
         model.addAttribute("vueltasParaCargar", vueltasParaCargar);
-        model.addAttribute("estiloConduccion", estiloConduccion);
 
-        return "simulaciones/resultERS";
+        return "simulaciones/ers";
+    }
+
+
+    private void validarUsuario(Principal principal, Model model) {
+        if (principal == null) {
+            throw new RuntimeException("Debe iniciar sesión para acceder a esta función.");
+        }
+        UsuarioDTO usuario = usuarioService.getUsuarioByNombreUsuario(principal.getName());
+        if (usuario == null || usuario.getEquipo() == null) {
+            throw new RuntimeException("Debe pertenecer a un equipo para acceder a esta función.");
+        }
+        model.addAttribute("titulo", "Simulación para " + usuario.getEquipo().getNombre());
+        model.addAttribute("coches", cocheService.getCochesByEquipoId(usuario.getEquipo().getId()));
+        model.addAttribute("circuitos", circuitoService.getAllCircuitos());
     }
 }
