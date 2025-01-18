@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -33,8 +34,13 @@ public class SimulacionController {
     private UsuarioService usuarioService;
 
     @GetMapping("/simulaciones/combustible")
-    public String mostrarSimulacionCombustible(Model model, Principal principal) {
-        validarUsuario(principal, model);
+    public String mostrarSimulacionCombustible(Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            validarUsuario(principal, model);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/equipos";
+        }
         return "simulaciones/combustible";
     }
 
@@ -43,9 +49,15 @@ public class SimulacionController {
             @RequestParam("cocheId") Long cocheId,
             @RequestParam("circuitoId") Long circuitoId,
             Model model,
-            Principal principal) {
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
-        validarUsuario(principal, model);
+        try {
+            validarUsuario(principal, model);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/equipos";
+        }
 
         CocheDTO coche = cocheService.getCocheById(cocheId);
         CircuitoDTO circuito = circuitoService.getCircuitoById(circuitoId);
@@ -63,8 +75,13 @@ public class SimulacionController {
 
 
     @GetMapping("/simulaciones/ers")
-    public String mostrarSimulacionERS(Model model, Principal principal) {
-        validarUsuario(principal, model);
+    public String mostrarSimulacionERS(Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            validarUsuario(principal, model);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/equipos";
+        }
         model.addAttribute("estilosConduccion", EstiloConduccion.values());
         return "simulaciones/ers";
     }
@@ -75,9 +92,15 @@ public class SimulacionController {
             @RequestParam("circuitoId") Long circuitoId,
             @RequestParam("estiloConduccion") String estiloConduccion,
             Model model,
-            Principal principal) {
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
-        validarUsuario(principal, model);
+        try {
+            validarUsuario(principal, model);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/equipos";
+        }
 
         CocheDTO coche = cocheService.getCocheById(cocheId);
         CircuitoDTO circuito = circuitoService.getCircuitoById(circuitoId);
