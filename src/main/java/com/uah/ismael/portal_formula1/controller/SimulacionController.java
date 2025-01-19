@@ -111,6 +111,7 @@ public class SimulacionController {
         model.addAttribute("cocheSeleccionado", coche);
         model.addAttribute("circuitoSeleccionado", circuito);
         model.addAttribute("estiloSeleccionado", estiloConduccion);
+        model.addAttribute("estilosConduccion", EstiloConduccion.values());
         model.addAttribute("ersPorVuelta", ersPorVuelta);
         model.addAttribute("vueltasParaCargar", vueltasParaCargar);
 
