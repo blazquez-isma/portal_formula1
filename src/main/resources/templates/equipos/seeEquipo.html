@@ -17,8 +17,8 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h2 th:text="${equipo.nombre}"></h2>
                 <div th:if="${puedeEditar}">
-                    <a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_RESPONSABLE')" th:href="@{/equipos/editarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
-                    <a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_RESPONSABLE')" th:href="@{/equipos/borrarEquipo/{idEquipo}(idEquipo=${equipo.id})}"
+                    <a sec:authorize="hasAnyRole('ROLE_RESPONSABLE')" th:href="@{/equipos/editarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                    <a sec:authorize="hasAnyRole('ROLE_RESPONSABLE')" th:href="@{/equipos/borrarEquipo/{idEquipo}(idEquipo=${equipo.id})}"
                        th:text="'Borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm mx-1" role="button" title="Eliminar el equipo">
                         <i class="fas fa-trash" aria-hidden="true"></i></a>
                 </div>
@@ -96,7 +96,7 @@
         </div>
     </div>
     <div class="d-flex justify-content-between">
-        <a th:if="${puedeEditar}" sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_RESPONSABLE')" class="btn btn-primary" role="button"
+        <a th:if="${puedeEditar}" sec:authorize="hasAnyRole('ROLE_RESPONSABLE')" class="btn btn-primary" role="button"
            th:href="@{/equipos/buscarResponsablesParaEquipo/{idEquipo}(idEquipo=${equipo.id})}">Añadir Responsables</a>
         <nav th:replace="~{fragmentos/backButtons :: buttons}"></nav>
     </div>

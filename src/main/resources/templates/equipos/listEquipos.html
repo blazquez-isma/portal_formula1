@@ -28,19 +28,19 @@
                         <span th:if="${sortField == 'twitter'}" th:text="${sortDir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>
+<!--                <th sec:authorize="hasRole('ROLE_ADMINISTRADOR')">Acciones</th>-->
             </tr>
             </thead>
             <tbody>
             <tr th:each="equipo : ${elements.content}">
                 <td><a th:href="@{/equipos/verEquipo/{idEquipo}(idEquipo=${equipo.id})}" th:text="${equipo.nombre}"></a></td>
                 <td th:text="${equipo.twitter}"></td>
-                <td>
-                    <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
-                        <a th:href="@{/equipos/editarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/equipos/borrarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">Borrar</a>
-                    </div>
-                </td>
+<!--                <td>-->
+<!--                    <div sec:authorize="hasRole('ROLE_ADMINISTRADOR')">-->
+<!--                        <a th:href="@{/equipos/editarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-warning">Editar</a>-->
+<!--                        <a th:href="@{/equipos/borrarEquipo/{idEquipo}(idEquipo=${equipo.id})}" class="btn btn-danger" onclick="return confirm('¿Estás seguro?')">Borrar</a>-->
+<!--                    </div>-->
+<!--                </td>-->
             </tr>
             </tbody>
         </table>
