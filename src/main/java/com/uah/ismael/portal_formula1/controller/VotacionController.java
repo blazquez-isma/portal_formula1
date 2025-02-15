@@ -212,7 +212,6 @@ public class VotacionController {
         }
         Long pilotoId = pilotoIdOpt.get();
 
-        System.out.println("Votacion: " + votacionId + " Piloto: " + pilotoId + "\n Voto: " + voto);
 
         if (voto.getNombreVotante() == null || voto.getNombreVotante().isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "El nombre del votante no puede estar vacío");

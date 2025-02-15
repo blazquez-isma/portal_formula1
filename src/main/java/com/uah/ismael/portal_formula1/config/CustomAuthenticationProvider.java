@@ -39,14 +39,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final String usuario = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        System.out.println("Usuario: " + usuario + " Password: " + password);
         UsuarioDTO usuarioLogueado = usuarioService.getUsuarioByEmail(usuario);
         if(usuarioLogueado == null) {
             usuarioLogueado = usuarioService.getUsuarioByNombreUsuario(usuario);
         }
-        System.out.println("Usuario logueado: " + usuarioLogueado);
         if (usuarioLogueado != null && usuarioLogueado.isActivo() && passwordEncoder.matches(password, usuarioLogueado.getContrasena())) {
-            System.out.println("LOGUEADO");
             final List<GrantedAuthority> grantedAuths = new ArrayList<>();
             for (RolDTO rol : usuarioLogueado.getRoles()) {
                 grantedAuths.add(new SimpleGrantedAuthority(rol.getNombre()));

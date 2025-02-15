@@ -162,7 +162,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioDTO getUsuarioByNombreUsuario(String nombreUsuario) {
         Usuario user = usuarioRepository.findByNombreUsuario(nombreUsuario);
-        System.out.println("Usuario: " + user);
         return user != null ? modelMapper.map(user, UsuarioDTO.class) : null;
     }
 
@@ -202,8 +201,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     public boolean hasEditPermissions(Principal principal, EquipoDTO equipo) {
         if(principal != null && principal.getName() != null){
             UsuarioDTO usuario = this.getUsuarioByNombreUsuario(principal.getName());
-            boolean isAdmin = usuario.getRoles().stream().anyMatch(rol -> rol.getNombre().equals("ROLE_ADMINISTRADOR"));
-            return (isAdmin ||
+            //boolean isAdmin = usuario.getRoles().stream().anyMatch(rol -> rol.getNombre().equals("ROLE_ADMINISTRADOR"));
+            return (//isAdmin ||
                     usuario.getEquipo() != null) &&
                     (usuario.getEquipo() == null || usuario.getEquipo().getId().equals(equipo.getId()));
         }

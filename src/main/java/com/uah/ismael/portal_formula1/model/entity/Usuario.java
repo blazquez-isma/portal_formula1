@@ -51,9 +51,6 @@ public class Usuario {
     @OneToMany(mappedBy = "administrador")
     private List<Noticia> noticias = new ArrayList<>();
 
-    @OneToMany(mappedBy = "responsable")
-    private List<Simulacion> simulacions = new ArrayList<>();
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_roles",
             joinColumns = @JoinColumn(name = "usuarioID"),
@@ -122,14 +119,6 @@ public class Usuario {
 
     public void setNoticias(List<Noticia> noticias) {
         this.noticias = noticias;
-    }
-
-    public List<Simulacion> getSimulacions() {
-        return simulacions;
-    }
-
-    public void setSimulacions(List<Simulacion> simulacions) {
-        this.simulacions = simulacions;
     }
 
     public List<Rol> getRoles() {

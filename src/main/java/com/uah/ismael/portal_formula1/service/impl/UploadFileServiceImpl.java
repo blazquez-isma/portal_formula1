@@ -53,9 +53,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 			rootPath = getPath(uniqueFilename);
 			counter++;
 		}
-
-		LOG.info("rootPath: " + rootPath);
-
+		
 		Files.copy(file.getInputStream(), rootPath);
 
 		return uniqueFilename;

@@ -71,9 +71,7 @@ public class PilotoController {
                                      @RequestParam(defaultValue = "nombre") String sortField,
                                      @RequestParam(defaultValue = "asc") String sortDir,
                                      Model model, Principal principal) {
-        System.out.println("ID EQUIPO: " + idEquipo);
         EquipoDTO equipo = equipoService.getEquipoById(idEquipo);
-        System.out.println("Pilotos de equipo: " + equipo.getNombre());
         return commonSeePilotos(page, size, sortField, sortDir, model, equipo, principal);
     }
 
