@@ -5,6 +5,8 @@ import com.uah.ismael.portal_formula1.dto.PilotoDTO;
 import com.uah.ismael.portal_formula1.model.entity.Equipo;
 import com.uah.ismael.portal_formula1.model.entity.Piloto;
 import com.uah.ismael.portal_formula1.model.repository.EquipoRepository;
+import com.uah.ismael.portal_formula1.service.CocheService;
+import com.uah.ismael.portal_formula1.service.PilotoService;
 import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.EquipoService;
 import org.modelmapper.ModelMapper;
@@ -25,11 +27,15 @@ public class EquipoServiceImpl implements EquipoService {
 
     private final ModelMapper modelMapper;
     private final EquipoRepository equipoRepository;
+    private final PilotoService pilotoService;
+    private final CocheService cocheService;
 
     @Autowired
-    public EquipoServiceImpl(ModelMapper modelMapper, EquipoRepository equipoRepository) {
+    public EquipoServiceImpl(ModelMapper modelMapper, EquipoRepository equipoRepository, PilotoService pilotoService, CocheService cocheService) {
         this.modelMapper = modelMapper;
         this.equipoRepository = equipoRepository;
+        this.pilotoService = pilotoService;
+        this.cocheService = cocheService;
     }
 
     @Override
@@ -72,6 +78,8 @@ public class EquipoServiceImpl implements EquipoService {
     @Override
     public void deleteEquipo(Long id) {
         if(equipoRepository.existsById(id)) {
+            cocheService.getCochesByEquipoId(id).forEach(coche -> cocheService.deleteCoche(coche.getId()));
+            pilotoService.getPilotosByEquipoId(id).forEach(piloto -> pilotoService.deletePiloto(piloto.getId()));
             equipoRepository.deleteById(id);
         }
     }

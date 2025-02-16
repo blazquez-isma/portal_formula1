@@ -147,7 +147,6 @@ public class PilotoController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            attributes.addFlashAttribute("success", "Has subido correctamente '" + nombreImagen + "'");
             piloto.setFoto(nombreImagen);
         }
 
@@ -164,6 +163,7 @@ public class PilotoController {
             }
         } catch (IllegalArgumentException e) {
             attributes.addFlashAttribute("error", e.getMessage());
+            uploadFileService.delete(piloto.getFoto(), Constants.PILOTOS);
         }
 
         return "redirect:/pilotos/byEquipo/" + equipo.getId();
