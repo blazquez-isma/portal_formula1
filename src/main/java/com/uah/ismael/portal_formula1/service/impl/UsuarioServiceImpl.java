@@ -8,6 +8,7 @@ import com.uah.ismael.portal_formula1.model.entity.Rol;
 import com.uah.ismael.portal_formula1.model.entity.Usuario;
 import com.uah.ismael.portal_formula1.model.repository.RolRepository;
 import com.uah.ismael.portal_formula1.model.repository.UsuarioRepository;
+import com.uah.ismael.portal_formula1.service.EquipoService;
 import com.uah.ismael.portal_formula1.utils.PageUtil;
 import com.uah.ismael.portal_formula1.service.UsuarioService;
 import org.modelmapper.ModelMapper;
@@ -33,14 +34,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EquipoService equipoService;
 
     @Autowired
     public UsuarioServiceImpl(ModelMapper modelMapper, UsuarioRepository usuarioRepository,
-                              RolRepository rolRepository, PasswordEncoder passwordEncoder) {
+                              RolRepository rolRepository, PasswordEncoder passwordEncoder, EquipoService equipoService) {
         this.modelMapper = modelMapper;
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
         this.passwordEncoder = passwordEncoder;
+        this.equipoService = equipoService;
     }
 
 
@@ -70,6 +73,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void deleteUsuario(Long userId) {
+        Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        if(user.getEquipo() != null){
+            if(usuarioRepository.findByEquipo_Id(user.getEquipo().getId()).size() > 1){
+                equipoService.deleteEquipo(user.getEquipo().getId());
+            } else {
+                throw new IllegalArgumentException("No se puede borrar el usuario porque es el único miembro del equipo");
+            }
+        }
         usuarioRepository.deleteById(userId);
     }
 

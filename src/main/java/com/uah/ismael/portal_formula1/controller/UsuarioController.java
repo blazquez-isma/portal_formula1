@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -57,8 +58,12 @@ public class UsuarioController {
 
     @PostMapping("/borrarUsuario")
     @PreAuthorize("hasRole('ROLE_ADMINISTRADOR')")
-    public String deleteUser(@RequestParam("userId") Long userId) {
-        usuarioService.deleteUsuario(userId);
+    public String deleteUser(@RequestParam("userId") Long userId,  RedirectAttributes attributes) {
+        try {
+            usuarioService.deleteUsuario(userId);
+        } catch (IllegalArgumentException e) {
+            attributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/usuarios";
     }
 

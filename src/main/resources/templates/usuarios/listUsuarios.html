@@ -28,6 +28,9 @@
 <div class="container">
     <div th:replace="~{fragmentos/menu :: menu(${titulo})}"></div>
 
+    <div th:if="${error != null}" class='alert alert-danger' th:text="${error}" role='alert'></div>
+    <div th:if="${success != null}" class='alert alert-success' th:text="${success}" role='alert'></div>
+
     <div class="container my-4">
         <table class="table table-striped">
             <thead>
